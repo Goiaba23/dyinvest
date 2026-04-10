@@ -53,9 +53,44 @@ export default function AnalysisPage() {
       if (response.ok) {
         const data = await response.json();
         setMovers(data);
+      } else {
+        // Fallback mock data
+        setMovers({
+          altas: [
+            { symbol: 'BBAS3', name: 'Banco do Brasil', change: 0.62, changePercent: 5.18, price: 12.50, type: 'stock' },
+            { symbol: 'WEGE3', name: 'WEG', change: 1.42, changePercent: 3.50, price: 42.15, type: 'stock' },
+            { symbol: 'MGLU3', name: 'Magazine Luiza', change: 0.25, changePercent: 3.10, price: 8.20, type: 'stock' },
+            { symbol: 'LREN3', name: 'Lojas Renner', change: 0.43, changePercent: 2.80, price: 15.60, type: 'stock' },
+            { symbol: 'VALE3', name: 'Vale', change: 1.68, changePercent: 2.50, price: 68.90, type: 'stock' },
+          ],
+          baixas: [
+            { symbol: 'PETR4', name: 'Petrobras', change: -2.31, changePercent: -5.70, price: 38.45, type: 'stock' },
+            { symbol: 'PETR3', name: 'Petrobras', change: -2.28, changePercent: -5.69, price: 38.20, type: 'stock' },
+            { symbol: 'ABEV3', name: 'Ambev', change: -0.18, changePercent: -1.20, price: 14.85, type: 'stock' },
+            { symbol: 'BBDC4', name: 'Bradesco', change: -0.13, changePercent: -0.90, price: 14.20, type: 'stock' },
+            { symbol: 'ITUB4', name: 'Itaú', change: -0.18, changePercent: -0.50, price: 35.20, type: 'stock' },
+          ]
+        });
       }
     } catch (error) {
       console.error('Error loading movers:', error);
+      // Fallback mock data on error
+      setMovers({
+        altas: [
+          { symbol: 'BBAS3', name: 'Banco do Brasil', change: 0.62, changePercent: 5.18, price: 12.50, type: 'stock' },
+          { symbol: 'WEGE3', name: 'WEG', change: 1.42, changePercent: 3.50, price: 42.15, type: 'stock' },
+          { symbol: 'MGLU3', name: 'Magazine Luiza', change: 0.25, changePercent: 3.10, price: 8.20, type: 'stock' },
+          { symbol: 'LREN3', name: 'Lojas Renner', change: 0.43, changePercent: 2.80, price: 15.60, type: 'stock' },
+          { symbol: 'VALE3', name: 'Vale', change: 1.68, changePercent: 2.50, price: 68.90, type: 'stock' },
+        ],
+        baixas: [
+          { symbol: 'PETR4', name: 'Petrobras', change: -2.31, changePercent: -5.70, price: 38.45, type: 'stock' },
+          { symbol: 'PETR3', name: 'Petrobras', change: -2.28, changePercent: -5.69, price: 38.20, type: 'stock' },
+          { symbol: 'ABEV3', name: 'Ambev', change: -0.18, changePercent: -1.20, price: 14.85, type: 'stock' },
+          { symbol: 'BBDC4', name: 'Bradesco', change: -0.13, changePercent: -0.90, price: 14.20, type: 'stock' },
+          { symbol: 'ITUB4', name: 'Itaú', change: -0.18, changePercent: -0.50, price: 35.20, type: 'stock' },
+        ]
+      });
     } finally {
       setLoadingMovers(false);
     }

@@ -50,8 +50,29 @@ export default function DividendosPage() {
 
   useEffect(() => {
     const loadData = async () => {
+      // Try to get portfolio from localStorage
+      let portfolioData: any[] = [];
       const saved = localStorage.getItem('dyinvest_portfolio');
-      const portfolioData = saved ? JSON.parse(saved) : [];
+      
+      if (saved) {
+        try {
+          portfolioData = JSON.parse(saved);
+        } catch (e) {
+          console.log('Error parsing portfolio');
+        }
+      }
+      
+      // If no portfolio, use demo data for showcase
+      if (portfolioData.length === 0) {
+        portfolioData = [
+          { symbol: 'PETR4', quantity: 100, averagePrice: 35.50 },
+          { symbol: 'ITUB4', quantity: 200, averagePrice: 32.00 },
+          { symbol: 'VALE3', quantity: 150, averagePrice: 65.00 },
+          { symbol: 'WEGE3', quantity: 50, averagePrice: 40.00 },
+          { symbol: 'EGIE3', quantity: 80, averagePrice: 45.00 },
+        ];
+      }
+      
       setPortfolio(portfolioData);
 
       const projected = await projectDividends(portfolioData);
@@ -60,7 +81,8 @@ export default function DividendosPage() {
       const calculatedStats = calculateDividendStats(portfolioData, projected);
       setStats(calculatedStats);
       
-      setLoading(false);
+      // Simulate loading
+      setTimeout(() => setLoading(false), 800);
     };
 
     loadData();

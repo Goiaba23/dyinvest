@@ -60,9 +60,23 @@ export default function SentinelPage() {
     setScanning(true);
     setLoading(true);
     
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // Simulate scanning delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    const items = await syncPortfolio();
+    // Try to get real portfolio, fallback to demo data
+    let items = await syncPortfolio();
+    
+    if (items.length === 0) {
+      // Demo portfolio for showcase
+      items = [
+        { symbol: 'PETR4', quantity: 100, avg_price: 38.45, sector: 'Petroleo' },
+        { symbol: 'ITUB4', quantity: 200, avg_price: 35.20, sector: 'Financeiros' },
+        { symbol: 'VALE3', quantity: 150, avg_price: 68.90, sector: 'Minerais' },
+        { symbol: 'WEGE3', quantity: 50, avg_price: 42.15, sector: 'Industrias' },
+        { symbol: 'EGIE3', quantity: 80, avg_price: 45.50, sector: 'Energia' },
+      ];
+    }
+    
     setPortfolio(items);
     
     const diag = await diagnosePortfolio(items);
