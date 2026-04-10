@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Tooltip } from "@/components/ui/tooltip";
+import Link from "next/link";
+import { gsap } from "gsap";
 import { cn } from "@/lib/utils";
 import { 
   Brain, 
   TrendingUp, 
-  TrendingDown, 
+  TrendingDown,
   RefreshCw,
   Loader2,
   ArrowUp,
@@ -18,18 +18,18 @@ import {
   Landmark,
   DollarSign,
   LineChart,
-  Zap
+  ChevronRight
 } from "lucide-react";
 import { getConsensus, ConsensusResult } from "@/lib/ia/news";
 import { 
   GRANDES_INVESTIDORES, 
-  analyzeInvestorMovements, 
-  getBrazilImpact 
+  analyzeInvestorMovements
 } from "@/lib/ia/investors";
 import { MarketMover } from "@/lib/api/mercado";
 
 export default function AnalysisPage() {
   const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [selectedAsset, setSelectedAsset] = useState('ouro');
   const [loading, setLoading] = useState(false);
   const [consensus, setConsensus] = useState<ConsensusResult | null>(null);
@@ -38,25 +38,13 @@ export default function AnalysisPage() {
   const [loadingMovers, setLoadingMovers] = useState(false);
 
   const ativos = [
-    { id: 'ouro', label: 'Ouro', icon: Gem, color: 'from-yellow-500/20 to-amber-500/20' },
-    { id: 'PETR4', label: 'Petrobras', icon: Landmark, color: 'from-red-500/20 to-orange-500/20' },
-    { id: 'VALE3', label: 'Vale', icon: BarChart3, color: 'from-slate-500/20 to-slate-600/20' },
-    { id: 'ibovespa', label: 'Ibovespa', icon: BarChart3, color: 'from-blue-500/20 to-cyan-500/20' },
-    { id: 'dólar', label: 'Dólar', icon: DollarSign, color: 'from-green-500/20 to-emerald-500/20' },
-    { id: 'bitcoin', label: 'Bitcoin', icon: LineChart, color: 'from-purple-500/20 to-orange-500/20' },
+    { id: 'ouro', label: 'Ouro', icon: Gem },
+    { id: 'PETR4', label: 'Petrobras', icon: Landmark },
+    { id: 'VALE3', label: 'Vale', icon: BarChart3 },
+    { id: 'ibovespa', label: 'Ibovespa', icon: BarChart3 },
+    { id: 'dólar', label: 'Dólar', icon: DollarSign },
+    { id: 'bitcoin', label: 'Bitcoin', icon: LineChart },
   ];
-
-  const loadConsensus = async () => {
-    setLoading(true);
-    try {
-      const result = await getConsensus(selectedAsset);
-      setConsensus(result);
-    } catch (error) {
-      console.error('Error loading consensus:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const loadMovers = async () => {
     setLoadingMovers(true);
@@ -74,7 +62,6 @@ export default function AnalysisPage() {
   };
 
   useEffect(() => {
-    loadConsensus();
     loadMovers();
     
     const interval = setInterval(() => {
@@ -82,32 +69,77 @@ export default function AnalysisPage() {
     }, 60000);
     
     return () => clearInterval(interval);
-  }, [selectedAsset]);
+  }, []);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const ctx = gsap.context(() => {
+        gsap.from('.fade-item', {
+          y: 20,
+          opacity: 0,
+          duration: 0.4,
+          stagger: 0.05,
+          ease: 'power2.out'
+        });
+      }, containerRef);
+      return () => ctx.revert();
+    }
+  }, []);
 
   const investorAnalysis = analyzeInvestorMovements(selectedInvestor);
 
   return (
-    <div className="min-h-screen bg-[#050505]">
-      <main className="pt-6 pb-12 px-4 sm:px-6 lg:px-8 max-w-[1800px] mx-auto">
-        <div className="mb-8 animate-fade-in-up">
-          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center gap-3 font-['Space_Grotesk']">
-            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-              <Brain className="w-6 h-6 text-purple-400" />
+    <div ref={containerRef} className="min-h-screen bg-[#0a0a0c]">
+      <header className="h-12 bg-[#0d0d10]/80 backdrop-blur-xl border-b border-white/[0.06] flex items-center justify-between px-4 sticky top-0 z-50">
+        <div className="flex items-center gap-5">
+          <Link href="/dashboard" className="flex items-center gap-2.5 group">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7dd3fc] to-[#0ea5e9] flex items-center justify-center">
+              <BarChart3 className="w-3.5 h-3.5 text-white" />
             </div>
-            Análise de Mercado <span className="text-purple-400">IA</span>
-            <Tooltip 
-              term="Análise IA" 
-              definition="Sistema de consenso que analisa notícias de diversas fontes para determinar o sentimentodo mercado."
-            />
+            <span className="font-display font-bold text-sm text-white">DYInvest</span>
+          </Link>
+          
+          <nav className="hidden md:flex items-center gap-0.5">
+            {[
+              { href: '/dashboard', label: 'Início', active: false },
+              { href: '/acoes', label: 'Ações', active: false },
+              { href: '/fiis', label: 'FIIs', active: false },
+              { href: '/carteira', label: 'Carteira', active: false },
+              { href: '/noticias', label: 'News', active: false },
+            ].map((item) => (
+              <Link 
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                  item.active 
+                    ? "text-white bg-white/[0.06]" 
+                    : "text-[#71717a] hover:text-white hover:bg-white/[0.03]"
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </header>
+
+      <main className="p-4 max-w-[1600px] mx-auto">
+        <div className="mb-4 fade-item">
+          <h1 className="text-lg font-display font-semibold text-white flex items-center gap-2">
+            <Brain className="w-5 h-5 text-purple-400" />
+            Análise <span className="text-purple-400">IA</span>
           </h1>
-          <p className="text-white/40 text-lg font-['Inter']">Consenso de notícias globais + movimentos de grandes investidores</p>
+          <p className="text-[#52525b] text-xs">Consenso de notícias + grandes investidores</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="liquid-card p-6">
-              <h3 className="text-white font-bold text-lg mb-4 font-['Space_Grotesk']">Selecione um ativo para analisar</h3>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+        <div className="grid grid-cols-12 gap-3">
+          {/* Coluna 1: Asset Selector + Altas/Baixas */}
+          <div className="col-span-12 lg:col-span-8 space-y-3">
+            {/* Selector de Ativos */}
+            <div className="fade-item bg-[#18181b] border border-white/[0.04] rounded-lg p-3">
+              <span className="text-[#71717a] text-[10px] font-bold uppercase tracking-wider mb-2 block">Selecione um ativo</span>
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-1.5">
                 {ativos.map(ativo => {
                   const Icon = ativo.icon;
                   return (
@@ -115,189 +147,117 @@ export default function AnalysisPage() {
                       key={ativo.id}
                       onClick={() => setSelectedAsset(ativo.id)}
                       className={cn(
-                        "p-4 rounded-xl text-center transition-all flex flex-col items-center gap-2",
+                        "p-2 rounded-md text-center transition-all flex flex-col items-center gap-1",
                         selectedAsset === ativo.id 
-                          ? "bg-cyan-500/20 border-2 border-cyan-500 shadow-lg shadow-cyan-500/20" 
-                          : "bg-slate-800/30 border-2 border-transparent hover:border-slate-700"
+                          ? "bg-purple-500/20 border border-purple-500/30" 
+                          : "hover:bg-white/[0.02] border border-transparent"
                       )}
                     >
-                      <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br", ativo.color, "border border-white/10")}>
-                        <Icon className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-xs text-slate-300 font-['Inter']">{ativo.label}</span>
+                      <Icon className="w-4 h-4 text-[#a1a1aa]" />
+                      <span className="text-[10px] text-[#71717a]">{ativo.label}</span>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            <div className="liquid-card p-6">
-              <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-3 font-['Space_Grotesk']">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                  <TrendingUp className="w-5 h-5 text-emerald-400" />
-                </div>
-                Maiores Altas e Baixas do Dia
-              </h3>
-              {loadingMovers ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />
-                </div>
-              ) : movers ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium">
-                      <ArrowUp className="w-4 h-4" />
-                      Maiores Altas
-                    </div>
-                    {movers.altas.map((ativo, i) => (
-                      <button
-                        key={i}
-                        onClick={() => router.push(`/ativo/${ativo.symbol}`)}
-                        className="w-full flex items-center justify-between p-4 bg-emerald-500/10 rounded-xl hover:bg-emerald-500/20 transition-all border border-emerald-500/20"
-                      >
-                        <div>
-                          <p className="text-white font-bold font-['Space_Grotesk']">{ativo.symbol}</p>
-                          <p className="text-xs text-white/40">{ativo.name}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-emerald-400 font-bold text-lg">+{ativo.changePercent.toFixed(2)}%</p>
-                          <p className="text-xs text-white/30">R$ {ativo.price.toFixed(2)}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-rose-400 text-sm font-medium">
-                      <ArrowDown className="w-4 h-4" />
-                      Maiores Baixas
-                    </div>
-                    {movers.baixas.map((ativo, i) => (
-                      <button
-                        key={i}
-                        onClick={() => router.push(`/ativo/${ativo.symbol}`)}
-                        className="w-full flex items-center justify-between p-4 bg-rose-500/10 rounded-xl hover:bg-rose-500/20 transition-all border border-rose-500/20"
-                      >
-                        <div>
-                          <p className="text-white font-bold font-['Space_Grotesk']">{ativo.symbol}</p>
-                          <p className="text-xs text-white/40">{ativo.name}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-rose-400 font-bold text-lg">{ativo.changePercent.toFixed(2)}%</p>
-                          <p className="text-xs text-white/30">R$ {ativo.price.toFixed(2)}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-white/40">Carregando dados do mercado...</div>
-              )}
-            </div>
-
-            {consensus && (
-              <div className="liquid-card p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-white font-bold text-lg font-['Space_Grotesk']">Consenso de Notícias</h3>
-                  <button 
-                    onClick={loadConsensus} 
-                    disabled={loading}
-                    className="p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors"
-                  >
-                    <RefreshCw className={cn("w-4 h-4 text-slate-400", loading && "animate-spin")} />
-                  </button>
-                </div>
-                
-                <div className="flex items-center gap-4 mb-6">
-                  <div className={cn(
-                    "w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold",
-                    consensus.veredicto === 'alta' ? "bg-emerald-500/20 text-emerald-400" :
-                    consensus.veredicto === 'baixa' ? "bg-rose-500/20 text-rose-400" :
-                    "bg-slate-500/20 text-slate-400"
-                  )}>
-                    {consensus.veredicto === 'alta' ? '↗' : consensus.veredicto === 'baixa' ? '↘' : '→'}
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold text-xl font-['Space_Grotesk']">
-                      {consensus.veredicto === 'alta' ? 'Tendência de Alta' : consensus.veredicto === 'baixa' ? 'Tendência de Baixa' : 'Mercado Neutro'}
-                    </p>
-                    <p className="text-white/50 text-sm">Probabilidade: {consensus.probabilidade}%</p>
-                  </div>
-                </div>
-
-                {consensus.noticias && consensus.noticias.length > 0 && (
-                  <div className="p-4 bg-slate-800/30 rounded-xl border border-slate-700/50 mb-4">
-                    <p className="text-white/70 leading-relaxed font-['Inter']">
-                      {consensus.noticias.slice(0, 3).map(n => n.title).join(' | ')}
-                    </p>
-                  </div>
-                )}
-
-                {consensus.fontesCitadas && consensus.fontesCitadas.length > 0 && (
-                  <div className="mt-4 space-y-2">
-                    <p className="text-white/50 text-sm font-['Inter']">Fontes analisadas:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {consensus.fontesCitadas.slice(0, 5).map((f: any, i: number) => (
-                        <span key={i} className="px-3 py-1 bg-slate-800/50 rounded-lg text-xs text-slate-400">
-                          {f.nome}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+            {/* Altas e Baixas */}
+            <div className="fade-item bg-[#18181b] border border-white/[0.04] rounded-lg overflow-hidden">
+              <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/[0.04]">
+                <span className="text-[#71717a] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                  <TrendingUp className="w-3 h-3" />
+                  Maiores Altas e Baixas
+                </span>
+                {loadingMovers && <Loader2 className="w-3 h-3 text-[#52525b] animate-spin" />}
               </div>
-            )}
+              <div className="grid grid-cols-2 divide-x divide-white/[0.04]">
+                <div className="p-2">
+                  <div className="flex items-center gap-1.5 text-green-400 text-[10px] font-medium mb-2 px-2">
+                    <ArrowUp className="w-3 h-3" />
+                    Altas
+                  </div>
+                  <div className="space-y-1">
+                    {movers?.altas.slice(0, 5).map((ativo, i) => (
+                      <button
+                        key={i}
+                        onClick={() => router.push(`/ativo/${ativo.symbol}`)}
+                        className="w-full flex items-center justify-between px-2 py-1.5 rounded hover:bg-white/[0.02]"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#52525b] text-[9px]">{i+1}</span>
+                          <span className="text-white text-xs font-medium">{ativo.symbol}</span>
+                        </div>
+                        <span className="text-green-400 text-xs font-mono font-semibold">
+                          +{ativo.changePercent.toFixed(2)}%
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="p-2">
+                  <div className="flex items-center gap-1.5 text-red-400 text-[10px] font-medium mb-2 px-2">
+                    <ArrowDown className="w-3 h-3" />
+                    Baixas
+                  </div>
+                  <div className="space-y-1">
+                    {movers?.baixas.slice(0, 5).map((ativo, i) => (
+                      <button
+                        key={i}
+                        onClick={() => router.push(`/ativo/${ativo.symbol}`)}
+                        className="w-full flex items-center justify-between px-2 py-1.5 rounded hover:bg-white/[0.02]"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#52525b] text-[9px]">{i+1}</span>
+                          <span className="text-white text-xs font-medium">{ativo.symbol}</span>
+                        </div>
+                        <span className="text-red-400 text-xs font-mono font-semibold">
+                          {ativo.changePercent.toFixed(2)}%
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="liquid-card p-6">
-              <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-3 font-['Space_Grotesk']">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-                  <Brain className="w-5 h-5 text-purple-400" />
-                </div>
-                Grandes Investidores
-              </h3>
-              
-              <div className="space-y-3 mb-6">
+          {/* Coluna 2: Investidores + Disclaimer */}
+          <div className="col-span-12 lg:col-span-4 space-y-3">
+            {/* Grandes Investidores */}
+            <div className="fade-item bg-[#18181b] border border-white/[0.04] rounded-lg overflow-hidden">
+              <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/[0.04]">
+                <span className="text-[#71717a] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                  <Brain className="w-3 h-3 text-purple-400" />
+                  Grandes Investidores
+                </span>
+              </div>
+              <div className="divide-y divide-white/[0.02]">
                 {GRANDES_INVESTIDORES.slice(0, 4).map(investor => (
                   <button
                     key={investor.id}
                     onClick={() => setSelectedInvestor(investor.id)}
                     className={cn(
-                      "w-full p-4 rounded-xl border transition-all text-left",
-                      selectedInvestor === investor.id
-                        ? "bg-purple-500/20 border-purple-500/30"
-                        : "bg-slate-800/30 border-slate-700/50 hover:border-purple-500/20"
+                      "w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/[0.02] transition-colors",
+                      selectedInvestor === investor.id && "bg-purple-500/10"
                     )}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                        <span className="text-lg">📈</span>
-                      </div>
-                      <div>
-                        <p className="text-white font-medium font-['Space_Grotesk']">{investor.nome}</p>
-                        <p className="text-xs text-white/40">{investor.tipo}</p>
-                      </div>
+                    <div className="w-8 h-8 rounded-md bg-purple-500/10 flex items-center justify-center text-lg">
+                      📈
                     </div>
+                    <div className="text-left">
+                      <p className="text-white text-xs font-medium">{investor.nome}</p>
+                      <p className="text-[#52525b] text-[9px]">{investor.tipo}</p>
+                    </div>
+                    <ChevronRight className="w-3 h-3 text-[#52525b] ml-auto" />
                   </button>
                 ))}
               </div>
-
-              {investorAnalysis && (
-                <div className="p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
-                  <p className="text-white/70 text-sm font-['Inter']">{investorAnalysis.comentario}</p>
-                </div>
-              )}
             </div>
 
-            <div className="liquid-card p-6 border-amber-500/20">
-              <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-3 font-['Space_Grotesk']">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
-                  <Zap className="w-5 h-5 text-amber-400" />
-                </div>
-                Disclaimer
-              </h3>
-              <p className="text-sm text-white/50 leading-relaxed font-['Inter']">
-                Investir envolve riscos. Não dizemos "compre" ou "venda". Analisamos dados, fatos e notícias para você entender o mercado e tomar sua própria decisão.
+            {/* Disclaimer */}
+            <div className="fade-item bg-amber-500/5 border border-amber-500/10 rounded-lg p-3">
+              <p className="text-[#71717a] text-[10px] leading-snug">
+                <span className="text-amber-400 font-medium">Disclaimer:</span> Investir envolve riscos. Não dizemos "compre" ou "venda". Analisamos dados para você tomar sua própria decisão.
               </p>
             </div>
           </div>
