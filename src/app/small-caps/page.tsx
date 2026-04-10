@@ -1,22 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import { Tooltip } from "@/components/ui/tooltip";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { gsap } from "gsap";
 import { cn } from "@/lib/utils";
 import { 
   TrendingUp,
   TrendingDown,
   Search,
-  BarChart3,
-  Filter,
   Star,
-  Target,
-  ArrowRight
+  Filter,
+  BarChart3,
+  Wallet,
+  FileText,
+  Home,
+  Bell,
+  Layers,
+  ChevronRight,
+  ArrowUpRight,
+  ArrowDownRight
 } from "lucide-react";
 import { ACOES, MarketData } from "@/lib/ia/market-data";
-import Link from "next/link";
 
 const SMALL_CAPS_LIMIT = 5e9;
+
+const navItems = [
+  { href: '/dashboard', icon: Home, label: 'Início', active: false },
+  { href: '/acoes', icon: BarChart3, label: 'Ações', active: false },
+  { href: '/fiis', icon: Layers, label: 'FIIs', active: false },
+  { href: '/carteira', icon: Wallet, label: 'Carteira', active: false },
+  { href: '/noticias', icon: FileText, label: 'News', active: false },
+];
 
 const getSmallCaps = (): MarketData[] => {
   return ACOES.filter(a => (a.valorMercado || 0) < SMALL_CAPS_LIMIT && (a.valorMercado || 0) > 0)
@@ -28,9 +42,25 @@ const getSectors = () => {
 };
 
 export default function SmallCapsPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [filter, setFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'marketcap' | 'dy' | 'pl' | 'roe'>('marketcap');
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const ctx = gsap.context(() => {
+        gsap.from('.fade-item', {
+          y: 15,
+          opacity: 0,
+          duration: 0.4,
+          stagger: 0.03,
+          ease: 'power2.out'
+        });
+      }, containerRef);
+      return () => ctx.revert();
+    }
+  }, []);
 
   const getFilteredData = () => {
     let data = getSmallCaps();
@@ -62,89 +92,110 @@ export default function SmallCapsPage() {
   };
 
   const sectors = getSectors() as string[];
+  const smallCaps = getSmallCaps();
 
   return (
-    <div className="min-h-screen bg-[#050505]">
-      <main className="pt-6 pb-12 px-4 sm:px-6 lg:px-8 max-w-[1800px] mx-auto">
-        <div className="mb-8 animate-fade-in-up">
-          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center gap-3 font-['Space_Grotesk']">
-            <div className="w-12 h-12 rounded-2xl bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20">
-              <Star className="w-6 h-6 text-yellow-400" />
+    <div ref={containerRef} className="min-h-screen bg-[#0a0a0c]">
+      {/* Top Navigation */}
+      <header className="h-12 bg-[#0d0d10]/80 backdrop-blur-xl border-b border-white/[0.06] flex items-center justify-between px-4 sticky top-0 z-50">
+        <div className="flex items-center gap-5">
+          <Link href="/dashboard" className="flex items-center gap-2.5 group">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7dd3fc] to-[#0ea5e9] flex items-center justify-center shadow-lg shadow-[#7dd3fc]/20">
+              <BarChart3 className="w-3.5 h-3.5 text-white" />
             </div>
-            Small <span className="text-yellow-400">Caps</span>
-            <Tooltip 
-              term="Small Caps" 
-              definition="Ações de empresas com menor capitalização de mercado (geralmente abaixo de R$ 5 bilhões). Oferecem maior potencial de crescimento, mas também mais risco e menor liquidez."
-            />
-          </h1>
-          <p className="text-white/40 text-lg font-['Inter']">Ações de empresas com menor capitalização da Bolsa</p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="liquid-card p-4 text-center">
-            <p className="text-white/40 text-sm font-['Inter']">Total Small Caps</p>
-            <p className="text-white text-2xl font-bold font-['Space_Grotesk']">{getSmallCaps().length}</p>
-          </div>
-          <div className="liquid-card p-4 text-center">
-            <p className="text-white/40 text-sm font-['Inter']">Maior DY</p>
-            <p className="text-emerald-400 text-2xl font-bold font-['Space_Grotesk']">
-              {Math.max(...getSmallCaps().map(a => a.dy || 0)).toFixed(1)}%
-            </p>
-          </div>
-          <div className="liquid-card p-4 text-center">
-            <p className="text-white/40 text-sm font-['Inter']">Menor P/L</p>
-            <p className="text-[#adc6ff] text-2xl font-bold font-['Space_Grotesk']">
-              {Math.min(...getSmallCaps().filter(a => (a.pl || 0) > 0).map(a => a.pl || 999)).toFixed(1)}x
-            </p>
-          </div>
-          <div className="liquid-card p-4 text-center">
-            <p className="text-white/40 text-sm font-['Inter']">Maior ROE</p>
-            <p className="text-purple-400 text-2xl font-bold font-['Space_Grotesk']">
-              {Math.max(...getSmallCaps().map(a => a.roe || 0)).toFixed(1)}%
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
-            <input
-              type="text"
-              placeholder="Buscar por nome ou ticker..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-800/30 border border-slate-700/50 text-white px-10 py-3 rounded-xl focus:ring-2 focus:ring-[#adc6ff] focus:border-transparent font-['Inter']"
-            />
-          </div>
+            <span className="font-display font-bold text-sm text-white tracking-tight">DYInvest</span>
+          </Link>
           
-          <div className="flex gap-2 flex-wrap">
-            <button
-              onClick={() => setFilter('all')}
-              className={cn(
-                "px-4 py-2 rounded-lg font-medium transition-all font-['Inter']",
-                filter === 'all' ? "bg-[#adc6ff] text-[#002e69]" : "bg-slate-800/30 text-white/60 hover:text-white border border-slate-700/50"
-              )}
-            >
-              Todos
-            </button>
-            {sectors.slice(0, 5).map(segment => (
-              <button
-                key={segment}
-                onClick={() => setFilter(segment)}
+          <nav className="hidden md:flex items-center gap-0.5">
+            {navItems.map((item) => (
+              <Link 
+                key={item.href}
+                href={item.href}
                 className={cn(
-                  "px-4 py-2 rounded-lg font-medium transition-all font-['Inter']",
-                  filter === segment ? "bg-[#adc6ff] text-[#002e69]" : "bg-slate-800/30 text-white/60 hover:text-white border border-slate-700/50"
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                  item.active 
+                    ? "text-white bg-white/[0.06]" 
+                    : "text-[#71717a] hover:text-white hover:bg-white/[0.03]"
                 )}
               >
-                {segment}
-              </button>
+                <item.icon className="w-3.5 h-3.5" />
+                {item.label}
+              </Link>
             ))}
-          </div>
+          </nav>
+        </div>
 
+        <div className="flex items-center gap-2">
+          <div className="relative group">
+            <Search className="w-3.5 h-3.5 text-[#52525b] absolute left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-[#7dd3fc] transition-colors" />
+            <input 
+              placeholder="Buscar..."
+              className="h-7 pl-8 pr-3 rounded-md bg-[#18181b] border border-white/[0.06] text-xs text-white placeholder:text-[#52525b] w-36 focus:w-48 transition-all focus:outline-none focus:border-[#7dd3fc]/30"
+            />
+          </div>
+          <button className="relative p-1.5 rounded-md hover:bg-white/[0.05] transition-colors">
+            <Bell className="w-4 h-4 text-[#52525b]" />
+            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-[#7dd3fc] rounded-full"></span>
+          </button>
+          <button className="w-7 h-7 rounded-full bg-gradient-to-br from-[#27272a] to-[#18181b] border border-white/[0.08] flex items-center justify-center text-xs font-medium text-[#a1a1aa]">
+            U
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content - Compact */}
+      <main className="p-4 max-w-[1600px] mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4 fade-item">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20">
+              <Star className="w-5 h-5 text-yellow-400" />
+            </div>
+            <div>
+              <h1 className="text-lg font-display font-semibold text-white tracking-tight">
+                Small <span className="text-yellow-400">Caps</span>
+              </h1>
+              <p className="text-[#52525b] text-xs">{smallCaps.length} ativos &lt; R$ 5B</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Row - Compact */}
+        <div className="grid grid-cols-4 gap-2 mb-4 fade-item">
+          <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5 text-center">
+            <p className="text-[#52525b] text-[9px] uppercase">Total</p>
+            <p className="text-white text-base font-semibold">{smallCaps.length}</p>
+          </div>
+          <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5 text-center">
+            <p className="text-[#52525b] text-[9px] uppercase">Maior DY</p>
+            <p className="text-emerald-400 text-base font-semibold">{Math.max(...smallCaps.map(a => a.dy || 0)).toFixed(1)}%</p>
+          </div>
+          <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5 text-center">
+            <p className="text-[#52525b] text-[9px] uppercase">Menor P/L</p>
+            <p className="text-[#7dd3fc] text-base font-semibold">{Math.min(...smallCaps.filter(a => (a.pl || 0) > 0).map(a => a.pl || 999)).toFixed(1)}x</p>
+          </div>
+          <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5 text-center">
+            <p className="text-[#52525b] text-[9px] uppercase">Maior ROE</p>
+            <p className="text-purple-400 text-base font-semibold">{Math.max(...smallCaps.map(a => a.roe || 0)).toFixed(1)}%</p>
+          </div>
+        </div>
+
+        {/* Search & Filters - Compact */}
+        <div className="flex flex-col md:flex-row gap-3 mb-4 fade-item">
+          <div className="relative flex-1">
+            <Search className="w-3.5 h-3.5 text-[#52525b] absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Buscar ticker..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-9 pr-3 py-2.5 bg-[#18181b] border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#52525b] focus:outline-none focus:border-[#7dd3fc]/30 transition-all"
+            />
+          </div>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="bg-slate-800/30 border border-slate-700/50 text-white px-4 py-2 rounded-lg font-['Inter']"
+            className="bg-[#18181b] border border-white/[0.06] text-white text-xs px-3 py-2.5 rounded-lg"
           >
             <option value="marketcap">Market Cap</option>
             <option value="dy">Dividend Yield</option>
@@ -153,108 +204,97 @@ export default function SmallCapsPage() {
           </select>
         </div>
 
-        <div className="liquid-card overflow-hidden">
-          <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-slate-800/30 text-xs text-white/40 font-['Inter'] font-medium">
+        <div className="flex flex-wrap gap-1.5 mb-4 fade-item">
+          <button
+            onClick={() => setFilter('all')}
+            className={cn(
+              "px-3 py-1.5 rounded-md text-[11px] font-medium transition-all",
+              filter === 'all' ? "bg-[#7dd3fc] text-[#0a0a0c]" : "bg-[#18181b] text-[#71717a] hover:text-white border border-white/[0.04]"
+            )}
+          >
+            Todos
+          </button>
+          {sectors.slice(0, 5).map(segment => (
+            <button
+              key={segment}
+              onClick={() => setFilter(segment)}
+              className={cn(
+                "px-3 py-1.5 rounded-md text-[11px] font-medium transition-all",
+                filter === segment ? "bg-[#7dd3fc] text-[#0a0a0c]" : "bg-[#18181b] text-[#71717a] hover:text-white border border-white/[0.04]"
+              )}
+            >
+              {segment}
+            </button>
+          ))}
+        </div>
+
+        {/* Table - Compact */}
+        <div className="bg-[#18181b] border border-white/[0.04] rounded-lg overflow-hidden fade-item">
+          <div className="grid grid-cols-12 gap-2 px-3 py-2 bg-[#27272a]/50 text-[9px] text-[#52525b] font-medium uppercase">
             <div className="col-span-2">Ativo</div>
             <div className="col-span-1 text-center">Setor</div>
             <div className="col-span-1 text-right">Preço</div>
-            <div className="col-span-1 text-right">Var %</div>
+            <div className="col-span-1 text-right">Var</div>
             <div className="col-span-1 text-right">P/L</div>
-            <div className="col-span-1 text-right">P/VP</div>
             <div className="col-span-1 text-right">DY</div>
             <div className="col-span-1 text-right">ROE</div>
-            <div className="col-span-1 text-right">Mkt Cap</div>
-            <div className="col-span-1 text-center">Análise</div>
+            <div className="col-span-2 text-right">Mkt Cap</div>
           </div>
 
-          <div className="divide-y divide-slate-700/30">
-            {getFilteredData().slice(0, 20).map((item) => (
-              <div 
+          <div className="divide-y divide-white/[0.02]">
+            {getFilteredData().slice(0, 15).map((item, i) => (
+              <Link 
                 key={item.symbol} 
-                className="grid grid-cols-12 gap-2 px-4 py-3 hover:bg-slate-800/20 transition-colors items-center"
+                href={`/ativo/${item.symbol}`}
+                className="grid grid-cols-12 gap-2 px-3 py-2.5 hover:bg-white/[0.02] transition-colors items-center"
               >
-                <div className="col-span-2">
-                  <div className="flex items-center gap-2">
-                    <div className={cn(
-                      "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold font-['Space_Grotesk']",
-                      item.changePercent >= 0 ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
-                    )}>
-                      {item.symbol.slice(0, 2)}
-                    </div>
-                    <div>
-                      <p className="text-white font-medium font-['Space_Grotesk']">{item.symbol}</p>
-                      <p className="text-white/40 text-xs font-['Inter']">{item.name}</p>
-                    </div>
+                <div className="col-span-2 flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-md bg-[#27272a] flex items-center justify-center text-[9px] font-bold text-[#71717a]">
+                    {item.symbol.slice(0,2)}
+                  </div>
+                  <div>
+                    <p className="text-white text-xs font-semibold">{item.symbol}</p>
+                    <p className="text-[#52525b] text-[9px] truncate max-w-[80px]">{item.name}</p>
                   </div>
                 </div>
-
                 <div className="col-span-1 text-center">
-                  <span className="text-white/40 text-xs font-['Inter']">{item.sector || '-'}</span>
+                  <span className="text-[#52525b] text-[9px]">{item.sector}</span>
                 </div>
-
                 <div className="col-span-1 text-right">
-                  <span className="text-white font-['Space_Grotesk']">R$ {item.price.toFixed(2)}</span>
+                  <p className="text-white text-xs font-mono">R$ {item.price?.toFixed(2) || '--'}</p>
                 </div>
-
                 <div className="col-span-1 text-right">
-                  <span className={cn("font-medium font-['Space_Grotesk']", item.changePercent >= 0 ? "text-emerald-400" : "text-red-400")}>
-                    {item.changePercent >= 0 ? '+' : ''}{item.changePercent.toFixed(2)}%
+                  <p className={cn(
+                    "text-xs font-mono font-medium flex items-center justify-end gap-0.5",
+                    (item.changePercent || 0) >= 0 ? "text-green-400/80" : "text-red-400/80"
+                  )}>
+                    {(item.changePercent || 0) >= 0 ? (
+                      <ArrowUpRight className="w-2.5 h-2.5" />
+                    ) : (
+                      <ArrowDownRight className="w-2.5 h-2.5" />
+                    )}
+                    {(item.changePercent || 0) >= 0 ? '+' : ''}{(item.changePercent || 0).toFixed(2)}%
+                  </p>
+                </div>
+                <div className="col-span-1 text-right">
+                  <span className={cn(
+                    "text-xs font-mono",
+                    (item.pl || 0) > 0 && (item.pl || 0) < 10 ? "text-emerald-400" : "text-white/60"
+                  )}>
+                    {item.pl?.toFixed(1) || '-'}x
                   </span>
                 </div>
-
                 <div className="col-span-1 text-right">
-                  <span className={cn("text-white font-['Space_Grotesk']", (item.pl || 0) <= 0 && "text-red-400")}>
-                    {item.pl ? item.pl.toFixed(1) + 'x' : '-'}
-                  </span>
+                  <span className="text-yellow-400 text-xs font-mono">{item.dy?.toFixed(1) || '-'}%</span>
                 </div>
-
                 <div className="col-span-1 text-right">
-                  <span className="text-white font-['Space_Grotesk']">{item.pvp ? item.pvp.toFixed(2) + 'x' : '-'}</span>
+                  <span className="text-purple-400 text-xs font-mono">{item.roe?.toFixed(1) || '-'}%</span>
                 </div>
-
-                <div className="col-span-1 text-right">
-                  <span className="text-emerald-400 font-['Space_Grotesk']">{item.dy ? item.dy.toFixed(2) + '%' : '-'}</span>
+                <div className="col-span-2 text-right">
+                  <span className="text-[#52525b] text-[10px] font-mono">{formatMarketCap(item.valorMercado)}</span>
                 </div>
-
-                <div className="col-span-1 text-right">
-                  <span className="text-[#adc6ff] font-['Space_Grotesk']">{item.roe ? item.roe.toFixed(1) + '%' : '-'}</span>
-                </div>
-
-                <div className="col-span-1 text-right">
-                  <span className="text-yellow-400 font-['Space_Grotesk']">{formatMarketCap(item.valorMercado)}</span>
-                </div>
-
-                <div className="col-span-1 text-center">
-                  <Link 
-                    href={`/ativo/${item.symbol}`}
-                    className="text-[#adc6ff] hover:text-[#adc6ff]/70 text-xs flex items-center justify-center gap-1 font-['Inter']"
-                  >
-                    Ver <ArrowRight className="w-3 h-3" />
-                  </Link>
-                </div>
-              </div>
+              </Link>
             ))}
-          </div>
-        </div>
-
-        {getFilteredData().length === 0 && (
-          <div className="text-center py-12 liquid-card">
-            <BarChart3 className="w-12 h-12 text-white/20 mx-auto mb-4" />
-            <p className="text-white/40 font-['Inter']">Nenhuma small cap encontrada</p>
-          </div>
-        )}
-
-        <div className="mt-8 p-6 liquid-card border-[#adc6ff]/20">
-          <div className="flex items-start gap-4">
-            <Target className="w-5 h-5 text-[#adc6ff] mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-white/70 text-sm font-['Inter']">
-                <strong className="text-[#adc6ff]">O que são Small Caps?</strong> Ações de empresas menores com alto potencial de crescimento, mas também maior risco.
-              </p>
-              <p className="text-white/40 text-sm mt-2 font-['Inter']">
-                <strong className="text-yellow-400">Dica:</strong> São recomendadas para investidores com perfil arrojado e horizonte de longo prazo.
-              </p>
-            </div>
           </div>
         </div>
       </main>

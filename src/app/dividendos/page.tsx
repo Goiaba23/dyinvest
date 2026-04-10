@@ -1,19 +1,28 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { 
   Calendar, 
   DollarSign, 
   TrendingUp, 
-  Search, 
-  Download,
-  Info,
-  History,
+  Search,
   Calculator,
-  ShieldCheck
+  BarChart3,
+  Wallet,
+  FileText,
+  Home,
+  Bell,
+  Layers,
+  ChevronRight,
+  TrendingDown,
+  History,
+  ShieldCheck,
+  Info
 } from 'lucide-react';
-import { cn } from "@/lib/utils";
 import { 
   projectDividends, 
   calculateDividendStats, 
@@ -23,7 +32,16 @@ import {
 import { PayoutTimeline } from '@/components/dividendos/payout-timeline';
 import { SnowballWidget } from '@/components/dividendos/snowball-widget';
 
+const navItems = [
+  { href: '/dashboard', icon: Home, label: 'Início', active: false },
+  { href: '/acoes', icon: BarChart3, label: 'Ações', active: false },
+  { href: '/fiis', icon: Layers, label: 'FIIs', active: false },
+  { href: '/carteira', icon: Wallet, label: 'Carteira', active: false },
+  { href: '/noticias', icon: FileText, label: 'News', active: false },
+];
+
 export default function DividendosPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [portfolio, setPortfolio] = useState<any[]>([]);
   const [events, setEvents] = useState<DividendEvent[]>([]);
   const [stats, setStats] = useState<DividendSummary | null>(null);
@@ -48,135 +66,238 @@ export default function DividendosPage() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (containerRef.current) {
+      const ctx = gsap.context(() => {
+        gsap.from('.fade-item', {
+          y: 15,
+          opacity: 0,
+          duration: 0.4,
+          stagger: 0.03,
+          ease: 'power2.out'
+        });
+      }, containerRef);
+      return () => ctx.revert();
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#050505]">
-      <main className="pt-6 pb-12 px-4 sm:px-6 lg:px-8 max-w-[1800px] mx-auto">
-        <div className="mb-8 animate-fade-in-up">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div ref={containerRef} className="min-h-screen bg-[#0a0a0c]">
+      {/* Top Navigation */}
+      <header className="h-12 bg-[#0d0d10]/80 backdrop-blur-xl border-b border-white/[0.06] flex items-center justify-between px-4 sticky top-0 z-50">
+        <div className="flex items-center gap-5">
+          <Link href="/dashboard" className="flex items-center gap-2.5 group">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7dd3fc] to-[#0ea5e9] flex items-center justify-center shadow-lg shadow-[#7dd3fc]/20">
+              <BarChart3 className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="font-display font-bold text-sm text-white tracking-tight">DYInvest</span>
+          </Link>
+          
+          <nav className="hidden md:flex items-center gap-0.5">
+            {navItems.map((item) => (
+              <Link 
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                  item.active 
+                    ? "text-white bg-white/[0.06]" 
+                    : "text-[#71717a] hover:text-white hover:bg-white/[0.03]"
+                )}
+              >
+                <item.icon className="w-3.5 h-3.5" />
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="relative group">
+            <Search className="w-3.5 h-3.5 text-[#52525b] absolute left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-[#7dd3fc] transition-colors" />
+            <input 
+              placeholder="Buscar..."
+              className="h-7 pl-8 pr-3 rounded-md bg-[#18181b] border border-white/[0.06] text-xs text-white placeholder:text-[#52525b] w-36 focus:w-48 transition-all focus:outline-none focus:border-[#7dd3fc]/30"
+            />
+          </div>
+          <button className="relative p-1.5 rounded-md hover:bg-white/[0.05] transition-colors">
+            <Bell className="w-4 h-4 text-[#52525b]" />
+            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-[#7dd3fc] rounded-full"></span>
+          </button>
+          <button className="w-7 h-7 rounded-full bg-gradient-to-br from-[#27272a] to-[#18181b] border border-white/[0.08] flex items-center justify-center text-xs font-medium text-[#a1a1aa]">
+            U
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content - Compact */}
+      <main className="p-4 max-w-[1600px] mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4 fade-item">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+              <Calendar className="w-5 h-5 text-emerald-400" />
+            </div>
             <div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center gap-3 font-['Space_Grotesk']">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                  <Calendar className="w-6 h-6 text-emerald-400" />
-                </div>
+              <h1 className="text-lg font-display font-semibold text-white tracking-tight">
                 Calendário de <span className="text-emerald-400">Dividendos</span>
               </h1>
-              <p className="text-white/40 text-lg font-['Inter']">Analise suas próximas datas-com e projeções de rendimentos</p>
+              <p className="text-[#52525b] text-xs">Projeções e eventos de carteira</p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex p-1 bg-slate-800/30 rounded-xl border border-slate-700/50">
-                <button 
-                  onClick={() => setMethod('bazin')}
-                  className={cn(
-                    "px-4 py-2 rounded-lg text-xs font-bold transition-all",
-                    method === 'bazin' ? "bg-[#adc6ff] text-[#002e69]" : "text-slate-400 hover:text-white"
-                  )}
-                >
-                  MÉTODO BAZIN
-                </button>
-                <button 
-                  onClick={() => setMethod('historical')}
-                  className={cn(
-                    "px-4 py-2 rounded-lg text-xs font-bold transition-all",
-                    method === 'historical' ? "bg-purple-500/20 text-purple-400 border border-purple-500/30" : "text-slate-400 hover:text-white"
-                  )}
-                >
-                  IA HISTÓRICA
-                </button>
-              </div>
-            </div>
+          </div>
+          <div className="flex items-center gap-1.5 p-1 bg-[#18181b] rounded-lg border border-white/[0.04]">
+            <button 
+              onClick={() => setMethod('bazin')}
+              className={cn(
+                "px-2.5 py-1 rounded text-[10px] font-medium transition-all",
+                method === 'bazin' ? "bg-[#7dd3fc] text-[#0a0a0c]" : "text-[#71717a] hover:text-white"
+              )}
+            >
+              Bazin
+            </button>
+            <button 
+              onClick={() => setMethod('historical')}
+              className={cn(
+                "px-2.5 py-1 rounded text-[10px] font-medium transition-all",
+                method === 'historical' ? "bg-purple-500 text-white" : "text-[#71717a] hover:text-white"
+              )}
+            >
+              Histórico
+            </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {[
-            { label: 'Recebido (Mês)', value: `R$ ${stats?.totalMes.toFixed(2) || '0.00'}`, icon: DollarSign, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-            { label: 'Projeção Anual', value: `R$ ${stats?.totalAnual.toFixed(2) || '0.00'}`, icon: TrendingUp, color: 'text-[#adc6ff]', bg: 'bg-[#adc6ff]/10' },
-            { label: 'Yield on Cost Médio', value: `${stats?.yieldOnCostMedia.toFixed(2) || '0.00'}%`, icon: Calculator, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-            { label: 'Próxima Data Com', value: '25/04', icon: Calendar, color: 'text-orange-400', bg: 'bg-orange-500/10' },
-          ].map((stat, i) => (
-            <div key={i} className="liquid-card p-6 flex items-center gap-4">
-              <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center border", stat.bg, "border-white/10")}>
-                <stat.icon className={cn("w-6 h-6", stat.color)} />
-              </div>
-              <div>
-                <p className="text-xs text-white/40 font-['Inter'] uppercase tracking-wider">{stat.label}</p>
-                <p className="text-xl font-bold text-white font-['Space_Grotesk'] mt-0.5">{stat.value}</p>
-              </div>
+        {/* Stats Row - Compact */}
+        <div className="grid grid-cols-4 gap-2 mb-4 fade-item">
+          <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5">
+            <div className="flex items-center gap-2 mb-1">
+              <DollarSign className="w-3 h-3 text-emerald-400" />
+              <span className="text-[#52525b] text-[9px] uppercase">Recebido Mês</span>
             </div>
-          ))}
+            <p className="text-white text-base font-semibold">{stats?.totalMes ? `R$ ${stats.totalMes.toFixed(2)}` : 'R$ 0.00'}</p>
+          </div>
+          <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5">
+            <div className="flex items-center gap-2 mb-1">
+              <TrendingUp className="w-3 h-3 text-[#7dd3fc]" />
+              <span className="text-[#52525b] text-[9px] uppercase">Projeção Anual</span>
+            </div>
+            <p className="text-white text-base font-semibold">{stats?.totalAnual ? `R$ ${stats.totalAnual.toFixed(0)}` : 'R$ 0'}</p>
+          </div>
+          <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5">
+            <div className="flex items-center gap-2 mb-1">
+              <Calculator className="w-3 h-3 text-purple-400" />
+              <span className="text-[#52525b] text-[9px] uppercase">YOC Médio</span>
+            </div>
+            <p className="text-white text-base font-semibold">{stats?.yieldOnCostMedia.toFixed(2) || '0.00'}%</p>
+          </div>
+          <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5">
+            <div className="flex items-center gap-2 mb-1">
+              <Calendar className="w-3 h-3 text-orange-400" />
+              <span className="text-[#52525b] text-[9px] uppercase">Próxima Data-Com</span>
+            </div>
+            <p className="text-white text-base font-semibold">25/04</p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="liquid-card p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-white font-bold text-lg flex items-center gap-3 font-['Space_Grotesk']">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                    <History className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  Eventos de Carteira
-                </h3>
-                <div className="flex gap-2">
-                  <button className="px-3 py-1 rounded-lg text-xs text-slate-500 hover:text-white transition-colors">Jan</button>
-                  <button className="px-3 py-1 rounded-lg text-xs text-slate-500 hover:text-white transition-colors">Fev</button>
-                  <button className="px-3 py-1 rounded-lg text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Abr</button>
-                </div>
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          {/* Events List - 2 columns */}
+          <div className="lg:col-span-2 space-y-2">
+            <div className="flex items-center justify-between fade-item">
+              <div className="flex items-center gap-2">
+                <History className="w-4 h-4 text-emerald-400" />
+                <span className="text-[#71717a] text-xs font-medium">Eventos de Carteira</span>
               </div>
-              <div className="space-y-4">
-                {events.length > 0 ? events.map(event => (
-                  <PayoutTimeline key={event.id} event={event} />
-                )) : (
-                  <div className="py-20 text-center space-y-4">
-                    <div className="w-16 h-16 rounded-full bg-slate-800/50 border border-slate-700/50 flex items-center justify-center mx-auto">
-                      <Search className="w-8 h-8 text-white/30" />
+              <div className="flex gap-1">
+                {['Jan', 'Fev', 'Abr'].map(m => (
+                  <button 
+                    key={m}
+                    className={cn(
+                      "px-2 py-0.5 rounded text-[10px] font-medium",
+                      m === 'Apr' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "text-[#52525b] hover:text-white"
+                    )}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            {loading ? (
+              <div className="text-center py-8 bg-[#18181b] border border-white/[0.04] rounded-lg">
+                <div className="w-6 h-6 rounded-full border-2 border-[#7dd3fc]/30 border-t-[#7dd3fc] animate-spin mx-auto mb-2" />
+                <p className="text-[#52525b] text-xs">Carregando...</p>
+              </div>
+            ) : events.length > 0 ? (
+              events.slice(0, 8).map((event, i) => (
+                <div 
+                  key={event.id}
+                  className="fade-item bg-[#18181b] border border-white/[0.04] rounded-lg p-3 hover:bg-[#1f1f23] hover:border-emerald-500/20 transition-all cursor-pointer"
+                  style={{ animationDelay: `${i * 20}ms` }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={cn(
+                        "w-8 h-8 rounded-lg flex items-center justify-center border",
+                        event.type === 'JCP' ? "bg-emerald-500/10 border-emerald-500/20" : "bg-purple-500/10 border-purple-500/20"
+                      )}>
+                        {event.type === 'JCP' ? (
+                          <DollarSign className="w-4 h-4 text-emerald-400" />
+                        ) : (
+                          <TrendingUp className="w-4 h-4 text-purple-400" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-white text-sm font-semibold">{event.symbol}</p>
+                        <p className="text-[#52525b] text-[10px]">{event.type} • {event.dataCom}</p>
+                      </div>
                     </div>
-                    <p className="text-white/40 font-['Inter']">Nenhum provento identificado para sua carteira atual.</p>
-                    <Button className="bg-[#adc6ff] hover:brightness-110 text-[#002e69] border-0">
-                      Povoar Carteira
-                    </Button>
+                    <div className="text-right">
+                      <p className="text-emerald-400 text-sm font-semibold">R$ {event.amount.toFixed(2)}</p>
+                      <p className="text-[#52525b] text-[10px]">{event.dataPagamento}</p>
+                    </div>
                   </div>
-                )}
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 bg-[#18181b] border border-white/[0.04] rounded-lg">
+                <Search className="w-8 h-8 text-[#52525b] mx-auto mb-2" />
+                <p className="text-[#71717a] text-sm mb-3">Nenhum provento encontrado</p>
+                <Button className="bg-[#7dd3fc] text-[#0a0a0c] text-xs h-8 px-4">Povoar Carteira</Button>
               </div>
-            </div>
+            )}
           </div>
 
-          <div className="space-y-6">
+          {/* Sidebar */}
+          <div className="space-y-2">
             <SnowballWidget 
               canBuyShares={stats?.snowballEffect.canBuyShares || 0}
               nextIncrease={stats?.snowballEffect.nextDividendIncrease || 0}
               totalMonthly={stats?.totalMes || 0}
             />
 
-            <div className="liquid-card p-6 bg-gradient-to-br from-slate-900/50 to-red-950/10 border-red-500/20">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center border border-red-500/20">
-                  <ShieldCheck className="w-4 h-4 text-red-400" />
-                </div>
-                <h3 className="text-white font-bold font-['Space_Grotesk']">Hub de Auditoria</h3>
+            <div className="bg-[#18181b] border border-red-500/10 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <ShieldCheck className="w-4 h-4 text-red-400" />
+                <span className="text-white text-xs font-medium">Auditoria</span>
               </div>
-              <p className="text-xs text-white/50 mb-6 leading-relaxed font-['Inter']">
-                Sincronização com B3 disparou um alerta: divergência de quantidade para <strong className="text-white">PETR4</strong>.
-              </p>
-              <div className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 space-y-3 mb-6">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-white/40">Dado Manual</span>
-                  <span className="text-white font-bold">150 cotas</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-red-400">Dado B3</span>
-                  <span className="text-red-400 font-bold">120 cotas</span>
-                </div>
+              <p className="text-[#52525b] text-[10px] mb-2">Divergência detectada para PETR4</p>
+              <div className="flex justify-between text-[10px] mb-2">
+                <span className="text-white/40">Manual</span>
+                <span className="text-white">150 cotas</span>
               </div>
-              <Button className="w-full bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold h-11">
-                CORRIGIR PELA B3
-              </Button>
+              <div className="flex justify-between text-[10px] mb-3">
+                <span className="text-red-400">B3</span>
+                <span className="text-red-400">120 cotas</span>
+              </div>
+              <Button className="w-full bg-emerald-500 text-white text-[10px] h-8">Corrigir</Button>
             </div>
 
-            <div className="liquid-card p-5 border-[#adc6ff]/10">
-              <div className="flex items-start gap-4">
-                <Info className="w-5 h-5 text-[#adc6ff] flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-white/40 leading-relaxed font-['Inter'] italic">
-                  Sabia? O <strong className="text-white/60">Método Bazin</strong> foca em ações que pagam ao menos 6% ao ano sobre o patrimônio líquido, filtrando o "joio do trigo" em dividendos.
+            <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5">
+              <div className="flex items-start gap-2">
+                <Info className="w-3.5 h-3.5 text-[#7dd3fc] flex-shrink-0 mt-0.5" />
+                <p className="text-[#52525b] text-[10px] leading-tight">
+                  <strong className="text-white/60">Método Bazin</strong>: foca em ações com +6% de yield sobre patrimônio.
                 </p>
               </div>
             </div>

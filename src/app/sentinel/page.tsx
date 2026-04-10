@@ -1,29 +1,60 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { 
   ShieldCheck, 
   Activity, 
   Stethoscope, 
   AlertTriangle, 
-  CheckCircle2, 
   TrendingUp, 
-  PieChart, 
-  ArrowRight,
+  PieChart,
   Zap,
   LayoutGrid,
-  Heart
+  Heart,
+  Search,
+  BarChart3,
+  Wallet,
+  FileText,
+  Home,
+  Bell,
+  Layers
 } from 'lucide-react';
-import { cn } from "@/lib/utils";
 import { syncPortfolio, PortfolioItem } from '@/lib/supabase';
 import { diagnosePortfolio, HealthReport } from '@/lib/ia/sentinel';
 
+const navItems = [
+  { href: '/dashboard', icon: Home, label: 'Início', active: false },
+  { href: '/acoes', icon: BarChart3, label: 'Ações', active: false },
+  { href: '/fiis', icon: Layers, label: 'FIIs', active: false },
+  { href: '/carteira', icon: Wallet, label: 'Carteira', active: false },
+  { href: '/noticias', icon: FileText, label: 'News', active: false },
+];
+
 export default function SentinelPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [report, setReport] = useState<HealthReport | null>(null);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const ctx = gsap.context(() => {
+        gsap.from('.fade-item', {
+          y: 15,
+          opacity: 0,
+          duration: 0.4,
+          stagger: 0.05,
+          ease: 'power2.out'
+        });
+      }, containerRef);
+      return () => ctx.revert();
+    }
+  }, []);
 
   const startScan = async () => {
     setScanning(true);
@@ -42,183 +73,209 @@ export default function SentinelPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505]">
-      <main className="pt-6 pb-12 px-4 sm:px-6 lg:px-8 max-w-[1800px] mx-auto">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 mb-10">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="bg-emerald-500/10 text-emerald-400 text-[10px] px-3 py-1 rounded-full border border-emerald-500/20 font-bold uppercase tracking-widest">
-                Exclusivo Elite
-              </span>
-              <span className="text-white/30 text-xs">+4.2k analises hoje</span>
+    <div ref={containerRef} className="min-h-screen bg-[#0a0a0c]">
+      {/* Top Navigation */}
+      <header className="h-12 bg-[#0d0d10]/80 backdrop-blur-xl border-b border-white/[0.06] flex items-center justify-between px-4 sticky top-0 z-50">
+        <div className="flex items-center gap-5">
+          <Link href="/dashboard" className="flex items-center gap-2.5 group">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7dd3fc] to-[#0ea5e9] flex items-center justify-center shadow-lg shadow-[#7dd3fc]/20">
+              <BarChart3 className="w-3.5 h-3.5 text-white" />
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-white flex items-center gap-4 font-['Space_Grotesk']">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                <Stethoscope className="w-6 h-6 text-emerald-400" />
-              </div>
-              Sentinela <span className="text-emerald-400">Alpha</span>
-            </h1>
-            <p className="text-white/40 text-lg max-w-2xl font-['Inter']">
-              Realize um check-up clínico dos seus investimentos. Nosso algoritmo processa <strong className="text-white">12 pilares</strong> fundamentais para garantir uma carteira resiliente.
-            </p>
-          </div>
+            <span className="font-display font-bold text-sm text-white tracking-tight">DYInvest</span>
+          </Link>
           
-          <div className="relative">
-            <Button 
-              onClick={startScan}
-              disabled={scanning}
-              className={cn(
-                "h-16 px-10 rounded-2xl font-bold text-lg transition-all relative overflow-hidden",
-                scanning ? "bg-slate-800 text-slate-500" : "bg-emerald-500 hover:bg-emerald-400 text-white border-0"
-              )}
-            >
-              <div className="flex items-center gap-4 relative z-10">
-                <Zap className={cn("w-6 h-6", scanning ? "animate-spin" : "animate-pulse")} />
-                {scanning ? "PROCESSANDO..." : "INICIAR CHECK-UP"}
-              </div>
-            </Button>
-            <p className="text-center mt-4 text-[10px] text-white/30 uppercase font-['Inter'] tracking-widest">Tempo estimado: 3 segundos</p>
+          <nav className="hidden md:flex items-center gap-0.5">
+            {navItems.map((item) => (
+              <Link 
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                  item.active 
+                    ? "text-white bg-white/[0.06]" 
+                    : "text-[#71717a] hover:text-white hover:bg-white/[0.03]"
+                )}
+              >
+                <item.icon className="w-3.5 h-3.5" />
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="relative group">
+            <Search className="w-3.5 h-3.5 text-[#52525b] absolute left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-[#7dd3fc] transition-colors" />
+            <input 
+              placeholder="Buscar..."
+              className="h-7 pl-8 pr-3 rounded-md bg-[#18181b] border border-white/[0.06] text-xs text-white placeholder:text-[#52525b] w-36 focus:w-48 transition-all focus:outline-none focus:border-[#7dd3fc]/30"
+            />
           </div>
+          <button className="relative p-1.5 rounded-md hover:bg-white/[0.05] transition-colors">
+            <Bell className="w-4 h-4 text-[#52525b]" />
+            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-[#7dd3fc] rounded-full"></span>
+          </button>
+          <button className="w-7 h-7 rounded-full bg-gradient-to-br from-[#27272a] to-[#18181b] border border-white/[0.08] flex items-center justify-center text-xs font-medium text-[#a1a1aa]">
+            U
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content - Compact */}
+      <main className="p-4 max-w-[1600px] mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4 fade-item">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+              <Stethoscope className="w-5 h-5 text-emerald-400" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="bg-emerald-500/10 text-emerald-400 text-[9px] px-2 py-0.5 rounded border border-emerald-500/20 font-bold uppercase">Elite</span>
+              </div>
+              <h1 className="text-lg font-display font-semibold text-white tracking-tight">
+                Sentinela <span className="text-emerald-400">Alpha</span>
+              </h1>
+              <p className="text-[#52525b] text-xs">12 pilares de diagnóstico</p>
+            </div>
+          </div>
+          <Button 
+            onClick={startScan}
+            disabled={scanning}
+            className={cn(
+              "h-9 px-5 rounded-lg text-xs font-medium transition-all",
+              scanning ? "bg-[#18181b] text-[#52525b]" : "bg-emerald-500 hover:bg-emerald-400 text-white"
+            )}
+          >
+            <Zap className={cn("w-3.5 h-3.5 mr-1.5", scanning && "animate-spin")} />
+            {scanning ? "Processando..." : "Iniciar Check-up"}
+          </Button>
         </div>
 
         {!report && !scanning && (
-          <div className="py-24 text-center space-y-8 bg-slate-800/20 rounded-3xl border border-dashed border-slate-700/50">
-            <div className="w-32 h-32 rounded-full bg-slate-800/50 border border-slate-700/50 flex items-center justify-center mx-auto relative">
-               <div className="absolute inset-0 rounded-full bg-emerald-500/5 animate-ping" />
-               <Heart className="w-12 h-12 text-white/20" />
+          <div className="py-16 text-center bg-[#18181b] border border-white/[0.04] rounded-lg fade-item">
+            <div className="w-16 h-16 rounded-full bg-[#27272a] border border-white/[0.06] flex items-center justify-center mx-auto mb-4 relative">
+              <Heart className="w-8 h-8 text-white/20" />
             </div>
-            <div className="space-y-3">
-              <h2 className="text-2xl font-bold text-white font-['Space_Grotesk']">Pronto para o diagnóstico?</h2>
-              <p className="text-white/40 max-w-sm mx-auto font-['Inter']">Sua carteira precisa de monitoramento constante para evitar perdas silenciosas.</p>
-            </div>
+            <h2 className="text-white text-base font-medium mb-2">Pronto para diagnóstico?</h2>
+            <p className="text-[#52525b] text-xs max-w-sm mx-auto">Sua carteira precisa de monitoramento constante para evitar perdas silenciosas.</p>
           </div>
         )}
 
         {scanning && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 animate-pulse">
             {[1,2,3,4].map(i => (
-              <div key={i} className="h-40 bg-slate-800/30 rounded-2xl border border-slate-700/50" />
+              <div key={i} className="h-20 bg-[#18181b] border border-white/[0.04] rounded-lg" />
             ))}
           </div>
         )}
 
         {report && (
-          <div className={cn(
-             "space-y-10 transition-all duration-1000",
-             loading ? "opacity-0 translate-y-10" : "opacity-100 translate-y-0"
-          )}>
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-               <div className="lg:col-span-2 liquid-card flex items-center gap-8 p-8">
-                  <div className="relative w-32 h-32 flex-shrink-0">
-                     <svg className="w-full h-full -rotate-90">
-                        <circle cx="64" cy="64" r="56" fill="none" stroke="#1e293b" strokeWidth="10" />
-                        <circle 
-                           cx="64" cy="64" r="56" fill="none" 
-                           stroke="url(#emeraldGrad)" strokeWidth="10" 
-                           strokeDasharray={351.86}
-                           strokeDashoffset={351.86 * (1 - report.overallScore / 100)}
-                           strokeLinecap="round"
-                        />
-                        <defs>
-                          <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#10b981" />
-                            <stop offset="100%" stopColor="#34d399" />
-                          </linearGradient>
-                        </defs>
-                     </svg>
-                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-4xl font-bold text-white font-['Space_Grotesk'] leading-none">{report.overallScore}</span>
-                        <span className="text-[10px] text-white/40 font-['Inter'] uppercase">Pontos</span>
-                     </div>
+          <div className="space-y-3">
+            {/* Score Card */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 fade-item">
+              <div className="lg:col-span-2 bg-[#18181b] border border-white/[0.04] rounded-lg p-4 flex items-center gap-4">
+                <div className="relative w-16 h-16 flex-shrink-0">
+                  <svg className="w-full h-full -rotate-90">
+                    <circle cx="32" cy="32" r="28" fill="none" stroke="#27272a" strokeWidth="4" />
+                    <circle 
+                      cx="32" cy="32" r="28" fill="none" 
+                      stroke="url(#emeraldGrad)" strokeWidth="4" 
+                      strokeDasharray={175.93}
+                      strokeDashoffset={175.93 * (1 - report.overallScore / 100)}
+                      strokeLinecap="round"
+                    />
+                    <defs>
+                      <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#34d399" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-lg font-bold text-white">{report.overallScore}</span>
                   </div>
-                  <div className="space-y-4">
-                     <div>
-                        <h3 className="text-xl font-bold text-white font-['Space_Grotesk']">{report.status === 'Elite' ? 'IMUNIDADE ELITE' : 'SAÚDE ESTÁVEL'}</h3>
-                        <p className="text-white/40 text-sm mt-1 font-['Inter']">Sua carteira está entre as TOP 5% mais equilibradas.</p>
-                     </div>
-                     <div className="flex gap-2">
-                       <span className="bg-emerald-500/10 text-emerald-400 text-[10px] px-3 py-1 rounded-lg border border-emerald-500/20 font-bold uppercase">Risco Baixo</span>
-                       <span className="bg-[#adc6ff]/10 text-[#adc6ff] text-[10px] px-3 py-1 rounded-lg border border-[#adc6ff]/20 font-bold uppercase">Long Term</span>
-                     </div>
+                </div>
+                <div>
+                  <h3 className="text-white text-sm font-semibold">{report.status === 'Elite' ? 'IMUNIDADE ELITE' : 'SAÚDE ESTÁVEL'}</h3>
+                  <p className="text-[#52525b] text-[10px]">Carteira entre as TOP 5%</p>
+                  <div className="flex gap-1.5 mt-2">
+                    <span className="bg-emerald-500/10 text-emerald-400 text-[9px] px-2 py-0.5 rounded border border-emerald-500/20">Risco Baixo</span>
+                    <span className="bg-[#7dd3fc]/10 text-[#7dd3fc] text-[9px] px-2 py-0.5 rounded border border-[#7dd3fc]/20">Long Term</span>
                   </div>
-               </div>
+                </div>
+              </div>
 
-               <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {report.prescriptions.slice(0, 2).map((p, i) => (
-                    <div key={i} className="liquid-card p-5 flex flex-col justify-between">
-                       <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-3">
-                          <Activity className="w-5 h-5 text-emerald-400" />
-                       </div>
-                       <p className="text-sm text-white/70 leading-relaxed font-['Inter']">{p}</p>
-                    </div>
-                  ))}
-               </div>
+              <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-3">
+                <Activity className="w-4 h-4 text-emerald-400 mb-2" />
+                <p className="text-[#52525b] text-[10px] mb-1">Prescrição 1</p>
+                <p className="text-white text-[10px] line-clamp-2">{report.prescriptions[0]}</p>
+              </div>
+              <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-3">
+                <Activity className="w-4 h-4 text-emerald-400 mb-2" />
+                <p className="text-[#52525b] text-[10px] mb-1">Prescrição 2</p>
+                <p className="text-white text-[10px] line-clamp-2">{report.prescriptions[1]}</p>
+              </div>
             </div>
 
-            <div className="space-y-6">
-               <h3 className="text-xl font-bold text-white flex items-center gap-3 font-['Space_Grotesk']">
-                  <LayoutGrid className="w-5 h-5 text-[#adc6ff]" />
-                  Os 12 Pilares do Diagnóstico
-               </h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {report.pillars.slice(0, 8).map((pillar, i) => (
-                    <div key={i} className="liquid-card p-5 flex flex-col gap-3 group hover:bg-slate-800/20 transition-all">
-                       <div className="flex justify-between items-start">
-                          <p className="text-xs text-white/40 font-['Inter'] uppercase tracking-wider">{pillar.name}</p>
-                          <div className={cn(
-                            "w-2 h-2 rounded-full",
-                            pillar.score > 80 ? "bg-emerald-500" : (pillar.score > 60 ? "bg-[#adc6ff]" : "bg-red-500")
-                          )} />
-                       </div>
-                       <p className="text-2xl font-bold text-white font-['Space_Grotesk']">{pillar.score}/100</p>
-                       <div className="w-full h-1 bg-slate-700/50 rounded-full overflow-hidden">
-                          <div 
-                            className={cn(
-                              "h-full transition-all duration-1000",
-                              pillar.score > 80 ? "bg-emerald-500" : (pillar.score > 60 ? "bg-[#adc6ff]" : "bg-red-500")
-                            )} 
-                            style={{ width: `${pillar.score}%` }} 
-                          />
-                       </div>
-                       <p className="text-[10px] text-white/30 leading-tight">{pillar.description}</p>
+            {/* Pillars */}
+            <div className="fade-item">
+              <div className="flex items-center gap-2 mb-2">
+                <LayoutGrid className="w-4 h-4 text-[#7dd3fc]" />
+                <span className="text-[#71717a] text-xs font-medium">12 Pilares</span>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                {report.pillars.slice(0, 6).map((pillar, i) => (
+                  <div key={i} className="bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5">
+                    <div className="flex justify-between items-start mb-1.5">
+                      <span className="text-[#52525b] text-[9px] uppercase truncate">{pillar.name}</span>
+                      <div className={cn(
+                        "w-1.5 h-1.5 rounded-full",
+                        pillar.score > 80 ? "bg-emerald-500" : (pillar.score > 60 ? "bg-[#7dd3fc]" : "bg-red-500")
+                      )} />
                     </div>
-                  ))}
-               </div>
+                    <p className="text-white text-sm font-semibold">{pillar.score}</p>
+                    <div className="w-full h-1 bg-[#27272a] rounded-full overflow-hidden mt-1">
+                      <div 
+                        className={cn(
+                          "h-full",
+                          pillar.score > 80 ? "bg-emerald-500" : (pillar.score > 60 ? "bg-[#7dd3fc]" : "bg-red-500")
+                        )} 
+                        style={{ width: `${pillar.score}%` }} 
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="liquid-card p-6 overflow-hidden">
-               <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-white flex items-center gap-3 font-['Space_Grotesk']">
-                    <PieChart className="w-5 h-5 text-purple-400" />
-                    Mapeamento Genético da Carteira
-                  </h3>
-                  <p className="text-[10px] text-white/40 font-['Inter'] uppercase">Correlação Setorial</p>
-               </div>
-               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                  {report.diversification.map((d, i) => (
-                    <div key={i} className="space-y-2">
-                       <div className="flex justify-between items-end">
-                          <span className="text-[10px] text-white/40 font-['Inter'] uppercase truncate">{d.sector}</span>
-                          <span className="text-white font-bold text-sm">{d.percentage.toFixed(1)}%</span>
-                       </div>
-                       <div className="h-2 bg-slate-700/50 rounded-full overflow-hidden">
-                          <div 
-                            className={cn(
-                              "h-full",
-                              d.status === 'optimal' ? "bg-[#adc6ff]" : (d.status === 'concentrated' ? "bg-amber-500" : "bg-purple-500")
-                            )} 
-                            style={{ width: `${Math.min(d.percentage * 2, 100)}%` }}
-                          />
-                       </div>
-                       <p className={cn(
-                          "text-[9px] font-bold uppercase",
-                          d.status === 'optimal' ? "text-[#adc6ff]" : (d.status === 'concentrated' ? "text-amber-400" : "text-purple-400")
-                       )}>
-                          {d.status === 'optimal' ? 'ideal' : (d.status === 'concentrated' ? 'alerta' : 'suplementar')}
-                       </p>
+            {/* Diversification */}
+            <div className="bg-[#18181b] border border-white/[0.04] rounded-lg p-3 fade-item">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <PieChart className="w-4 h-4 text-purple-400" />
+                  <span className="text-white text-xs font-medium">Correlação Setorial</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                {report.diversification.slice(0, 6).map((d, i) => (
+                  <div key={i}>
+                    <div className="flex justify-between items-end mb-1">
+                      <span className="text-[#52525b] text-[9px] truncate">{d.sector}</span>
+                      <span className="text-white text-[10px] font-semibold">{d.percentage.toFixed(1)}%</span>
                     </div>
-                  ))}
-               </div>
+                    <div className="h-1.5 bg-[#27272a] rounded-full overflow-hidden">
+                      <div 
+                        className={cn(
+                          "h-full",
+                          d.status === 'optimal' ? "bg-[#7dd3fc]" : (d.status === 'concentrated' ? "bg-amber-500" : "bg-purple-500")
+                        )} 
+                        style={{ width: `${Math.min(d.percentage * 2, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
