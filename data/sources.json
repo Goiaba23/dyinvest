@@ -1,0 +1,76 @@
+{
+  "data_sources": [
+    {
+      "site": "StatusInvest",
+      "url": "https://statusinvest.com.br/acoes",
+      "file": "data/scraped-statusinvest-acoes.md",
+      "type": "Ações",
+      "contents": ["441 empresas", "setores", "alta/baixa", "preços"]
+    },
+    {
+      "site": "StatusInvest",
+      "url": "https://statusinvest.com.br/fundos-imobiliarios",
+      "file": "data/statusinvest-fiis.md",
+      "type": "FIIs",
+      "contents": ["Fundos imobiliários", "preços", "DY"]
+    },
+    {
+      "site": "StatusInvest",
+      "url": "https://statusinvest.com.br/etfs",
+      "file": "data/statusinvest-etfs.md",
+      "type": "ETFs",
+      "contents": ["ETFs disponíveis"]
+    },
+    {
+      "site": "StatusInvest",
+      "url": "https://statusinvest.com.br/criptomoedas",
+      "file": "data/statusinvest-crypto.md",
+      "type": "Criptos",
+      "contents": ["Criptomoedas"]
+    },
+    {
+      "site": "StatusInvest",
+      "url": "https://statusinvest.com.br/commodities",
+      "file": "data/statusinvest-commodities.md",
+      "type": "Commodities",
+      "contents": ["Commodities"]
+    },
+    {
+      "site": "StatusInvest",
+      "url": "https://statusinvest.com.br/indices/ibovespa",
+      "file": "data/statusinvest-ibovespa.md",
+      "type": "Índices",
+      "contents": ["Ibovespa", "pontos"]
+    },
+    {
+      "site": "StatusInvest",
+      "url": "https://statusinvest.com.br/acoes/ranking",
+      "file": "data/statusinvest-ranking.md",
+      "type": "Rankings",
+      "contents": ["Maiores altas", "maiores baixas"]
+    },
+    {
+      "site": "InfoMoney",
+      "url": "https://infomoney.com.br/",
+      "file": "data/infomoney-home.md",
+      "type": "Portal",
+      "contents": ["Notícias", "análises"]
+    },
+    {
+      "site": "B3",
+      "url": "https://www.b3.com.br/pt_br/market-data-e-indices/indices/overview.html",
+      "file": "data/b3-indices.md",
+      "type": "Dados Oficiais",
+      "contents": ["Índices oficiais"]
+    },
+    {
+      "site": "Investidor10",
+      "url": "https://investidor10.com.br/acoes/",
+      "file": "investidor10-acoes.md",
+      "type": "Dados Fundamentalistas",
+      "contents": ["P/L", "P/VP", "DY", "ROE"]
+    }
+  ],
+  "scraped_at": "2026-04-08",
+  "total_files": 9
+}

@@ -1,0 +1,170 @@
+{
+  "name": "MASTER - All In One (Optimized)",
+  "nodes": [
+    // A cada 30 min - para tudo
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Every 30 Minutes - RUN ALL",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": "1.1",
+      "position": [250, 300]
+    },
+
+    // 1. Market Hours Check (rápido)
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/market-hours?action=status",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "market-hours",
+      "name": "1. Check Market",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [500, 150]
+    },
+
+    // 2. Sync Stocks (só quando aberto - API decide)
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/sync?action=sync",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "sync-stocks",
+      "name": "2. Sync Stocks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 150]
+    },
+
+    // 3. Crypto (24/7)
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/sync?action=crypto",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "sync-crypto",
+      "name": "3. Sync Crypto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 300]
+    },
+
+    // 4. News (sempre)
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/news?filter=important",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "news",
+      "name": "4. News (Always)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 450]
+    },
+
+    // 5. AI (sempre)
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/ai?action=full_analysis",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "ai",
+      "name": "5. AI Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [1000, 250]
+    },
+
+    // 6. Portfolio (sempre)
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/portfolio?action=recommendations",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "portfolio",
+      "name": "6. Portfolio (Always)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [1000, 450]
+    }
+  ],
+
+  "connections": {
+    "Every 30 Minutes - RUN ALL": {
+      "main": [
+        [
+          { "node": "1. Check Market", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "1. Check Market": {
+      "main": [
+        [
+          { "node": "2. Sync Stocks", "type": "main", "index": 0 },
+          { "node": "3. Sync Crypto", "type": "main", "index": 0 },
+          { "node": "4. News (Always)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "2. Sync Stocks": {
+      "main": [
+        [
+          { "node": "5. AI Analysis", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "3. Sync Crypto": {
+      "main": [
+        [
+          { "node": "5. AI Analysis", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "4. News (Always)": {
+      "main": [
+        [
+          { "node": "5. AI Analysis", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "5. AI Analysis": {
+      "main": [
+        [
+          { "node": "6. Portfolio (Always)", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+
+  "settings": {},
+  "staticData": null,
+  "tags": ["investimento", "master", "optimized"]
+}

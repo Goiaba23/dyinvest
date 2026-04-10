@@ -1,0 +1,98 @@
+{
+  "name": "Meu Investimento AI - AI Analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:3000/api/ai?action=full_analysis",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "http-request",
+      "name": "AI Market Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json.data;\n\nconst insights = data.aiInsights?.join('\\n') || 'Nenhum insight disponível';\nconst recommendations = data.recommendations?.map(r => `${r.type.toUpperCase()} ${r.symbol}: ${r.reason}`).join('\\n') || 'Nenhuma recomendação';\n\nconst summary = `📈 Ibovespa: ${data.marketOverview.ibovespa?.toLocaleString('pt-BR')} (${data.marketOverview.ibovespaChange > 0 ? '+' : ''}${data.marketOverview.ibovespaChange?.toFixed(2)}%)\n\n💵 Dólar: R$ ${data.marketOverview.dollar?.toFixed(2)}\n\n₿ Bitcoin: R$ ${data.marketOverview.bitcoin?.toLocaleString('pt-BR')}\n\n📊 Insights:\\n${insights}\\n\\n💡 Recomendações:\\n${recommendations}`;\n\nreturn { json: { summary, insights, recommendations } };"
+      },
+      "id": "transform",
+      "name": "Extract Insights",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [750, 300]
+    },
+    {
+      "parameters": {
+        "to": "seu-email@email.com",
+        "subject": "🤖 Análise AI - Meu Investimento",
+        "body": "={{ $json.summary }}"
+      },
+      "id": "email",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1.2,
+      "position": [1000, 300]
+    }
+  ],
+  "connections": {
+    "Every 6 Hours": {
+      "main": [
+        [
+          {
+            "node": "AI Market Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Market Analysis": {
+      "main": [
+        [
+          {
+            "node": "Extract Insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Insights": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "tags": ["investimento", "ai", "analysis"],
+  "triggerCount": 1,
+  "updatedAt": "2026-04-08T12:00:00.000Z",
+  "versionId": "1"
+}

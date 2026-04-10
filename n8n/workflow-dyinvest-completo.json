@@ -1,0 +1,324 @@
+{
+  "name": "DYInvest - Sistema Completo de Automação",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "schedule-15min",
+      "name": "A cada 15 Minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/market-hours",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "check-hours",
+      "name": "1. Verificar Horário Mercado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 150]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/noticias",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "fetch-news",
+      "name": "2. Buscar Notícias",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/mercado?type=indices",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "fetch-indices",
+      "name": "3. Buscar Índices",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 450]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/mercado?type=stocks",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "fetch-stocks",
+      "name": "4. Buscar Ações",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 150]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/mercado?type=crypto",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "fetch-crypto",
+      "name": "5. Buscar Criptos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/economic",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "fetch-economic",
+      "name": "6. Dados Econômicos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 450]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/portfolio/sync",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "sync-portfolio",
+      "name": "7. Sincronizar Portfólio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/sentinel?action=check",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "run-sentinel",
+      "name": "8. Análise Sentinela",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "schedule-6h",
+      "name": "A cada 6 Horas (Deep)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 600]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/ai/analyze",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "ai-analysis",
+      "name": "Análise IA Profunda",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [500, 600]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/scraped?source=statusinvest",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "scrape-statusinvest",
+      "name": "Scraping StatusInvest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [700, 600]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/scraped?source=infomoney",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "scrape-infomoney",
+      "name": "Scraping InfoMoney",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [900, 600]
+    }
+  ],
+  "connections": {
+    "A cada 15 Minutos": {
+      "main": [
+        [
+          {
+            "node": "1. Verificar Horário Mercado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1. Verificar Horário Mercado": {
+      "main": [
+        [
+          {
+            "node": "2. Buscar Notícias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Buscar Notícias": {
+      "main": [
+        [
+          {
+            "node": "3. Buscar Índices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3. Buscar Índices": {
+      "main": [
+        [
+          {
+            "node": "4. Buscar Ações",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4. Buscar Ações": {
+      "main": [
+        [
+          {
+            "node": "5. Buscar Criptos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5. Buscar Criptos": {
+      "main": [
+        [
+          {
+            "node": "6. Dados Econômicos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6. Dados Econômicos": {
+      "main": [
+        [
+          {
+            "node": "7. Sincronizar Portfólio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "7. Sincronizar Portfólio": {
+      "main": [
+        [
+          {
+            "node": "8. Análise Sentinela",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A cada 6 Horas (Deep)": {
+      "main": [
+        [
+          {
+            "node": "Análise IA Profunda",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Análise IA Profunda": {
+      "main": [
+        [
+          {
+            "node": "Scraping StatusInvest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scraping StatusInvest": {
+      "main": [
+        [
+          {
+            "node": "Scraping InfoMoney",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 2,
+  "updatedAt": "2026-04-10T12:00:00.000Z",
+  "versionId": "1"
+}

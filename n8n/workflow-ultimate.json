@@ -1,0 +1,134 @@
+{
+  "name": "Complete System - All Features",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "schedule-1h",
+      "name": "Every 1 Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": "1.1",
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/market-hours",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "check-hours",
+      "name": "Check Market Hours",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/sync?action=sync",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "sync-stocks",
+      "name": "1. Sync Stocks (Market Open)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/sync?action=crypto",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "sync-crypto",
+      "name": "2. Sync Crypto (24/7)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 400]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/news?filter=important",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "news",
+      "name": "3. Get Important News",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/ai?action=insights",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "ai-insights",
+      "name": "4. AI Insights",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [1250, 300]
+    }
+  ],
+  "connections": {
+    "Every 1 Hour": {
+      "main": [
+        [
+          { "node": "Check Market Hours", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Check Market Hours": {
+      "main": [
+        [
+          { "node": "1. Sync Stocks (Market Open)", "type": "main", "index": 0 },
+          { "node": "2. Sync Crypto (24/7)", "type": "main", "index": 0 },
+          { "node": "3. Get Important News", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "1. Sync Stocks (Market Open)": {
+      "main": [
+        [
+          { "node": "4. AI Insights", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "2. Sync Crypto (24/7)": {
+      "main": [
+        [
+          { "node": "4. AI Insights", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "3. Get Important News": {
+      "main": [
+        [
+          { "node": "4. AI Insights", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "tags": ["investimento", "complete", "realtime", "market-hours"]
+}

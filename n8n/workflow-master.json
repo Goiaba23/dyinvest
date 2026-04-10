@@ -1,0 +1,170 @@
+{
+  "name": "MASTER - All In One",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Every 30 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": "1.1",
+      "position": [250, 300]
+    },
+
+    // 1. Verificar horário do mercado
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/market-hours?action=status",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "market-hours",
+      "name": "1. Check Market Hours",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [500, 150]
+    },
+
+    // 2. Sync Ações (só quando mercado aberto)
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/sync?action=sync",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "sync-stocks",
+      "name": "2. Sync Stocks (if open)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 150]
+    },
+
+    // 3. Sync Crypto (24/7)
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/sync?action=crypto",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "sync-crypto",
+      "name": "3. Sync Crypto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 300]
+    },
+
+    // 4. Notícias Importantes (a cada 2h)
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/news?filter=important",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "news",
+      "name": "4. Get Important News",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 450]
+    },
+
+    // 5. Análise AI
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/ai?action=full_analysis",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "ai-analysis",
+      "name": "5. AI Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [1000, 300]
+    },
+
+    // 6. Análise da Carteira
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/portfolio?action=recommendations",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "portfolio",
+      "name": "6. Portfolio Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [1000, 450]
+    }
+  ],
+
+  "connections": {
+    "Every 30 Minutes": {
+      "main": [
+        [
+          { "node": "1. Check Market Hours", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "1. Check Market Hours": {
+      "main": [
+        [
+          { "node": "2. Sync Stocks (if open)", "type": "main", "index": 0 },
+          { "node": "3. Sync Crypto", "type": "main", "index": 0 },
+          { "node": "4. Get Important News", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "2. Sync Stocks (if open)": {
+      "main": [
+        [
+          { "node": "5. AI Analysis", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "3. Sync Crypto": {
+      "main": [
+        [
+          { "node": "5. AI Analysis", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "4. Get Important News": {
+      "main": [
+        [
+          { "node": "5. AI Analysis", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "5. AI Analysis": {
+      "main": [
+        [
+          { "node": "6. Portfolio Analysis", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+
+  "settings": {},
+  "staticData": null,
+  "tags": ["investimento", "master", "all-in-one"],
+  "activationMode": "manual"
+}
