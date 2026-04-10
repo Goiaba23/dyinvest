@@ -140,22 +140,28 @@ export default function NoticiasPage() {
     async function fetchNews() {
       try {
         setLoading(true);
-        const res = await fetch('/api/noticias');
+        const res = await fetch('/api/noticias', { 
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache' }
+        });
         const json = await res.json();
         
-        if (json.success && json.data) {
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
           setNews(json.data);
         } else {
+          console.log('Using mock news fallback');
           setNews(mockNewsData);
         }
       } catch (err) {
+        console.error('News fetch error:', err);
         setNews(mockNewsData);
       } finally {
         setLoading(false);
       }
     }
     
-    fetchNews();
+    // Add delay to simulate realistic loading
+    setTimeout(() => fetchNews(), 800);
   }, []);
 
   useEffect(() => {

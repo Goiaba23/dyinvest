@@ -45,18 +45,23 @@ export default function AcoesPage() {
   const [filteredStocks, setFilteredStocks] = useState<StockWithPrice[]>([]);
   const [search, setSearch] = useState('');
   const [selectedSector, setSelectedSector] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const sectors = getSectors();
 
   useEffect(() => {
-    const allCompanies = getAllCompanies();
-    const withMockPrices = allCompanies.map(c => ({
-      ...c,
-      price: Math.random() * 100 + 10,
-      change: (Math.random() - 0.5) * 10,
-      changePercent: (Math.random() - 0.5) * 10
-    }));
-    setStocks(withMockPrices);
-    setFilteredStocks(withMockPrices);
+    // Simular carregamento para evitar SSR issues
+    setTimeout(() => {
+      const allCompanies = getAllCompanies();
+      const withMockPrices = allCompanies.map(c => ({
+        ...c,
+        price: Math.random() * 100 + 10,
+        change: (Math.random() - 0.5) * 10,
+        changePercent: (Math.random() - 0.5) * 10
+      }));
+      setStocks(withMockPrices);
+      setFilteredStocks(withMockPrices);
+      setLoading(false);
+    }, 500);
   }, []);
 
   useEffect(() => {
@@ -201,8 +206,28 @@ export default function AcoesPage() {
         </div>
 
         {/* Stocks Grid - 3 Columns Dense */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-          {filteredStocks.slice(0, 30).map((stock, i) => (
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            {[...Array(12)].map((_, i) => (
+              <div key={i} className="bg-[#18181b] border border-white/[0.04] rounded-lg p-3 animate-pulse">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#27272a]" />
+                  <div>
+                    <div className="h-4 w-16 bg-[#27272a] rounded mb-1" />
+                    <div className="h-3 w-24 bg-[#27272a] rounded" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredStocks.length === 0 ? (
+          <div className="text-center py-12 bg-[#18181b] border border-white/[0.04] rounded-lg">
+            <Search className="w-8 h-8 text-[#52525b] mx-auto mb-3" />
+            <p className="text-[#71717a] text-sm">Nenhuma ação encontrada</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            {filteredStocks.slice(0, 30).map((stock, i) => (
             <Link key={stock.symbol} href={`/ativo/${stock.symbol}`}>
               <div 
                 className="fade-item bg-[#18181b] border border-white/[0.04] rounded-lg p-3 cursor-pointer hover:bg-[#1f1f23] hover:border-[#7dd3fc]/20 transition-all group"
@@ -240,14 +265,8 @@ export default function AcoesPage() {
                   <ChevronRight className="w-3 h-3 text-[#52525b] group-hover:text-[#7dd3fc] transition-colors" />
                 </div>
               </div>
-            </Link>
-          ))}
-        </div>
-
-        {filteredStocks.length === 0 && (
-          <div className="text-center py-12 bg-[#18181b] border border-white/[0.04] rounded-lg">
-            <Search className="w-8 h-8 text-[#52525b] mx-auto mb-3" />
-            <p className="text-[#71717a] text-sm">Nenhuma ação encontrada</p>
+              </Link>
+            ))}
           </div>
         )}
       </main>

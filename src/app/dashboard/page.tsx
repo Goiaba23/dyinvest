@@ -443,7 +443,7 @@ export default function DashboardPage() {
               </div>
               <div className="divide-y divide-white/[0.02]">
                 {news.map((item, i) => (
-                  <a key={i} href="#" className="block px-3 py-2.5 hover:bg-white/[0.02] transition-colors">
+                  <Link key={i} href="/noticias" className="block px-3 py-2.5 hover:bg-white/[0.02] transition-colors">
                     <p className="text-[#a1a1aa] text-xs leading-snug line-clamp-2 group-hover:text-white transition-colors">
                       {item.title}
                     </p>
@@ -452,7 +452,7 @@ export default function DashboardPage() {
                       <span>•</span>
                       <span>{item.time}</span>
                     </p>
-                  </a>
+                  </Link>
                 ))}
               </div>
               <Link href="/noticias" className="block text-center text-[#7dd3fc] text-[10px] py-2.5 hover:bg-white/[0.02] border-t border-white/[0.04]">
