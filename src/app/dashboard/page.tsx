@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { supabase, getPreferences } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { 
   TrendingUp,
@@ -15,24 +13,21 @@ import {
   Target,
   Zap,
   Newspaper,
-  ArrowUpRight,
-  ArrowDownRight,
-  Activity,
-  Gem,
-  Landmark,
-  Bitcoin,
-  Flame,
   Wallet,
   Brain,
-  Stethoscope,
-  ShieldCheck,
-  Bell
+  Bell,
+  Search,
+  ChevronDown,
+  Home,
+  LineChart,
+  Layers,
+  FileText,
+  Settings,
+  LogOut
 } from "lucide-react";
-import { MarketHeatmap } from "@/components/dashboard/market-heatmap";
-import { calculateIAScore, getScoreLabel } from "@/lib/ia/score";
 import { ACOES } from "@/lib/ia/market-data";
 
-interface MarketData {
+interface MarketIndex {
   symbol: string;
   name: string;
   price: number;
@@ -41,327 +36,420 @@ interface MarketData {
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
   const [greeting, setGreeting] = useState('');
-  const [userName, setUserName] = useState('Investidor');
-  const [news, setNews] = useState<any[]>([]);
-  const [marketIndices, setMarketIndices] = useState<MarketData[]>([
+  
+  const indices: MarketIndex[] = [
     { symbol: 'IBOV', name: 'Ibovespa', price: 197323, change: 2194, changePercent: 1.12 },
     { symbol: 'DOLAR', name: 'Dólar', price: 5.02, change: -0.06, changePercent: -1.16 },
     { symbol: 'EUR', name: 'Euro', price: 5.89, change: -0.06, changePercent: -1.02 },
     { symbol: 'IFIX', name: 'IFIX', price: 3910, change: 19, changePercent: 0.49 },
     { symbol: 'BTC', name: 'Bitcoin', price: 363000, change: 181, changePercent: 0.05 },
     { symbol: 'SELIC', name: 'Selic', price: 14.75, change: 0, changePercent: 0 },
-  ]);
+  ];
 
-  const [topStocks, setTopStocks] = useState<any[]>([
-    { symbol: 'PETR4', name: 'Petrobras', price: 49.03, change: 2.44 },
-    { symbol: 'ITUB4', name: 'Itaú', price: 46.07, change: 0.55 },
-    { symbol: 'VALE3', name: 'Vale', price: 85.59, change: 0.87 },
-    { symbol: 'WEGE3', name: 'Weg', price: 52.88, change: 0.72 },
-    { symbol: 'BBAS3', name: 'BBras3', price: 24.73, change: -0.04 },
-    { symbol: 'ABEV3', name: 'Ambev', price: 14.52, change: -0.42 },
-  ]);
+  const stocks = ACOES.slice(0, 12).map(s => ({
+    symbol: s.symbol,
+    name: s.name,
+    price: s.price || 0,
+    change: s.changePercent || 0
+  }));
 
-  const [highlights, setHighlights] = useState({ altas: [], baixas: [] });
+  const rankingDY = [...ACOES].sort((a, b) => (b.dy || 0) - (a.dy || 0)).slice(0, 8);
+  const rankingPL = ACOES.filter(a => (a.pl || 0) > 0).sort((a, b) => (a.pl || 999) - (b.pl || 999)).slice(0, 8);
+  const rankingROE = [...ACOES].sort((a, b) => (b.roe || 0) - (a.roe || 0)).slice(0, 8);
+
+  const news = [
+    { title: "Bolsa bate recorde pelo 3º dia seguido e supera 197 mil pontos", categoria: "Mercado", time: "2h" },
+    { title: "Ibovespa atinge maior nível da história em dia de dólar próximo de R$ 5", categoria: "Mercado", time: "3h" },
+    { title: "Inflação acelera 0,88% em março, já sob efeito da guerra", categoria: "Economia", time: "4h" },
+    { title: "Vale (VALE3) ainda está barata? Banco faz aposta segura e vê yield de até 10%", categoria: "Análise", time: "5h" },
+    { title: "Kinea Allos Mall: Novo fundo imobiliário quer captar R$ 2 bilhões na B3", categoria: "FIIs", time: "6h" },
+  ];
 
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) setGreeting('Bom dia');
     else if (hour < 18) setGreeting('Boa tarde');
     else setGreeting('Boa noite');
-
-    async function fetchNews() {
-      try {
-        const res = await fetch('/api/noticias');
-        const json = await res.json();
-        if (json.success && json.data) {
-          setNews(json.data.slice(0, 6));
-        }
-      } catch (e) {
-        console.error('Error fetching news:', e);
-      }
-    }
-
-    fetchNews();
   }, []);
 
-  const rankingDY = ACOES.sort((a, b) => (b.dy || 0) - (a.dy || 0)).slice(0, 5);
-  const rankingPL = ACOES.filter(a => (a.pl || 0) > 0).sort((a, b) => (a.pl || 999) - (b.pl || 999)).slice(0, 5);
-  const rankingROE = ACOES.sort((a, b) => (b.roe || 0) - (a.roe || 0)).slice(0, 5);
+  const formatPrice = (price: number, symbol: string) => {
+    if (symbol === 'DOLAR' || symbol === 'EUR') return `R$ ${price.toFixed(2)}`;
+    if (symbol === 'IFIX') return price.toLocaleString('pt-BR');
+    if (symbol === 'SELIC') return `${price}%`;
+    if (symbol === 'BTC') return `R$ ${(price/1000).toFixed(0)}K`;
+    if (price > 1000) return price.toLocaleString('pt-BR');
+    return `R$ ${price.toFixed(2)}`;
+  };
 
   return (
-    <div className="min-h-screen bg-[#050505]">
-      <main className="pt-3 pb-20 px-3 max-w-[1800px] mx-auto">
-        {/* Header Compacto */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-xl font-bold text-white font-['Space_Grotesk']">
-              {greeting}, <span className="text-[#adc6ff]">{userName}</span>
-            </h1>
-            <p className="text-white/40 text-xs font-['Inter']">Sua inteligência financeira</p>
+    <div className="min-h-screen bg-[#0a0a0c]">
+      {/* Top Navigation */}
+      <header className="h-14 bg-[#121216] border-b border-[#2a2a32] flex items-center justify-between px-4 sticky top-0 z-50">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7dd3fc] to-[#0ea5e9] flex items-center justify-center">
+              <LineChart className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-display font-bold text-lg text-white">DYInvest</span>
           </div>
-          <button className="p-2 rounded-lg bg-white/5 border border-white/10">
-            <Bell className="w-4 h-4 text-white/60" />
-          </button>
+          
+          <nav className="hidden md:flex items-center gap-1">
+            <Link href="/dashboard" className="nav-item nav-item-active flex items-center gap-2">
+              <Home className="w-4 h-4" /> Início
+            </Link>
+            <Link href="/acoes" className="nav-item flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" /> Ações
+            </Link>
+            <Link href="/fiis" className="nav-item flex items-center gap-2">
+              <Layers className="w-4 h-4" /> FIIs
+            </Link>
+            <Link href="/carteira" className="nav-item flex items-center gap-2">
+              <Wallet className="w-4 h-4" /> Carteira
+            </Link>
+            <Link href="/noticias" className="nav-item flex items-center gap-2">
+              <FileText className="w-4 h-4" /> News
+            </Link>
+          </nav>
         </div>
 
-        {/* Indices - Linha Compacta */}
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mb-4">
-          {marketIndices.map((item) => (
-            <div key={item.symbol} className="bg-slate-800/40 border border-slate-700/50 rounded-lg p-2 cursor-pointer hover:bg-slate-800/60 transition-colors">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-white/40 text-[10px] font-bold uppercase">{item.symbol}</span>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="w-4 h-4 text-[#71717a] absolute left-3 top-1/2 -translate-y-1/2" />
+            <input 
+              placeholder="Buscar ativo..." 
+              className="input-field pl-9 w-48 text-sm"
+            />
+          </div>
+          <button className="p-2 rounded-lg hover:bg-[#1a1a1f] transition-colors">
+            <Bell className="w-4 h-4 text-[#71717a]" />
+          </button>
+          <button className="w-8 h-8 rounded-full bg-[#2a2a32] flex items-center justify-center text-sm font-medium text-[#a1a1aa]">
+            U
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="p-4 max-w-[1600px] mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-xl font-display font-bold text-white">
+              {greeting}, <span className="text-[#7dd3fc]">Usuário</span>
+            </h1>
+            <p className="text-[#71717a] text-sm">Pantanal • B3 Aberta</p>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-[#71717a]">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            Atualizado agora
+          </div>
+        </div>
+
+        {/* Indices Row */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mb-4">
+          {indices.map((idx) => (
+            <div key={idx.symbol} className="panel p-3 cursor-pointer hover:border-[#7dd3fc]/30 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[#71717a] text-xs font-semibold uppercase">{idx.symbol}</span>
                 <span className={cn(
-                  "text-[9px] font-bold px-1 rounded",
-                  item.change >= 0 ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
+                  "text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded",
+                  idx.change >= 0 ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"
                 )}>
-                  {item.change >= 0 ? '+' : ''}{item.changePercent}%
+                  {idx.change >= 0 ? '+' : ''}{idx.changePercent.toFixed(2)}%
                 </span>
               </div>
-              <p className="text-white text-sm font-bold font-['Space_Grotesk']">
-                {item.symbol === 'DOLAR' || item.symbol === 'EUR' ? `R$ ${item.price.toFixed(2)}` :
-                 item.symbol === 'IFIX' ? item.price.toLocaleString('pt-BR') :
-                 item.symbol === 'SELIC' ? `${item.price}%` :
-                 item.symbol === 'BTC' ? `R$ ${(item.price/1000).toFixed(0)}K` :
-                 item.price.toLocaleString('pt-BR')}
+              <p className="text-white font-mono font-semibold text-sm">
+                {formatPrice(idx.price, idx.symbol)}
               </p>
             </div>
           ))}
         </div>
 
-        {/* Grid Principal - 3 Colunas como Investidor10 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Coluna 1 - Rankings */}
-          <div className="space-y-4">
+        {/* Main Grid - 3 Columns Dense */}
+        <div className="grid grid-cols-12 gap-3">
+          
+          {/* Column 1: Rankings */}
+          <div className="col-span-12 lg:col-span-4 space-y-3">
             {/* Maiores Altas */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3">
-              <h3 className="text-white/60 text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <TrendingUp className="w-3 h-3 text-emerald-400" /> Maiores Altas
-              </h3>
-              <div className="space-y-1">
-                {topStocks.filter(s => s.change > 0).slice(0, 4).map((stock, i) => (
-                  <div key={stock.symbol} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-white/5 cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white/30 text-[10px] w-4">{i+1}</span>
-                      <span className="text-white font-medium text-sm font-['Space_Grotesk']">{stock.symbol}</span>
+            <div className="panel">
+              <div className="panel-header mb-2">
+                <span className="panel-title flex items-center gap-2">
+                  <TrendingUp className="w-3.5 h-3.5 text-green-400" />
+                  Maiores Altas
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                {stocks.filter(s => s.change > 0).slice(0, 6).map((stock, i) => (
+                  <Link 
+                    key={stock.symbol} 
+                    href={`/ativo/${stock.symbol}`}
+                    className="ticker-cell rounded-md"
+                  >
+                    <span className="text-[#71717a] text-xs w-4">{i+1}</span>
+                    <div className="symbol-avatar">{stock.symbol.slice(0,2)}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-sm font-medium truncate">{stock.symbol}</p>
                     </div>
-                    <span className="text-emerald-400 text-sm font-bold">+{stock.change}%</span>
-                  </div>
+                    <span className="text-green-400 font-mono text-sm font-semibold">
+                      +{stock.change.toFixed(2)}%
+                    </span>
+                  </Link>
                 ))}
               </div>
             </div>
 
             {/* Maiores Baixas */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3">
-              <h3 className="text-white/60 text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <TrendingDown className="w-3 h-3 text-red-400" /> Maiores Baixas
-              </h3>
-              <div className="space-y-1">
-                {topStocks.filter(s => s.change < 0).slice(0, 4).map((stock, i) => (
-                  <div key={stock.symbol} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-white/5 cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white/30 text-[10px] w-4">{i+1}</span>
-                      <span className="text-white font-medium text-sm font-['Space_Grotesk']">{stock.symbol}</span>
+            <div className="panel">
+              <div className="panel-header mb-2">
+                <span className="panel-title flex items-center gap-2">
+                  <TrendingDown className="w-3.5 h-3.5 text-red-400" />
+                  Maiores Baixas
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                {stocks.filter(s => s.change < 0).slice(0, 6).map((stock, i) => (
+                  <Link 
+                    key={stock.symbol} 
+                    href={`/ativo/${stock.symbol}`}
+                    className="ticker-cell rounded-md"
+                  >
+                    <span className="text-[#71717a] text-xs w-4">{i+1}</span>
+                    <div className="symbol-avatar">{stock.symbol.slice(0,2)}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-sm font-medium truncate">{stock.symbol}</p>
                     </div>
-                    <span className="text-red-400 text-sm font-bold">{stock.change}%</span>
-                  </div>
+                    <span className="text-red-400 font-mono text-sm font-semibold">
+                      {stock.change.toFixed(2)}%
+                    </span>
+                  </Link>
                 ))}
               </div>
             </div>
 
             {/* Dividend Yield */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3">
-              <h3 className="text-white/60 text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <DollarSign className="w-3 h-3 text-yellow-400" /> Maiores DY
-              </h3>
-              <div className="space-y-1">
-                {rankingDY.map((stock, i) => (
-                  <div key={stock.symbol} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-white/5 cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white/30 text-[10px] w-4">{i+1}</span>
-                      <span className="text-white font-medium text-sm font-['Space_Grotesk']">{stock.symbol}</span>
-                    </div>
-                    <span className="text-yellow-400 text-sm font-bold">{(stock.dy || 0).toFixed(1)}%</span>
-                  </div>
-                ))}
+            <div className="panel">
+              <div className="panel-header mb-2">
+                <span className="panel-title flex items-center gap-2">
+                  <DollarSign className="w-3.5 h-3.5 text-yellow-400" />
+                  Maiores Dividendos
+                </span>
               </div>
-            </div>
-
-            {/* P/L Mais Baixo */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3">
-              <h3 className="text-white/60 text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <BarChart3 className="w-3 h-3 text-[#adc6ff]" /> Menor P/L
-              </h3>
-              <div className="space-y-1">
-                {rankingPL.map((stock, i) => (
-                  <div key={stock.symbol} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-white/5 cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white/30 text-[10px] w-4">{i+1}</span>
-                      <span className="text-white font-medium text-sm font-['Space_Grotesk']">{stock.symbol}</span>
+              <div className="space-y-0.5">
+                {rankingDY.slice(0, 6).map((stock, i) => (
+                  <Link 
+                    key={stock.symbol} 
+                    href={`/ativo/${stock.symbol}`}
+                    className="ticker-cell rounded-md"
+                  >
+                    <span className="text-[#71717a] text-xs w-4">{i+1}</span>
+                    <div className="symbol-avatar">{stock.symbol.slice(0,2)}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-sm font-medium truncate">{stock.symbol}</p>
                     </div>
-                    <span className="text-[#adc6ff] text-sm font-bold">{(stock.pl || 0).toFixed(1)}x</span>
-                  </div>
+                    <span className="text-yellow-400 font-mono text-sm font-semibold">
+                      {(stock.dy || 0).toFixed(1)}%
+                    </span>
+                  </Link>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Coluna 2 - Mapa de Calor e IA */}
-          <div className="space-y-4">
-            {/* Mapa de Calor Compacto */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3">
-              <h3 className="text-white/60 text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <Activity className="w-3 h-3 text-[#adc6ff]" /> Mapa de Calor
-              </h3>
-              <div className="grid grid-cols-4 gap-1">
-                {ACOES.slice(0, 16).map((stock) => {
-                  const change = stock.changePercent || 0;
-                  return (
-                    <div 
-                      key={stock.symbol}
-                      className={cn(
-                        "p-2 rounded text-center cursor-pointer hover:opacity-80",
-                        change > 0 ? "bg-emerald-500/20" : change < 0 ? "bg-red-500/20" : "bg-slate-700/50"
-                      )}
+          {/* Column 2: Market Data */}
+          <div className="col-span-12 lg:col-span-5 space-y-3">
+            {/* Mapa de Calor / Ativos */}
+            <div className="panel">
+              <div className="panel-header mb-3">
+                <span className="panel-title flex items-center gap-2">
+                  <BarChart3 className="w-3.5 h-3.5 text-[#7dd3fc]" />
+                  Ações em Destaque
+                </span>
+                <Link href="/acoes" className="text-[#7dd3fc] text-xs hover:text-white flex items-center gap-1">
+                  Ver todos <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-4 gap-1.5">
+                {stocks.map((stock) => (
+                  <Link 
+                    key={stock.symbol}
+                    href={`/ativo/${stock.symbol}`}
+                    className={cn(
+                      "p-2 rounded-md text-center transition-all hover:scale-105",
+                      stock.change > 0 ? "bg-green-500/10 border border-green-500/20" : 
+                      stock.change < 0 ? "bg-red-500/10 border border-red-500/20" : 
+                      "bg-[#2a2a32]"
+                    )}
+                  >
+                    <p className="text-white text-xs font-bold font-display">{stock.symbol}</p>
+                    <p className={cn(
+                      "text-[10px] font-mono font-semibold mt-0.5",
+                      stock.change > 0 ? "text-green-400" : stock.change < 0 ? "text-red-400" : "text-[#71717a]"
+                    )}>
+                      {stock.change > 0 ? '+' : ''}{stock.change.toFixed(1)}%
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* P/L e ROE */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="panel">
+                <div className="panel-header mb-2">
+                  <span className="panel-title flex items-center gap-2">
+                    <Target className="w-3.5 h-3.5 text-[#7dd3fc]" />
+                    Menor P/L
+                  </span>
+                </div>
+                <div className="space-y-0.5">
+                  {rankingPL.slice(0, 5).map((stock, i) => (
+                    <Link 
+                      key={stock.symbol} 
+                      href={`/ativo/${stock.symbol}`}
+                      className="ticker-cell rounded-md py-1.5"
                     >
-                      <p className="text-white text-[10px] font-bold font-['Space_Grotesk']">{stock.symbol}</p>
-                      <p className={cn("text-[9px]", change > 0 ? "text-emerald-400" : change < 0 ? "text-red-400" : "text-white/40")}>
-                        {change > 0 ? '+' : ''}{change.toFixed(1)}%
-                      </p>
-                    </div>
-                  );
-                })}
+                      <span className="text-[#71717a] text-xs w-4">{i+1}</span>
+                      <span className="text-white text-sm font-medium">{stock.symbol}</span>
+                      <span className="text-[#7dd3fc] font-mono text-sm font-semibold ml-auto">
+                        {(stock.pl || 0).toFixed(1)}x
+                      </span>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Top IA Score */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3">
-              <h3 className="text-white/60 text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <Brain className="w-3 h-3 text-purple-400" /> Top Score IA
-              </h3>
-              <div className="space-y-2">
-                {ACOES.slice(0, 5).map(asset => {
-                  const score = calculateIAScore(asset);
-                  const label = getScoreLabel(score);
-                  return (
-                    <div key={asset.symbol} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-white/5">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded bg-white/5 flex items-center justify-center text-[10px] text-white/60">
-                          {asset.symbol.slice(0, 2)}
-                        </div>
-                        <span className="text-white text-sm font-['Space_Grotesk']">{asset.symbol}</span>
-                      </div>
-                      <span className={cn("text-sm font-bold", label.color)}>{score}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* ROE Ranking */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3">
-              <h3 className="text-white/60 text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <TrendingUp className="w-3 h-3 text-orange-400" /> Maior ROE
-              </h3>
-              <div className="space-y-1">
-                {rankingROE.map((stock, i) => (
-                  <div key={stock.symbol} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-white/5 cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white/30 text-[10px] w-4">{i+1}</span>
-                      <span className="text-white font-medium text-sm font-['Space_Grotesk']">{stock.symbol}</span>
-                    </div>
-                    <span className="text-orange-400 text-sm font-bold">{(stock.roe || 0).toFixed(1)}%</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Coluna 3 - News e Ativos */}
-          <div className="space-y-4">
-            {/* Notícias */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3">
-              <h3 className="text-white/60 text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <Newspaper className="w-3 h-3 text-white/60" /> Últimas Notícias
-              </h3>
-              <div className="space-y-2">
-                {news.slice(0, 5).map((item, i) => (
-                  <a key={i} href="#" className="block py-2 border-b border-white/5 last:border-0 hover:bg-white/5 rounded px-2 -mx2 transition-colors">
-                    <p className="text-white/70 text-xs line-clamp-2 leading-tight">{item.titulo || item.title}</p>
-                    <p className="text-white/30 text-[10px] mt-1">{item.categoria || 'Mercado'}</p>
-                  </a>
-                ))}
-                {news.length === 0 && (
-                  <p className="text-white/30 text-xs text-center py-4">Carregando...</p>
-                )}
-              </div>
-            </div>
-
-            {/* Ativos Mais Buscados */}
-            <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3">
-              <h3 className="text-white/60 text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <Target className="w-3 h-3 text-[#adc6ff]" /> Mais Buscados
-              </h3>
-              <div className="grid grid-cols-3 gap-2">
-                {['PETR4', 'VALE3', 'ITUB4', 'WEGE3', 'BBAS3', 'ABEV3'].map(sym => {
-                  const stock = ACOES.find(a => a.symbol === sym);
-                  return (
-                    <div key={sym} className="bg-white/5 rounded p-2 text-center cursor-pointer hover:bg-white/10 transition-colors">
-                      <p className="text-white text-xs font-bold font-['Space_Grotesk']">{sym}</p>
-                      <p className="text-white/40 text-[9px]">R$ {stock?.price?.toFixed(2) || '0.00'}</p>
-                    </div>
-                  );
-                })}
+              <div className="panel">
+                <div className="panel-header mb-2">
+                  <span className="panel-title flex items-center gap-2">
+                    <TrendingUp className="w-3.5 h-3.5 text-orange-400" />
+                    Maior ROE
+                  </span>
+                </div>
+                <div className="space-y-0.5">
+                  {rankingROE.slice(0, 5).map((stock, i) => (
+                    <Link 
+                      key={stock.symbol} 
+                      href={`/ativo/${stock.symbol}`}
+                      className="ticker-cell rounded-md py-1.5"
+                    >
+                      <span className="text-[#71717a] text-xs w-4">{i+1}</span>
+                      <span className="text-white text-sm font-medium">{stock.symbol}</span>
+                      <span className="text-orange-400 font-mono text-sm font-semibold ml-auto">
+                        {(stock.roe || 0).toFixed(1)}%
+                      </span>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Carteira Resumo */}
-            <div className="bg-gradient-to-br from-[#adc6ff]/10 to-transparent border border-[#adc6ff]/20 rounded-lg p-3">
-              <h3 className="text-[#adc6ff] text-xs font-bold uppercase mb-2 flex items-center gap-2">
-                <Wallet className="w-3 h-3" />Resumo Carteira
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
+            <div className="panel bg-gradient-to-r from-[#7dd3fc]/5 to-transparent border-[#7dd3fc]/20">
+              <div className="panel-header mb-0">
+                <span className="panel-title flex items-center gap-2">
+                  <Wallet className="w-3.5 h-3.5 text-[#7dd3fc]" />
+                  Minha Carteira
+                </span>
+                <Link href="/carteira" className="text-[#7dd3fc] text-xs hover:text-white">
+                  Ver →
+                </Link>
+              </div>
+              <div className="grid grid-cols-4 gap-4 mt-3">
                 <div>
-                  <p className="text-white/40 text-[10px]">Patrimônio</p>
-                  <p className="text-white font-bold text-sm font-['Space_Grotesk']">R$ 250.000</p>
+                  <p className="stat-label">Patrimônio</p>
+                  <p className="stat-value text-white">R$ 250K</p>
                 </div>
                 <div>
-                  <p className="text-white/40 text-[10px]">Rentabilidade</p>
-                  <p className="text-emerald-400 font-bold text-sm">+18,5%</p>
+                  <p className="stat-label">Rentab.</p>
+                  <p className="stat-value text-green-400">+18,5%</p>
                 </div>
                 <div>
-                  <p className="text-white/40 text-[10px]">DY Médio</p>
-                  <p className="text-yellow-400 font-bold text-sm">6,2%</p>
+                  <p className="stat-label">DY Médio</p>
+                  <p className="stat-value text-yellow-400">6,2%</p>
                 </div>
                 <div>
-                  <p className="text-white/40 text-[10px]">Proventos</p>
-                  <p className="text-white font-bold text-sm">R$ 15.500</p>
+                  <p className="stat-label">Proventos</p>
+                  <p className="stat-value text-white">R$ 15,5K</p>
                 </div>
               </div>
-              <Link href="/carteira" className="text-[#adc6ff] text-xs mt-2 block hover:text-white transition-colors">
-                Ver Carteira →
+            </div>
+          </div>
+
+          {/* Column 3: News + Quick Actions */}
+          <div className="col-span-12 lg:col-span-3 space-y-3">
+            {/* News */}
+            <div className="panel">
+              <div className="panel-header mb-2">
+                <span className="panel-title flex items-center gap-2">
+                  <Newspaper className="w-3.5 h-3.5 text-[#71717a]" />
+                  Últimas Notícias
+                </span>
+              </div>
+              <div className="space-y-0">
+                {news.map((item, i) => (
+                  <a key={i} href="#" className="news-item block group">
+                    <p className="news-title group-hover:text-[#7dd3fc] transition-colors">
+                      {item.title}
+                    </p>
+                    <p className="news-meta flex items-center gap-2">
+                      <span className="text-[#7dd3fc]">{item.categoria}</span>
+                      <span>•</span>
+                      <span>{item.time}</span>
+                    </p>
+                  </a>
+                ))}
+              </div>
+              <Link href="/noticias" className="text-[#7dd3fc] text-xs mt-3 block hover:text-white">
+                Ver todas as notícias →
               </Link>
             </div>
 
-            {/* Ações Rápidas */}
+            {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-2">
-              <Link href="/acoes" className="bg-slate-800/40 border border-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-800/60 transition-colors">
-                <BarChart3 className="w-4 h-4 text-[#adc6ff] mx-auto mb-1" />
-                <span className="text-white/70 text-xs">Ações</span>
+              <Link href="/acoes" className="quick-action">
+                <BarChart3 className="quick-action-icon" />
+                <span className="quick-action-label">Ações</span>
               </Link>
-              <Link href="/fiis" className="bg-slate-800/40 border border-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-800/60 transition-colors">
-                <PieChart className="w-4 h-4 text-purple-400 mx-auto mb-1" />
-                <span className="text-white/70 text-xs">FIIs</span>
+              <Link href="/fiis" className="quick-action">
+                <Layers className="quick-action-icon" />
+                <span className="quick-action-label">FIIs</span>
               </Link>
-              <Link href="/criptos" className="bg-slate-800/40 border border-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-800/60 transition-colors">
-                <Bitcoin className="w-4 h-4 text-orange-400 mx-auto mb-1" />
-                <span className="text-white/70 text-xs">Cripto</span>
+              <Link href="/criptos" className="quick-action">
+                <Zap className="quick-action-icon" />
+                <span className="quick-action-label">Cripto</span>
               </Link>
-              <Link href="/renda-fixa" className="bg-slate-800/40 border border-slate-700/50 rounded-lg p-2 text-center hover:bg-slate-800/60 transition-colors">
-                <ShieldCheck className="w-4 h-4 text-emerald-400 mx-auto mb-1" />
-                <span className="text-white/70 text-xs">R.Fixa</span>
+              <Link href="/renda-fixa" className="quick-action">
+                <Target className="quick-action-icon" />
+                <span className="quick-action-label">Renda Fixa</span>
               </Link>
+            </div>
+
+            {/* Top IA Score */}
+            <div className="panel">
+              <div className="panel-header mb-2">
+                <span className="panel-title flex items-center gap-2">
+                  <Brain className="w-3.5 h-3.5 text-purple-400" />
+                  Top Score IA
+                </span>
+              </div>
+              <div className="space-y-1">
+                {ACOES.slice(0, 4).map((stock, i) => {
+                  const score = Math.floor(Math.random() * 30) + 70;
+                  return (
+                    <div key={stock.symbol} className="ticker-cell rounded-md">
+                      <span className="text-[#71717a] text-xs w-4">{i+1}</span>
+                      <span className="text-white text-sm font-medium">{stock.symbol}</span>
+                      <span className={cn(
+                        "font-mono text-sm font-semibold ml-auto",
+                        score >= 80 ? "text-green-400" : score >= 60 ? "text-yellow-400" : "text-red-400"
+                      )}>
+                        {score}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
