@@ -554,6 +554,28 @@ body {
 .stagger-container > *:nth-child(9) { animation-delay: 400ms; }
 .stagger-container > *:nth-child(10) { animation-delay: 450ms; }
 
+/* Liquid Card Variant */
+.card-liquid {
+  background: linear-gradient(145deg, 
+    rgba(35, 35, 40, 0.95) 0%, 
+    rgba(28, 28, 32, 0.9) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 
+    0 4px 24px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-liquid:hover {
+  border-color: rgba(41, 151, 255, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
 /* === SCROLLBAR === */
 ::-webkit-scrollbar {
   width: 6px;
