@@ -174,15 +174,18 @@ export default function LandingPage() {
                 </span>
               </Link>
              
-            <div className="hidden md:flex items-center gap-10">
-              <Link href="#features" className="text-sm text-white/[0.6] hover:text-white transition-colors">
-                Por que DYInvest
-              </Link>
+            <div className="hidden md:flex items-center gap-8">
               <Link href="#live" className="text-sm text-white/[0.6] hover:text-white transition-colors">
                 Análises IA
               </Link>
-              <Link href="#cta" className="text-sm text-white/[0.6] hover:text-white transition-colors">
-                Ferramentas
+              <Link href="/mercado" className="text-sm text-white/[0.6] hover:text-white transition-colors">
+                Mercado
+              </Link>
+              <Link href="/noticias" className="text-sm text-white/[0.6] hover:text-white transition-colors">
+                Notícias
+              </Link>
+              <Link href="/calculadoras" className="text-sm text-white/[0.6] hover:text-white transition-colors">
+                Calculadoras
               </Link>
             </div>
 
@@ -191,13 +194,8 @@ export default function LandingPage() {
                 <div className="w-2 h-2 rounded-full bg-[#00d4aa] animate-pulse" />
                 <span className="text-xs text-[#00d4aa] font-medium">{liveTime}</span>
               </div>
-              <Link href="/login" className="text-sm text-white/[0.6] hover:text-white transition-colors px-4 py-2">
-                Entrar
-              </Link>
-              <Link href="/register">
-                <button className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#2997ff] to-[#0077ed] text-white text-sm font-semibold hover:shadow-lg hover:shadow-[#2997ff]/20 hover:-translate-y-0.5 transition-all duration-300">
-                  Começar Grátis
-                </button>
+              <Link href="/login" className="text-sm text-white/[0.5] hover:text-white transition-colors px-4 py-2">
+                Login
               </Link>
             </div>
           </div>
@@ -236,18 +234,29 @@ export default function LandingPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/register">
+                <Link href="/mercado">
                   <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-[#2997ff] to-[#0077ed] text-white font-semibold hover:shadow-xl hover:shadow-[#2997ff]/25 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 hover-glow">
-                    Criar Conta Grátis
+                    Explorar Mercado Grátis
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </Link>
                 <Link href="#live">
                   <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/[0.05] border border-white/[0.1] text-white font-medium hover:bg-white/[0.08] hover:border-white/[0.2] transition-all flex items-center justify-center gap-3">
-                    Ver Análises em Tempo Real
+                    Ver Análises DA IA
                     <Eye className="w-4 h-4" />
                   </button>
                 </Link>
+              </div>
+              
+              <div className="flex flex-wrap gap-4 text-sm text-white/[0.5]">
+                <span className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-[#00d4aa]" />
+                  Sem necessidade de conta
+                </span>
+                <span className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-[#2997ff]" />
+                  100% gratuito para explorar
+                </span>
               </div>
 
               {/* Stats */}
@@ -436,11 +445,17 @@ export default function LandingPage() {
           </div>
 
           <div className="text-center mt-8">
-            <Link href="/register">
-              <button className="px-8 py-4 rounded-xl bg-[#00d4aa]/10 border border-[#00d4aa]/30 text-[#00d4aa] font-semibold hover:bg-[#00d4aa]/20 transition-all">
-                Ver mais análises →
-              </button>
-            </Link>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#00d4aa]/10 border border-[#00d4aa]/20 mb-4">
+              <Zap className="w-4 h-4 text-[#00d4aa]" />
+              <span className="text-[#00d4aa] text-sm font-medium">100% gratuito - sem login</span>
+            </div>
+            <div>
+              <Link href="/mercado">
+                <button className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#2997ff] to-[#0077ed] text-white font-semibold hover:shadow-xl hover:shadow-[#2997ff]/25 hover:-translate-y-1 transition-all">
+                  Explorar todos os ativos →
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -488,10 +503,10 @@ export default function LandingPage() {
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
-              Por que escolher o <span className="text-[#2997ff]">DYInvest</span>?
+              Tudo <span className="text-[#2997ff]">livre</span> para você usar
             </h2>
             <p className="text-lg text-white/[0.6] max-w-2xl mx-auto">
-              Uma plataforma completa para entender o mercado com tecnologia de ponta
+              Sem conta, sem login, 100% gratuito. Comece a usar agora.
             </p>
           </div>
 
@@ -552,33 +567,77 @@ export default function LandingPage() {
           <h2 className="text-4xl font-bold text-white mb-6">
             Pronto para entender o mercado?
           </h2>
-          <p className="text-lg text-slate-400 mb-8">
-            Comece agora mesmo, é gratuito. Sem compromisso.
+          <p className="text-lg text-white/[0.6] mb-8">
+            Tudo 100% gratuito. Experimente sem precisar de conta.
           </p>
-          <Link href="/register">
-            <button className="px-10 py-5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/25 hover:-translate-y-1 transition-all duration-300 flex items-center gap-3 mx-auto">
-              Criar Conta Grátis
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/mercado">
+              <button className="px-10 py-5 rounded-xl bg-gradient-to-r from-[#2997ff] to-[#0077ed] text-white font-semibold text-lg hover:shadow-2xl hover:shadow-[#2997ff]/25 hover:-translate-y-1 transition-all duration-300 flex items-center gap-3 mx-auto">
+                Explorar Mercado
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-white/[0.06]">
+      <footer className="py-12 border-t border-white/[0.06] bg-[#0d0d0f]/80">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-white" />
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2997ff] to-[#0077ed] flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-lg font-bold text-white">
+                  DY<span className="text-[#2997ff]">Invest</span>
+                </span>
               </div>
-              <span className="text-lg font-bold text-white">
-                DY<span className="text-cyan-400">Invest</span>
-              </span>
+              <p className="text-white/[0.5] text-sm">
+                Análises de IA gratuitas. Informação para decisões melhores.
+              </p>
             </div>
-            <p className="text-slate-500 text-sm">
-              2024 DYInvest. Apenas informação educativa, não recomendação de investimento.
+            
+            <div>
+              <h4 className="text-white font-semibold mb-4">Explorar</h4>
+              <div className="space-y-2">
+                <Link href="/mercado" className="block text-white/[0.5] hover:text-white text-sm transition-colors">Mercado</Link>
+                <Link href="/noticias" className="block text-white/[0.5] hover:text-white text-sm transition-colors">Notícias</Link>
+                <Link href="/acoes" className="block text-white/[0.5] hover:text-white text-sm transition-colors">Ações</Link>
+                <Link href="/criptos" className="block text-white/[0.5] hover:text-white text-sm transition-colors">Criptos</Link>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="text-white font-semibold mb-4">Ferramentas</h4>
+              <div className="space-y-2">
+                <Link href="/calculadoras" className="block text-white/[0.5] hover:text-white text-sm transition-colors">Calculadoras</Link>
+                <Link href="/comparar" className="block text-white/[0.5] hover:text-white text-sm transition-colors">Comparar Ativos</Link>
+                <Link href="/rastreador" className="block text-white/[0.5] hover:text-white text-sm transition-colors">Rastreador</Link>
+                <Link href="/rankings" className="block text-white/[0.5] hover:text-white text-sm transition-colors">Rankings</Link>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="text-white font-semibold mb-4">Legal</h4>
+              <div className="space-y-2">
+                <Link href="/aprender" className="block text-white/[0.5] hover:text-white text-sm transition-colors">Aprender</Link>
+                <p className="text-white/[0.4] text-xs">
+                  Apenas informação educativa. Não é recomendação de investimento.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="pt-8 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-white/[0.4] text-sm">
+              © 2024 DYInvest. Feito com IA para investidores brasileiros.
             </p>
+            <div className="flex items-center gap-2 text-white/[0.4] text-sm">
+              <Shield className="w-4 h-4 text-[#00d4aa]" />
+              <span>Acesso livre, sem necessidade de conta</span>
+            </div>
           </div>
         </div>
       </footer>
