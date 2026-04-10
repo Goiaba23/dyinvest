@@ -26,7 +26,10 @@ import {
   TrendingDown,
   Bitcoin,
   DollarSign,
-  Eye
+  Eye,
+  ChevronLeft,
+  ChevronRight as NextIcon,
+  Lock as ShieldLock
 } from "lucide-react";
 
 const features = [
@@ -88,8 +91,10 @@ const liveExamples = [
     price: "R$ 38,45",
     change: "+3.2%",
     positive: true,
-    analysis: "Notícias positivas sobre pré-sal e dividendos. Momentum forte no setor de óleo & gás.",
-    confidence: 72
+    analysis: "Notícias positivas sobre pré-sal e dividendos. Momentum forte no setor.",
+    confidence: 72,
+    news: "Petrobras anuncia novo recorde de produção no pré-sal",
+    sparkline: [32, 35, 33, 36, 38, 37, 40, 42, 41, 44, 46, 45]
   },
   {
     asset: "BTC",
@@ -97,8 +102,10 @@ const liveExamples = [
     price: "$ 68.230",
     change: "-1.8%",
     positive: false,
-    analysis: "Pressão vende após maxima históricas. Suporte em $67K.",
-    confidence: 65
+    analysis: "Pressão vende após máximas históricas. Suporte em $67K.",
+    confidence: 65,
+    news: "Fluxo de ETFs比特币 registra saídas de R$ 2,3B",
+    sparkline: [72, 70, 71, 69, 68, 70, 68, 65, 63, 61, 59, 58]
   },
   {
     asset: "VALE3",
@@ -106,8 +113,10 @@ const liveExamples = [
     price: "R$ 68,92",
     change: "+0.8%",
     positive: true,
-    analysis: "Demanda de minério estável. China showing sinais de recuperação.",
-    confidence: 58
+    analysis: "Demanda de minério estável. China mostrando recuperação.",
+    confidence: 58,
+    news: "China anuncia pacote de estímulos de R$ 1,4 tri",
+    sparkline: [65, 67, 66, 68, 70, 69, 71, 73, 72, 74, 76, 75]
   },
   {
     asset: "WEGE3",
@@ -116,7 +125,185 @@ const liveExamples = [
     change: "+1.5%",
     positive: true,
     analysis: "Expansão internacional continua. Preço justo segundo Graham.",
-    confidence: 61
+    confidence: 61,
+    news: "WEG inaugura fábrica nos EUA",
+    sparkline: [38, 40, 39, 41, 43, 42, 44, 46, 45, 47, 49, 48]
+  },
+  {
+    asset: "ITUB4",
+    name: "Itaú",
+    price: "R$ 31,20",
+    change: "+0.5%",
+    positive: true,
+    analysis: "Lucro trimestral acima do esperado.",
+    confidence: 55,
+    news: "Itaú reporta lucro de R$ 9,2 bi no T3",
+    sparkline: [28, 29, 28, 30, 31, 30, 32, 34, 33, 35, 37, 36]
+  },
+  {
+    asset: "BBDC4",
+    name: "Bradesco",
+    price: "R$ 12,80",
+    change: "-0.3%",
+    positive: false,
+    analysis: "Crédito pressiona margens. Reestruturações em curso.",
+    confidence: 48,
+    news: "Bradesco acelera digitalização",
+    sparkline: [14, 13, 14, 13, 12, 13, 12, 11, 12, 11, 10, 11]
+  },
+  {
+    asset: "ABEV3",
+    name: "Ambev",
+    price: "R$ 14,25",
+    change: "+0.2%",
+    positive: true,
+    analysis: "Volumestable. Copa impulsiona vendas.",
+    confidence: 52,
+    news: "Copa do Mundo deve aumentar vendas em 15%",
+    sparkline: [13, 14, 13, 14, 15, 14, 15, 16, 15, 16, 17, 16]
+  },
+  {
+    asset: "JBSS3",
+    name: "JBS",
+    price: "R$ 22,40",
+    change: "+2.1%",
+    positive: true,
+    analysis: "Exportações recordes para China.",
+    confidence: 67,
+    news: "JBS fecha acordo de R$ 3 bi com China",
+    sparkline: [18, 19, 18, 20, 22, 21, 23, 25, 24, 26, 28, 27]
+  },
+  {
+    asset: "LREN3",
+    name: "Lojas Renner",
+    price: "R$ 15,80",
+    change: "+1.8%",
+    positive: true,
+    analysis: "Vendas online crescendo 40%.",
+    confidence: 63,
+    news: "Renner expande marketplace",
+    sparkline: [12, 13, 12, 14, 15, 14, 16, 18, 17, 19, 21, 20]
+  },
+  {
+    asset: "RAIL3",
+    name: "Randon",
+    price: "R$ 28,15",
+    change: "-1.2%",
+    positive: false,
+    analysis: "Queda após resultados mistos.",
+    confidence: 44,
+    news: "Randon reporta queda no lucro",
+    sparkline: [32, 31, 30, 29, 28, 29, 28, 27, 26, 25, 24, 23]
+  },
+  {
+    asset: "CMIG4",
+    name: "Cemig",
+    price: "R$ 10,45",
+    change: "+0.9%",
+    positive: true,
+    analysis: "Tarifa cheia impulsiona receita.",
+    confidence: 56,
+    news: "Cemig aprova aumento de 8% na tarifa",
+    sparkline: [9, 9, 10, 10, 11, 10, 11, 12, 11, 12, 13, 12]
+  },
+  {
+    asset: "EQTL3",
+    name: "Equatorial",
+    price: "R$ 8,20",
+    change: "-0.5%",
+    positive: false,
+    analysis: "Dívida elevada pressiona.",
+    confidence: 42,
+    news: "Equatorial renegociar dívida",
+    sparkline: [9, 9, 8, 8, 9, 8, 7, 8, 8, 7, 7, 6]
+  },
+  {
+    asset: "KLBN11",
+    name: "Klabin",
+    price: "R$ 12,50",
+    change: "+1.6%",
+    positive: true,
+    analysis: "Demanda por papelão crescente.",
+    confidence: 59,
+    news: "Klabin inaugura nova fábrica de papelão",
+    sparkline: [10, 11, 10, 11, 12, 11, 12, 13, 12, 13, 14, 13]
+  },
+  {
+    asset: "GGBR4",
+    name: "Gerdau",
+    price: "R$ 22,30",
+    change: "+0.4%",
+    positive: true,
+    analysis: "Aço estável no Brasil.",
+    confidence: 54,
+    news: "Gerdau expande planta em MG",
+    sparkline: [20, 21, 20, 21, 22, 21, 22, 23, 22, 23, 24, 23]
+  },
+  {
+    asset: "CYRE3",
+    name: "Cyrela",
+    price: "R$ 18,90",
+    change: "+2.5%",
+    positive: true,
+    analysis: "Vendas de imóveis disparam.",
+    confidence: 71,
+    news: "Cyrela reporta vendas recordes",
+    sparkline: [14, 15, 14, 16, 17, 16, 18, 20, 19, 21, 23, 22]
+  },
+  {
+    asset: "TIMP3",
+    name: "TIMP",
+    price: "R$ 8,35",
+    change: "-2.1%",
+    positive: false,
+    analysis: "Receita cai com perda de clientes.",
+    confidence: 38,
+    news: "TIM perde 1,2 mi de clientes",
+    sparkline: [11, 10, 9, 9, 10, 9, 8, 9, 8, 7, 6, 5]
+  },
+  {
+    asset: "BBSE3",
+    name: "BB Seguridade",
+    price: "R$ 28,60",
+    change: "+0.7%",
+    positive: true,
+    analysis: "Rentabilidade acima do mercado.",
+    confidence: 57,
+    news: "BB Seguridade lança新的 produto",
+    sparkline: [26, 27, 26, 28, 29, 28, 30, 32, 31, 33, 35, 34]
+  },
+  {
+    asset: "SULA11",
+    name: "SulAmérica",
+    price: "R$ 42,15",
+    change: "+1.1%",
+    positive: true,
+    analysis: "Planos individuais crescendo.",
+    confidence: 60,
+    news: "SulAmérica expandserviços online",
+    sparkline: [38, 40, 39, 41, 43, 42, 44, 46, 45, 47, 49, 48]
+  },
+  {
+    asset: "ELET3",
+    name: "Eletrobras",
+    price: "R$ 42,80",
+    change: "+2.8%",
+    positive: true,
+    analysis: "Capitalização impulsiona ações.",
+    confidence: 74,
+    news: "Eletrobras capitaliza R$ 70 bi",
+    sparkline: [32, 34, 33, 36, 38, 37, 40, 43, 42, 45, 48, 47]
+  },
+  {
+    asset: "ONCO3",
+    name: "Oncoclínicas",
+    price: "R$ 11,25",
+    change: "-0.9%",
+    positive: false,
+    analysis: "Setor de saúde pressured.",
+    confidence: 41,
+    news: "Oncoclínicas reduzmeta",
+    sparkline: [13, 12, 11, 12, 13, 12, 11, 12, 11, 10, 9, 8]
   }
 ];
 
@@ -209,8 +396,8 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-grid opacity-40" />
         
         {/* Animated orbs */}
-        <div className="absolute top-32 left-10 w-[500px] h-[500px] bg-blue-500/8 rounded-full blur-[120px] animate-pulse-glow" />
-        <div className="absolute bottom-20 right-10 w-[400px] h-[400px] bg-purple-500/6 rounded-full blur-[100px]" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-32 left-10 w-[500px] h-[500px] bg-[#2997ff]/8 rounded-full blur-[120px] animate-pulse-glow" />
+        <div className="absolute bottom-20 right-10 w-[400px] h-[400px] bg-[#5e5ce6]/6 rounded-full blur-[100px]" style={{ animationDelay: '2s' }} />
         
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -373,21 +560,30 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#2997ff]/10 border border-[#2997ff]/20 mb-4">
               <div className="w-2 h-2 rounded-full bg-[#2997ff] animate-pulse" />
-              <span className="text-xs text-[#2997ff] font-medium uppercase tracking-widest">Análises em Tempo Real</span>
+              <span className="text-xs text-[#2997ff] font-medium uppercase tracking-widest">Análises da IA + Notícias</span>
             </div>
             <h2 className="text-4xl font-bold text-white mb-4">
-              Veja a <span className="text-[#2997ff]">IA em ação</span>
+              <span className="text-[#2997ff]">IA + Notícias</span> em tempo real
             </h2>
             <p className="text-lg text-white/[0.6] max-w-2xl mx-auto">
-              Exemplos reais de análises que nossa IA gera. Atualizado a cada minuto.
+              Cada análise vinculada às notícias que a geraram. 20 exemplos reais.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 stagger-container">
+          <div className="relative">
+            {/* Navigation Arrows */}
+            <button className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-[#1c1c1e]/80 border border-white/[0.1] flex items-center justify-center text-white hover:bg-[#2997ff]/20 hover:border-[#2997ff]/30 transition-all -translate-x-4">
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-[#1c1c1e]/80 border border-white/[0.1] flex items-center justify-center text-white hover:bg-[#2997ff]/20 hover:border-[#2997ff]/30 transition-all translate-x-4">
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          
+          <div className="flex gap-4 overflow-x-auto pb-4 snap-x stagger-container px-12">
             {liveExamples.map((example, index) => (
               <div 
                 key={index}
-                className="card-liquid p-5 rounded-2xl border border-white/[0.08] hover:border-[#2997ff]/30 transition-all hover-lift"
+                className="flex-shrink-0 w-80 card-liquid p-5 rounded-2xl border border-white/[0.08] hover:border-[#2997ff]/30 transition-all hover-lift snap-start"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -403,21 +599,45 @@ export default function LandingPage() {
                       <p className="text-white/[0.5] text-xs">{example.name}</p>
                     </div>
                   </div>
+                  <div className={cn(
+                    "px-2 py-1 rounded-lg text-xs font-medium",
+                    example.positive ? "bg-[#00d4aa]/15 text-[#00d4aa]" : "bg-rose-500/15 text-rose-400"
+                  )}>
+                    {example.change}
+                  </div>
                 </div>
+                
+                {/* Sparkline Chart */}
+                <div className="h-12 mb-3 flex items-end justify-center gap-0.5 px-2">
+                  {example.sparkline.map((value, i) => (
+                    <div 
+                      key={i}
+                      className={cn(
+                        "w-3 rounded-sm transition-all",
+                        example.positive 
+                          ? "bg-gradient-to-t from-[#00d4aa] to-[#2997ff]" 
+                          : "bg-gradient-to-t from-rose-500 to-rose-400"
+                      )}
+                      style={{ height: `${(value / 50) * 100}%` }}
+                    />
+                  ))}
+                </div>
+                
+                {/* News linked */}
+                {example.news && (
+                  <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-[#2997ff]/10 border border-[#2997ff]/20">
+                    <Newspaper className="w-4 h-4 text-[#2997ff] flex-shrink-0" />
+                    <p className="text-white/[0.7] text-xs truncate">{example.news}</p>
+                  </div>
+                )}
                 
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <p className="text-white font-bold text-lg">{example.price}</p>
-                    <p className={cn(
-                      "text-sm font-medium",
-                      example.positive ? "text-[#00d4aa]" : "text-rose-400"
-                    )}>
-                      {example.change}
-                    </p>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center gap-1 justify-end mb-1">
-                      <span className="text-xs text-white/[0.5]">Confiança</span>
+                      <span className="text-xs text-white/[0.5]">IA</span>
                       <span className="text-sm font-bold text-[#2997ff]">{example.confidence}%</span>
                     </div>
                     <div className="w-16 h-1.5 rounded-full bg-white/[0.1] overflow-hidden">
@@ -429,19 +649,20 @@ export default function LandingPage() {
                   </div>
                 </div>
                 
-                <p className="text-white/[0.6] text-sm leading-relaxed">
+                <p className="text-white/[0.6] text-sm leading-relaxed mb-3">
                   {example.analysis}
                 </p>
                 
                 <Link 
                   href={`/ativo/${example.asset}`}
-                  className="mt-3 flex items-center gap-2 text-[#2997ff] text-sm font-medium hover:gap-3 transition-all"
+                  className="mt-auto flex items-center gap-2 text-[#2997ff] text-sm font-medium hover:gap-3 transition-all"
                 >
                   Ver análise completa
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             ))}
+          </div>
           </div>
 
           <div className="text-center mt-8">
