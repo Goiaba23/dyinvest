@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase, getPreferences } from "@/lib/supabase";
-import { Header } from "@/components/layout/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -36,6 +35,7 @@ import {
   Stethoscope,
   ShieldCheck
 } from "lucide-react";
+import { gsap } from "gsap";
 import { MarketHeatmap } from "@/components/dashboard/market-heatmap";
 import { calculateIAScore, getScoreLabel } from "@/lib/ia/score";
 import { ACOES } from "@/lib/ia/market-data";
@@ -130,138 +130,169 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-void bg-aurora bg-grid">
-      <Header />
-      
-      <main className="pt-20 pb-24 lg:pt-8 px-4 max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white font-display">
-            {greeting}, <span className="text-gradient-neon">{userName}</span>
-          </h1>
-          <p className="text-slate-400 mt-1">Sua inteligência financeira avançada para o mercado.</p>
+    <div className="min-h-screen bg-[#050505]">
+      <main className="pt-4 pb-24 lg:pt-6 px-4 max-w-[1800px] mx-auto">
+        
+        {/* Hero Section - Net Worth Glass Card */}
+        <div className="liquid-glass rounded-[2rem] p-8 mb-8 relative overflow-hidden">
+          {/* Decorative Glows */}
+          <div className="absolute -top-24 -left-24 w-64 h-64 bg-[#adc6ff]/10 blur-[120px]"></div>
+          <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-[#007AFF]/20 blur-[120px]"></div>
+          
+          <div className="relative z-10 flex flex-col md:flex-row justify-between items-end md:items-center gap-8">
+            <div className="space-y-2">
+              <h3 className="text-white/50 font-['Space_Grotesk'] uppercase text-xs tracking-[0.2em]">Patrimonio Total</h3>
+              <div className="flex items-baseline gap-4">
+                <span className="text-5xl md:text-6xl font-bold font-['Space_Grotesk'] text-white tracking-tight text-glow">R$ 1.248.392<span className="text-[#adc6ff]/50 text-2xl">.42</span></span>
+              </div>
+              <div className="flex items-center gap-2 mt-4">
+                <span className="bg-[#adc6ff]/20 text-[#adc6ff] px-3 py-1 rounded-full text-xs font-['Space_Grotesk'] font-medium border border-[#adc6ff]/20">+R$ 42.102,84 (3.4%)</span>
+                <span className="text-white/30 text-xs font-['Inter'] uppercase tracking-wider">Ultimos 30 dias</span>
+              </div>
+            </div>
+            <div className="w-full md:w-1/2 h-32 md:h-40">
+              <svg className="w-full h-full drop-shadow-[0_0_15px_rgba(173,198,255,0.4)]" viewBox="0 0 400 120">
+                <defs>
+                  <linearGradient id="curveGradient" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor="#adc6ff" stopOpacity="0.5"></stop>
+                    <stop offset="100%" stopColor="#adc6ff" stopOpacity="0"></stop>
+                  </linearGradient>
+                </defs>
+                <path d="M0,100 C50,90 80,110 120,60 C160,10 200,30 250,0 C300,-30 350,10 400,-10 L400,120 L0,120 Z" fill="url(#curveGradient)"></path>
+                <path d="M0,100 C50,90 80,110 120,60 C160,10 200,30 250,0 C300,-30 350,10 400,-10" fill="none" stroke="#adc6ff" strokeLinecap="round" strokeWidth="3"></path>
+              </svg>
+            </div>
+          </div>
+          
+          {/* Quick Actions */}
+          <div className="absolute top-8 right-8 flex gap-2">
+            <button className="bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs font-['Space_Grotesk'] uppercase tracking-widest text-white transition-all flex items-center gap-2">
+              <ArrowRight className="text-sm" /> Transferir
+            </button>
+          </div>
         </div>
 
-        {/* Index Cards */}
+        {/* Header */}
+        <div className="mb-8 animate-fade-in-up">
+          <h1 className="text-3xl lg:text-4xl font-bold text-white font-['Space_Grotesk']">
+            {greeting}, <span className="text-[#adc6ff]">{userName}</span>
+          </h1>
+          <p className="text-white/40 mt-2 font-['Inter']">Sua inteligencia financeira para o mercado brasileiro.</p>
+        </div>
+
+        {/* Index Cards - Liquid Style */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {marketIndices.map((item) => (
-            <Card key={item.symbol} variant="glass" className="card-elevated hover:scale-[1.02] transition-all cursor-pointer group">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center group-hover:bg-slate-800 transition-colors">
-                    {item.symbol === 'DOLAR' ? <DollarSign className="w-4 h-4 text-emerald-400" /> : 
-                     item.symbol === 'OURO' ? <Gem className="w-4 h-4 text-yellow-400" /> :
-                     item.symbol === 'BTC' ? <Bitcoin className="w-4 h-4 text-orange-400" /> :
-                     item.symbol === 'IBOV' ? <TrendingUp className="w-4 h-4 text-blue-400" /> :
-                     item.symbol === 'PETR4' ? <Flame className="w-4 h-4 text-red-400" /> :
-                     <Landmark className="w-4 h-4 text-slate-400" />}
-                  </div>
-                  <span className={cn(
-                    "text-[10px] font-bold px-1.5 py-0.5 rounded",
-                    item.change >= 0 ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
-                  )}>
-                    {item.change >= 0 ? '+' : ''}{item.changePercent}%
-                  </span>
+            <div key={item.symbol} className="liquid-card p-4 cursor-pointer group">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-9 h-9 rounded-xl bg-white/[0.05] flex items-center justify-center group-hover:bg-white/[0.1] transition-colors border border-white/[0.08]">
+                  {item.symbol === 'DOLAR' ? <DollarSign className="w-4 h-4 text-[#00C805]" /> : 
+                   item.symbol === 'OURO' ? <Gem className="w-4 h-4 text-yellow-400" /> :
+                   item.symbol === 'BTC' ? <Bitcoin className="w-4 h-4 text-orange-400" /> :
+                   item.symbol === 'IBOV' ? <TrendingUp className="w-4 h-4 text-[#adc6ff]" /> :
+                   item.symbol === 'PETR4' ? <Flame className="w-4 h-4 text-red-400" /> :
+                   <Landmark className="w-4 h-4 text-white/30" />}
                 </div>
-                <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">{item.name}</p>
-                <p className="text-white font-bold text-sm">
-                  {item.symbol === 'DOLAR' ? `R$ ${item.price.toFixed(2)}` : 
-                   item.symbol === 'OURO' ? `R$ ${item.price.toFixed(2)}` :
-                   item.symbol === 'IBOV' ? `${item.price.toLocaleString('pt-BR')} pts` :
-                   `R$ ${item.price.toLocaleString('pt-BR')}`}
-                </p>
-              </CardContent>
-            </Card>
+                <span className={cn(
+                  "text-[10px] font-bold px-2 py-0.5 rounded-full font-['Space_Grotesk']",
+                  item.change >= 0 ? "bg-[#00C805]/10 text-[#00C805]" : "bg-red-500/10 text-red-400"
+                )}>
+                  {item.change >= 0 ? '+' : ''}{item.changePercent}%
+                </span>
+              </div>
+              <p className="text-white/40 text-[10px] uppercase font-bold tracking-wider font-['Space_Grotesk']">{item.name}</p>
+              <p className="text-white font-bold text-sm mt-1 font-['Space_Grotesk']">
+                {item.symbol === 'DOLAR' ? `R$ ${item.price.toFixed(2)}` : 
+                 item.symbol === 'OURO' ? `R$ ${item.price.toFixed(2)}` :
+                 item.symbol === 'IBOV' ? `${item.price.toLocaleString('pt-BR')} pts` :
+                 `R$ ${item.price.toLocaleString('pt-BR')}`}
+              </p>
+            </div>
           ))}
         </div>
 
         {/* Bento Grid Layer 1 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card variant="glass" className="md:col-span-2 card-elevated border-emerald-500/20">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-white font-bold text-lg flex items-center gap-3 font-display">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center border border-emerald-500/30">
-                  <Activity className="w-5 h-5 text-emerald-400" />
+          {/* Heatmap */}
+          <div className="md:col-span-2 liquid-card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-bold text-lg flex items-center gap-3 font-['Space_Grotesk']">
+                <div className="w-10 h-10 rounded-xl bg-[#adc6ff]/10 flex items-center justify-center border border-[#adc6ff]/20">
+                  <Activity className="w-5 h-5 text-[#adc6ff]" />
                 </div>
                 Mapa de Calor do Mercado
-              </CardTitle>
-              <div className="flex gap-2">
-                <span className="text-[10px] text-slate-500 uppercase font-medium">B3 / Ativos em destaque</span>
+              </h3>
+              <span className="text-[10px] text-white/30 uppercase font-medium font-['Space_Grotesk']">B3 / Ativos em destaque</span>
+            </div>
+            <MarketHeatmap />
+          </div>
+
+          {/* Top Score IA */}
+          <div className="liquid-card p-6 bg-gradient-to-br from-[#1a1a1a]/50 to-[#00285c]/10">
+            <h3 className="text-white font-bold text-lg mb-5 flex items-center gap-3 font-['Space_Grotesk']">
+              <div className="w-10 h-10 rounded-xl bg-[#adc6ff]/10 flex items-center justify-center border border-[#adc6ff]/20">
+                <Brain className="w-5 h-5 text-[#adc6ff]" />
               </div>
-            </CardHeader>
-            <CardContent>
-              <MarketHeatmap />
-            </CardContent>
-          </Card>
-
-          <Card variant="glass" className="card-elevated bg-gradient-to-br from-slate-900/50 to-blue-950/20 border-blue-500/20">
-            <CardContent className="pt-6">
-               <h3 className="text-white font-bold text-lg mb-5 flex items-center gap-3 font-display">
-                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-500/30">
-                   <Brain className="w-5 h-5 text-blue-400" />
-                 </div>
-                 Top Score IA
-               </h3>
-               <div className="space-y-4">
-                 {ACOES.slice(0, 3).map(asset => {
-                   const score = calculateIAScore(asset);
-                   const color = getScoreLabel(score).color;
-                   return (
-                     <div key={asset.symbol} className="flex items-center justify-between group cursor-help p-3 rounded-xl hover:bg-slate-800/30 transition-all">
-                       <div className="flex items-center gap-3">
-                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 border border-slate-600 flex items-center justify-center font-bold text-sm text-white">
-                           {asset.symbol.slice(0, 2)}
-                         </div>
-                         <div>
-                           <p className="text-sm font-medium text-white">{asset.symbol}</p>
-                           <p className="text-[10px] text-slate-500">{asset.name}</p>
-                         </div>
-                       </div>
-                       <div className="text-right">
-                         <p className={cn("text-lg font-bold", color)}>{score}</p>
-                         <IAScoreBar score={score} color={color} />
-                       </div>
-                     </div>
-                   );
-                 })}
-               </div>
-               <Link href="/rankings" className="block text-center text-sm text-blue-400 mt-5 hover:text-blue-300 transition-colors flex items-center justify-center gap-1">
-                 Ver ranking completo <ArrowRight className="w-4 h-4" />
-               </Link>
-            </CardContent>
-          </Card>
+              Top Score IA
+            </h3>
+            <div className="space-y-4">
+              {ACOES.slice(0, 3).map(asset => {
+                const score = calculateIAScore(asset);
+                const color = getScoreLabel(score).color;
+                return (
+                  <div key={asset.symbol} className="flex items-center justify-between group cursor-help p-3 rounded-xl hover:bg-white/[0.03] transition-all border border-transparent hover:border-white/[0.08]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#adc6ff]/20 to-[#4b8eff]/20 border border-[#adc6ff]/30 flex items-center justify-center font-bold text-sm text-white font-['Space_Grotesk']">
+                        {asset.symbol.slice(0, 2)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-white font-['Space_Grotesk']">{asset.symbol}</p>
+                        <p className="text-[10px] text-white/30 font-['Inter']">{asset.name}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className={cn("text-xl font-bold font-['Space_Grotesk']", color)}>{score}</p>
+                      <IAScoreBar score={score} color={color} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <Link href="/rankings" className="block text-center text-sm text-[#adc6ff] mt-5 hover:text-white transition-colors flex items-center justify-center gap-1 font-['Space_Grotesk']">
+              Ver ranking completo <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
           
-          <Card variant="glass" className="card-elevated border-emerald-500/20 bg-gradient-to-br from-slate-900/80 to-emerald-950/10">
-            <CardContent className="pt-6">
-               <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-white font-bold text-lg flex items-center gap-3 font-display">
-                    <Stethoscope className="w-5 h-5 text-emerald-400" />
-                    Saúde IA
-                  </h3>
-                  <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">EXCELENTE</span>
+          {/* Saúde IA Card */}
+          <div className="liquid-card p-6 bg-gradient-to-br from-[#1a1a1a]/80 to-[#02e600]/05 border-[#02e600]/20">
+            <div className="flex items-center justify-between mb-4">
+               <h3 className="text-white font-bold text-lg flex items-center gap-3 font-['Space_Grotesk']">
+                 <Stethoscope className="w-5 h-5 text-[#02e600]" />
+                 Saude IA
+               </h3>
+               <span className="text-[10px] bg-[#02e600]/10 text-[#02e600] px-2 py-0.5 rounded border border-[#02e600]/20 font-bold font-['Space_Grotesk']">EXCELENTE</span>
+            </div>
+            
+            <div className="flex items-end justify-between mb-6">
+               <div>
+                 <p className="text-5xl font-black text-white font-['Space_Grotesk']">88</p>
+                 <p className="text-[10px] text-white/30 uppercase font-bold tracking-widest mt-1 font-['Space_Grotesk']">Score Geral</p>
                </div>
-               
-               <div className="flex items-end justify-between mb-6">
-                  <div>
-                    <p className="text-4xl font-black text-white font-display">88</p>
-                    <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-1">Score Geral</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-emerald-400 text-xs font-bold flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3" /> Imunidade Alta
-                    </p>
-                    <p className="text-[10px] text-slate-500 mt-1">Sua carteira está protegida</p>
-                  </div>
+               <div className="text-right">
+                 <p className="text-[#02e600] text-xs font-bold flex items-center gap-1 font-['Space_Grotesk']">
+                   <ShieldCheck className="w-3 h-3" /> Imunidade Alta
+                 </p>
+                 <p className="text-[10px] text-white/30 mt-1 font-['Inter']">Sua carteira esta protegida</p>
                </div>
+            </div>
 
-               <Link href="/sentinel">
-                <Button className="w-full bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30 text-xs font-bold h-11 rounded-xl group">
-                  VER DIAGNÓSTICO COMPLETO
-                  <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-               </Link>
-            </CardContent>
-          </Card>
+            <Link href="/sentinel">
+             <Button className="w-full bg-[#02e600]/10 hover:bg-[#02e600]/20 text-[#02e600] border border-[#02e600]/20 text-xs font-bold h-11 rounded-xl font-['Space_Grotesk'] group">
+               VER DIAGNOSTICO COMPLETO
+               <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+             </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Notícias Quentes */}
@@ -278,15 +309,14 @@ export default function DashboardPage() {
             </div>
             <div className="grid gap-3">
               {hotNews.map((item: any, index: number) => (
-                <Card key={item.id || index} variant="glass" className={cn(
-                  "hover:bg-slate-800/50 cursor-pointer transition-all hover:scale-[1.01]",
-                  item.importancia === 'quente' && "border-red-500/30 card-elevated"
+                <div key={item.id || index} className={cn(
+                  "liquid-card p-4 cursor-pointer group hover:bg-white/[0.03]",
+                  item.importancia === 'quente' && "border-red-500/20"
                 )}>
-                  <CardContent className="p-4">
                     <div className="flex items-start gap-4">
                       <div className={cn(
                         "w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 border",
-                        item.importancia === 'quente' ? "bg-red-500/20 border-red-500/30" : "bg-orange-500/20 border-orange-500/30"
+                        item.importancia === 'quente' ? "bg-red-500/10 border-red-500/20" : "bg-orange-500/10 border-orange-500/20"
                       )}>
                         {item.importancia === 'quente' ? (
                           <AlertTriangle className="w-5 h-5 text-red-400" />
@@ -297,23 +327,23 @@ export default function DashboardPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
                           <span className={cn(
-                            "text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wider",
+                            "text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wider font-['Space_Grotesk']",
                             item.importancia === 'quente' ? "bg-red-600 text-white" : "bg-orange-600 text-white"
                           )}>
                             {item.importancia === 'quente' ? 'QUENTE' : 'ALTA'}
                           </span>
                           {item.relatedAssets?.slice(0, 2).map((asset: string) => (
-                            <span key={asset} className="text-xs text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded border border-cyan-500/20">
+                            <span key={asset} className="text-xs text-[#adc6ff] bg-[#adc6ff]/10 px-2 py-1 rounded border border-[#adc6ff]/20 font-['Space_Grotesk']">
                               {asset}
                             </span>
                           ))}
                         </div>
-                        <h3 className="text-white font-medium text-base leading-snug">{item.title}</h3>
-                        <p className="text-slate-500 text-xs mt-2 flex items-center gap-3">
+                        <h3 className="text-white font-medium text-base leading-snug font-['Inter']">{item.title}</h3>
+                        <p className="text-white/30 text-xs mt-2 flex items-center gap-3 font-['Inter']">
                           <span className="flex items-center gap-1"><Newspaper className="w-3 h-3" /> {item.source}</span>
                           {item.impacto && (
                             <span className={cn(
-                              "text-xs px-2 py-0.5 rounded",
+                              "text-xs px-2 py-0.5 rounded font-['Space_Grotesk']",
                               item.impacto === 'muito_alto' ? "text-red-400 bg-red-500/10" :
                               item.impacto === 'alto' ? "text-orange-400 bg-orange-500/10" : "text-yellow-400 bg-yellow-500/10"
                             )}>
@@ -322,13 +352,12 @@ export default function DashboardPage() {
                           )}
                         </p>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-slate-600 flex-shrink-0" />
+                      <ChevronRight className="w-5 h-5 text-white/20 flex-shrink-0 group-hover:text-white/40 transition-colors" />
                     </div>
-                  </CardContent>
-                </Card>
+                </div>
               ))}
             </div>
-            <Link href="/noticias?filter=quente" className="text-emerald-400 text-sm flex items-center gap-2 mt-4 hover:text-emerald-300 transition-colors font-medium">
+            <Link href="/noticias?filter=quente" className="text-[#02e600] text-sm flex items-center gap-2 mt-4 hover:text-[#02e600]/80 transition-colors font-medium font-['Space_Grotesk']">
               Ver todas as notícias quentes <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -337,49 +366,47 @@ export default function DashboardPage() {
         {/* Seus Ativos */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-white font-display flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center border border-emerald-500/30">
-                <Wallet className="w-5 h-5 text-emerald-400" />
+            <h2 className="text-xl font-semibold text-white font-['Space_Grotesk'] flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#adc6ff]/10 flex items-center justify-center border border-[#adc6ff]/20">
+                <Wallet className="w-5 h-5 text-[#adc6ff]" />
               </div>
               Seus Ativos em Foco
             </h2>
-            <Link href="/mercado" className="text-cyan-400 text-sm flex items-center gap-2 hover:text-cyan-300 transition-colors">
+            <Link href="/mercado" className="text-[#adc6ff] text-sm flex items-center gap-2 hover:text-white/60 transition-colors font-['Space_Grotesk']">
               Ver todos <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
             {marketIndices.map((item) => (
               <Link key={item.symbol} href={`/ativo/${item.symbol}`}>
-                <Card variant="glass" className="w-56 flex-shrink-0 hover:bg-slate-800/50 transition-all border-slate-800/50">
-                  <CardContent className="p-5">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center">
-                        <LineChart className="w-4 h-4 text-slate-400" />
-                      </div>
-                      <div className={cn(
-                        "w-8 h-8 rounded-lg flex items-center justify-center",
-                        item.changePercent >= 0 ? "bg-emerald-500/20" : "bg-rose-500/20"
-                      )}>
-                        {item.changePercent >= 0 ? (
-                          <ArrowUpRight className="w-4 h-4 text-emerald-400" />
-                        ) : (
-                          <ArrowDownRight className="w-4 h-4 text-rose-400" />
-                        )}
-                      </div>
+                <div className="liquid-card w-56 flex-shrink-0 p-5 group">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-white/[0.05] flex items-center justify-center border border-white/[0.08]">
+                      <LineChart className="w-4 h-4 text-white/30" />
                     </div>
-                    <p className="text-white font-bold text-lg">{item.symbol}</p>
-                    <p className="text-slate-500 text-xs">{item.name}</p>
-                    <p className="text-white font-semibold mt-3 text-lg">
-                      R$ {item.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </p>
-                    <p className={cn(
-                      "text-sm font-medium flex items-center gap-1 mt-1",
-                      item.changePercent >= 0 ? "text-emerald-400" : "text-rose-400"
+                    <div className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center",
+                      item.changePercent >= 0 ? "bg-[#00C805]/10" : "bg-red-500/10"
                     )}>
-                      {item.changePercent >= 0 ? '+' : ''}{item.changePercent}%
-                    </p>
-                  </CardContent>
-                </Card>
+                      {item.changePercent >= 0 ? (
+                        <ArrowUpRight className="w-4 h-4 text-[#00C805]" />
+                      ) : (
+                        <ArrowDownRight className="w-4 h-4 text-red-400" />
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-white font-bold text-lg font-['Space_Grotesk']">{item.symbol}</p>
+                  <p className="text-white/30 text-xs font-['Inter']">{item.name}</p>
+                  <p className="text-white font-semibold mt-3 text-lg font-['Space_Grotesk']">
+                    R$ {item.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </p>
+                  <p className={cn(
+                    "text-sm font-medium flex items-center gap-1 mt-1 font-['Space_Grotesk']",
+                    item.changePercent >= 0 ? "text-[#00C805]" : "text-red-400"
+                  )}>
+                    {item.changePercent >= 0 ? '+' : ''}{item.changePercent}%
+                  </p>
+                </div>
               </Link>
             ))}
           </div>
@@ -387,8 +414,8 @@ export default function DashboardPage() {
 
         {/* Probabilidades do Dia */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-white mb-5 font-display flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/30">
+          <h2 className="text-xl font-semibold text-white mb-5 font-['Space_Grotesk'] flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
               <Target className="w-5 h-5 text-purple-400" />
             </div>
             Probabilidades do Dia

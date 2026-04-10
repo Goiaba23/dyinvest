@@ -36,8 +36,6 @@ export default function ETFsPage() {
 
   return (
     <div className="min-h-screen bg-slate-900">
-      <Header isLoggedIn user={{ email: "usuario@email.com" }} />
-      
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">

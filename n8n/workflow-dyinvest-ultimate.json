@@ -1,0 +1,226 @@
+{
+  "name": "DYInvest - Ultimate (20+ Fontes)",
+  "nodes": [
+    {
+      "parameters": {"rule": {"interval": [{"field": "minutes", "minutesInterval": 15}]}},
+      "id": "mkt",
+      "name": "Mercado 15min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://api.hgbrasil.com/finance?key=3f313604", "options": {"timeout": 30000}},
+      "id": "hg",
+      "name": "HG Brasil",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 150]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://api.bitvalor.com/v1/ticker.json", "options": {"timeout": 15000}},
+      "id": "btc",
+      "name": "Bitcoin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {"rule": {"interval": [{"field": "minutes", "minutesInterval": 30}]}},
+      "id": "br",
+      "name": "BRASIL 10",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 500]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://g1.globo.com/economia/", "options": {"timeout": 20000}},
+      "id": "g1",
+      "name": "1 G1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 500]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://valor.globo.com/financas/", "options": {"timeout": 20000}},
+      "id": "valor",
+      "name": "2 Valor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 650]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://oglobo.globo.com/economia/", "options": {"timeout": 20000}},
+      "id": "oglobo",
+      "name": "3 O Globo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 800]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://noticias.uol.com.br/", "options": {"timeout": 20000}},
+      "id": "uoln",
+      "name": "4 UOL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 950]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.r7.com/", "options": {"timeout": 20000}},
+      "id": "r7",
+      "name": "5 R7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 150]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://band.uol.com.br/economia", "options": {"timeout": 20000}},
+      "id": "band",
+      "name": "6 Band",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.correiobraziliense.com.br/", "options": {"timeout": 20000}},
+      "id": "correio",
+      "name": "7 Correio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 450]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.em.com.br/", "options": {"timeout": 20000}},
+      "id": "estado",
+      "name": "8 Estado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 600]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://folha.uol.com.br/", "options": {"timeout": 20000}},
+      "id": "folha",
+      "name": "9 Folha",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 750]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.cbn.globoradio.com.br/", "options": {"timeout": 20000}},
+      "id": "cbn",
+      "name": "10 CBN",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 900]
+    },
+    {
+      "parameters": {"rule": {"interval": [{"field": "hours", "hoursInterval": 1}]}},
+      "id": "world",
+      "name": "MUNDO 10",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 1100]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.cnbc.com/", "options": {"timeout": 25000}},
+      "id": "cnbc",
+      "name": "1 CNBC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 1100]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.reuters.com/", "options": {"timeout": 25000}},
+      "id": "reuters",
+      "name": "2 Reuters",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 1250]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.bloomberg.com/", "options": {"timeout": 25000}},
+      "id": "bloomberg",
+      "name": "3 Bloomberg",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 1100]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.wsj.com/", "options": {"timeout": 25000}},
+      "id": "wsj",
+      "name": "4 WSJ",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 1250]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://finance.yahoo.com/", "options": {"timeout": 25000}},
+      "id": "yahoo",
+      "name": "5 Yahoo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 150]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.ft.com/", "options": {"timeout": 25000}},
+      "id": "ft",
+      "name": "6 Financial Times",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 300]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.lemonde.fr/", "options": {"timeout": 25000}},
+      "id": "lemonde",
+      "name": "7 Le Monde",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 450]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.bbc.com/news/business", "options": {"timeout": 25000}},
+      "id": "bbc",
+      "name": "8 BBC News",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 600]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://it.reuters.com/", "options": {"timeout": 25000}},
+      "id": "rit",
+      "name": "9 Reuters IT",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 750]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.bnnbloomberg.ca/", "options": {"timeout": 25000}},
+      "id": "bnb",
+      "name": "10 BNN",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 900]
+    },
+{
+      "parameters": {"method": "GET", "url": "https://dyinvest.vercel.app/api/mercado", "options": {"timeout": 30000}},
+      "id": "save",
+      "name": "Salvar Site",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 600]
+    }
+  ],
+  "connections": {
+    "Mercado 15min": {"main": [[{"node": "HG Brasil", "type": "main", "index": 0}, {"node": "Bitcoin", "type": "main", "index": 0}]]},
+    "BRASIL 10": {"main": [[{"node": "1 G1", "type": "main", "index": 0}, {"node": "2 Valor", "type": "main", "index": 0}, {"node": "3 O Globo", "type": "main", "index": 0}, {"node": "4 UOL", "type": "main", "index": 0}, {"node": "5 R7", "type": "main", "index": 0}, {"node": "6 Band", "type": "main", "index": 0}, {"node": "7 Correio", "type": "main", "index": 0}, {"node": "8 Estado", "type": "main", "index": 0}, {"node": "9 Folha", "type": "main", "index": 0}, {"node": "10 CBN", "type": "main", "index": 0}]]},
+    "MUNDO 10": {"main": [[{"node": "1 CNBC", "type": "main", "index": 0}, {"node": "2 Reuters", "type": "main", "index": 0}, {"node": "3 Bloomberg", "type": "main", "index": 0}, {"node": "4 WSJ", "type": "main", "index": 0}, {"node": "5 Yahoo", "type": "main", "index": 0}, {"node": "6 Financial Times", "type": "main", "index": 0}, {"node": "7 Le Monde", "type": "main", "index": 0}, {"node": "8 BBC News", "type": "main", "index": 0}, {"node": "9 Reuters IT", "type": "main", "index": 0}, {"node": "10 BNN", "type": "main", "index": 0}]]},
+    "HG Brasil": {"main": [[{"node": "Salvar Site", "type": "main", "index": 0}]]},
+    "Bitcoin": {"main": [[{"node": "Salvar Site", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1"},
+  "staticData": null,
+  "tags": ["dyinvest"],
+  "triggerCount": 3,
+  "updatedAt": "2026-04-10T23:00:00.000Z",
+  "versionId": "1"
+}

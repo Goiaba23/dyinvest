@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components/layout/sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { 
@@ -84,10 +83,8 @@ export default function AlertasPage() {
   const unreadCount = alerts.filter(a => !a.read).length;
 
   return (
-    <div className="min-h-screen bg-slate-950">
-      <Header isLoggedIn user={{ email: "joao@email.com" }} />
-      
-      <main className="pt-20 pb-24 lg:pt-8 px-4 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#050505]">
+      <main className="pt-4 pb-24 lg:pt-6 px-4 max-w-[1800px] mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-white flex items-center gap-2">

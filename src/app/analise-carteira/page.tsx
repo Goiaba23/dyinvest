@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components/layout/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ACOES, MarketData } from "@/lib/ia/market-data";
 import { calculateIAScore, getScoreLabel } from "@/lib/ia/score";
@@ -52,10 +51,8 @@ export default function PortfolioDoctorPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950">
-      <Header isLoggedIn user={{ email: "joao@email.com", name: "João" }} />
-      
-      <main className="pt-20 pb-24 lg:pt-8 px-4 max-w-5xl mx-auto">
+    <div className="min-h-screen bg-[#050505]">
+      <main className="pt-4 pb-24 lg:pt-6 px-4 max-w-[1800px] mx-auto">
         <Link href="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 text-sm transition-colors">
           <ArrowLeft className="w-4 h-4" /> Voltar ao Dashboard
         </Link>
@@ -166,3 +163,4 @@ export default function PortfolioDoctorPage() {
     </div>
   );
 }
+

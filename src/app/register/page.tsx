@@ -9,8 +9,6 @@ import { Mail, Lock, User } from "lucide-react";
 export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-slate-900">
-      <Header />
-      
       <section className="pt-32 pb-20">
         <div className="max-w-md mx-auto px-4">
           <Card className="bg-slate-800/50 backdrop-blur-xl border-slate-700/50">

@@ -1,324 +1,282 @@
 {
-  "name": "DYInvest - Sistema Completo de Automação",
+  "name": "DYInvest - Completo v2 (20+ Fontes)",
   "nodes": [
     {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "minutes",
-              "minutesInterval": 15
-            }
-          ]
-        }
-      },
-      "id": "schedule-15min",
-      "name": "A cada 15 Minutos",
+      "parameters": {"rule": {"interval": [{"field": "minutes", "minutesInterval": 15}]}},
+      "id": "mkt",
+      "name": "Mercado 15min",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.1,
-      "position": [250, 300]
+      "typeVersion": 1.2,
+      "position": [200, 300]
     },
     {
-      "parameters": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/market-hours",
-        "options": {
-          "timeout": 10000
-        }
-      },
-      "id": "check-hours",
-      "name": "1. Verificar Horário Mercado",
+      "parameters": {"method": "GET", "url": "https://api.hgbrasil.com/finance?key=3f313604", "options": {"timeout": 30000}},
+      "id": "hg",
+      "name": "HG Brasil",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
+      "typeVersion": 4.2,
       "position": [450, 150]
     },
     {
-      "parameters": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/noticias",
-        "options": {
-          "timeout": 30000
-        }
-      },
-      "id": "fetch-news",
-      "name": "2. Buscar Notícias",
+      "parameters": {"method": "GET", "url": "https://api.bitvalor.com/v1/ticker.json", "options": {"timeout": 15000}},
+      "id": "btc",
+      "name": "Bitcoin",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
+      "typeVersion": 4.2,
       "position": [450, 300]
     },
     {
-      "parameters": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/mercado?type=indices",
-        "options": {
-          "timeout": 15000
-        }
-      },
-      "id": "fetch-indices",
-      "name": "3. Buscar Índices",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [450, 450]
-    },
-    {
-      "parameters": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/mercado?type=stocks",
-        "options": {
-          "timeout": 30000
-        }
-      },
-      "id": "fetch-stocks",
-      "name": "4. Buscar Ações",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [650, 150]
-    },
-    {
-      "parameters": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/mercado?type=crypto",
-        "options": {
-          "timeout": 20000
-        }
-      },
-      "id": "fetch-crypto",
-      "name": "5. Buscar Criptos",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [650, 300]
-    },
-    {
-      "parameters": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/economic",
-        "options": {
-          "timeout": 15000
-        }
-      },
-      "id": "fetch-economic",
-      "name": "6. Dados Econômicos",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [650, 450]
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "http://localhost:3000/api/portfolio/sync",
-        "options": {
-          "timeout": 30000
-        }
-      },
-      "id": "sync-portfolio",
-      "name": "7. Sincronizar Portfólio",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [850, 300]
-    },
-    {
-      "parameters": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/sentinel?action=check",
-        "options": {
-          "timeout": 30000
-        }
-      },
-      "id": "run-sentinel",
-      "name": "8. Análise Sentinela",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [1050, 300]
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "hours",
-              "hoursInterval": 6
-            }
-          ]
-        }
-      },
-      "id": "schedule-6h",
-      "name": "A cada 6 Horas (Deep)",
+      "parameters": {"rule": {"interval": [{"field": "minutes", "minutesInterval": 30}]}},
+      "id": "br",
+      "name": "BRASIL 10",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.1,
-      "position": [250, 600]
+      "typeVersion": 1.2,
+      "position": [200, 500]
     },
     {
-      "parameters": {
-        "method": "POST",
-        "url": "http://localhost:3000/api/ai/analyze",
-        "options": {
-          "timeout": 120000
-        }
-      },
-      "id": "ai-analysis",
-      "name": "Análise IA Profunda",
+      "parameters": {"method": "GET", "url": "https://g1.globo.com/economia/", "options": {"timeout": 20000}},
+      "id": "g1",
+      "name": "1 G1",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [500, 600]
+      "typeVersion": 4.2,
+      "position": [450, 500]
     },
     {
-      "parameters": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/scraped?source=statusinvest",
-        "options": {
-          "timeout": 60000
-        }
-      },
-      "id": "scrape-statusinvest",
-      "name": "Scraping StatusInvest",
+      "parameters": {"method": "GET", "url": "https://valor.globo.com/financas/", "options": {"timeout": 20000}},
+      "id": "valor",
+      "name": "2 Valor",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
+      "typeVersion": 4.2,
+      "position": [450, 650]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://oglobo.globo.com/economia/", "options": {"timeout": 20000}},
+      "id": "oglobo",
+      "name": "3 O Globo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 800]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.infomoney.com.br/", "options": {"timeout": 20000}},
+      "id": "uoln",
+      "name": "4 InfoMoney",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 950]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.cnnbrasil.com.br/", "options": {"timeout": 20000}},
+      "id": "cnn",
+      "name": "5 CNN Brasil",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 150]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.correiobraziliense.com.br/", "options": {"timeout": 20000}},
+      "id": "correio",
+      "name": "6 Correio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.em.com.br/", "options": {"timeout": 20000}},
+      "id": "estado",
+      "name": "7 Estado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 450]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://folha.uol.com.br/", "options": {"timeout": 20000}},
+      "id": "folha",
+      "name": "8 Folha",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [700, 600]
     },
     {
-      "parameters": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/scraped?source=infomoney",
-        "options": {
-          "timeout": 60000
-        }
-      },
-      "id": "scrape-infomoney",
-      "name": "Scraping InfoMoney",
+      "parameters": {"method": "GET", "url": "https://www.terra.com.br/", "options": {"timeout": 20000}},
+      "id": "terra",
+      "name": "9 Terra",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [900, 600]
+      "typeVersion": 4.2,
+      "position": [700, 750]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.ig.com.br/", "options": {"timeout": 20000}},
+      "id": "ig",
+      "name": "10 IG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 900]
+    },
+    {
+      "parameters": {"rule": {"interval": [{"field": "hours", "hoursInterval": 1}]}},
+      "id": "world",
+      "name": "MUNDO 15",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 1100]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.cnbc.com/", "options": {"timeout": 25000}},
+      "id": "cnbc",
+      "name": "1 CNBC (USA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 1100]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.reutersagency.com/", "options": {"timeout": 25000}},
+      "id": "reuters",
+      "name": "2 Reuters Agency",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 1250]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.fool.com/", "options": {"timeout": 25000}},
+      "id": "bloomberg",
+      "name": "3 The Motley Fool (USA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 1400]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.seekingalpha.com/", "options": {"timeout": 25000}},
+      "id": "wsj",
+      "name": "4 Seeking Alpha (USA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 1100]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://finance.yahoo.com/", "options": {"timeout": 25000}},
+      "id": "yahoo",
+      "name": "5 Yahoo Finance",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 1250]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.theguardian.com/international", "options": {"timeout": 25000}},
+      "id": "guardian",
+      "name": "6 Guardian (UK)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 1400]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.bbc.com/news/business", "options": {"timeout": 25000}},
+      "id": "bbc",
+      "name": "7 BBC (UK)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 150]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.lemonde.fr/", "options": {"timeout": 25000}},
+      "id": "lemonde",
+      "name": "8 Le Monde (FR)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 300]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.lefigaro.fr/", "options": {"timeout": 25000}},
+      "id": "figaro",
+      "name": "9 Le Figaro (FR)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 450]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.handelsblatt.com/", "options": {"timeout": 25000}},
+      "id": "handelsblatt",
+      "name": "10 Handelsblatt (DE)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 600]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.spiegel.de/", "options": {"timeout": 25000}},
+      "id": "spiegel",
+      "name": "11 Spiegel (DE)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 750]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.nikkei.com/", "options": {"timeout": 25000}},
+      "id": "nikkei",
+      "name": "12 Nikkei (JP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 900]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.asahi.com/", "options": {"timeout": 25000}},
+      "id": "asahi",
+      "name": "13 Asahi (JP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 1050]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://finance.sina.com.cn/", "options": {"timeout": 25000}},
+      "id": "sina",
+      "name": "14 Sina Finance (CN)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 1200]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.ifeng.com/", "options": {"timeout": 25000}},
+      "id": "ifeng",
+      "name": "15 Ifeng (CN)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 1350]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.bnnbloomberg.ca/", "options": {"timeout": 25000}},
+      "id": "bnb",
+      "name": "16 BNN (CA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 150]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.euronews.com/business", "options": {"timeout": 25000}},
+      "id": "euronews",
+      "name": "17 Euronews (EU)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://dyinvest.vercel.app/api/mercado", "options": {"timeout": 30000}},
+      "id": "save",
+      "name": "Salvar Site",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1450, 600]
     }
   ],
   "connections": {
-    "A cada 15 Minutos": {
-      "main": [
-        [
-          {
-            "node": "1. Verificar Horário Mercado",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "1. Verificar Horário Mercado": {
-      "main": [
-        [
-          {
-            "node": "2. Buscar Notícias",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "2. Buscar Notícias": {
-      "main": [
-        [
-          {
-            "node": "3. Buscar Índices",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "3. Buscar Índices": {
-      "main": [
-        [
-          {
-            "node": "4. Buscar Ações",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "4. Buscar Ações": {
-      "main": [
-        [
-          {
-            "node": "5. Buscar Criptos",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "5. Buscar Criptos": {
-      "main": [
-        [
-          {
-            "node": "6. Dados Econômicos",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "6. Dados Econômicos": {
-      "main": [
-        [
-          {
-            "node": "7. Sincronizar Portfólio",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "7. Sincronizar Portfólio": {
-      "main": [
-        [
-          {
-            "node": "8. Análise Sentinela",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "A cada 6 Horas (Deep)": {
-      "main": [
-        [
-          {
-            "node": "Análise IA Profunda",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Análise IA Profunda": {
-      "main": [
-        [
-          {
-            "node": "Scraping StatusInvest",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Scraping StatusInvest": {
-      "main": [
-        [
-          {
-            "node": "Scraping InfoMoney",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
+    "Mercado 15min": {"main": [[{"node": "HG Brasil", "type": "main", "index": 0}, {"node": "Bitcoin", "type": "main", "index": 0}]]},
+    "BRASIL 10": {"main": [[{"node": "1 G1", "type": "main", "index": 0}, {"node": "2 Valor", "type": "main", "index": 0}, {"node": "3 O Globo", "type": "main", "index": 0}, {"node": "4 InfoMoney", "type": "main", "index": 0}, {"node": "5 CNN Brasil", "type": "main", "index": 0}, {"node": "6 Correio", "type": "main", "index": 0}, {"node": "7 Estado", "type": "main", "index": 0}, {"node": "8 Folha", "type": "main", "index": 0}, {"node": "9 Terra", "type": "main", "index": 0}, {"node": "10 IG", "type": "main", "index": 0}]]},
+    "MUNDO 15": {"main": [[{"node": "1 CNBC (USA)", "type": "main", "index": 0}, {"node": "2 Reuters Agency", "type": "main", "index": 0}, {"node": "3 The Motley Fool (USA)", "type": "main", "index": 0}, {"node": "4 Seeking Alpha (USA)", "type": "main", "index": 0}, {"node": "5 Yahoo Finance", "type": "main", "index": 0}, {"node": "6 Guardian (UK)", "type": "main", "index": 0}, {"node": "7 BBC (UK)", "type": "main", "index": 0}, {"node": "8 Le Monde (FR)", "type": "main", "index": 0}, {"node": "9 Le Figaro (FR)", "type": "main", "index": 0}, {"node": "10 Handelsblatt (DE)", "type": "main", "index": 0}, {"node": "11 Spiegel (DE)", "type": "main", "index": 0}, {"node": "12 Nikkei (JP)", "type": "main", "index": 0}, {"node": "13 Asahi (JP)", "type": "main", "index": 0}, {"node": "14 Sina Finance (CN)", "type": "main", "index": 0}, {"node": "15 Ifeng (CN)", "type": "main", "index": 0}, {"node": "16 BNN (CA)", "type": "main", "index": 0}, {"node": "17 Euronews (EU)", "type": "main", "index": 0}]]},
+    "HG Brasil": {"main": [[{"node": "Salvar Site", "type": "main", "index": 0}]]},
+    "Bitcoin": {"main": [[{"node": "Salvar Site", "type": "main", "index": 0}]]}
   },
-  "settings": {
-    "executionOrder": "v1"
-  },
+  "settings": {"executionOrder": "v1"},
   "staticData": null,
-  "tags": [],
-  "triggerCount": 2,
-  "updatedAt": "2026-04-10T12:00:00.000Z",
-  "versionId": "1"
+  "tags": ["dyinvest"],
+  "triggerCount": 3,
+  "updatedAt": "2026-04-10T23:50:00.000Z",
+  "versionId": "2"
 }

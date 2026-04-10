@@ -172,50 +172,41 @@ export default function NoticiasPage() {
   };
 
   return (
-    <div className="min-h-screen bg-void bg-aurora bg-grid pb-20 lg:pb-0">
-      <Header />
-      
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2 font-display flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center border border-blue-500/30">
-              <Newspaper className="w-6 h-6 text-blue-400" />
+    <div className="min-h-screen bg-[#050505] pb-20 lg:pb-0">
+      <main className="container mx-auto px-4 py-8 max-w-[1800px]">
+        <div className="mb-8 animate-fade-in-up">
+          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 font-['Space_Grotesk'] flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#adc6ff]/10 flex items-center justify-center border border-[#adc6ff]/20">
+              <Newspaper className="w-6 h-6 text-[#adc6ff]" />
             </div>
-            Notícias do <span className="text-gradient-neon">Mercado</span>
+            Notícias do <span className="text-[#adc6ff]">Mercado</span>
           </h1>
-          <p className="text-slate-400 text-lg ml-15">Fique por dentro das principais notícias que afetam seus investimentos</p>
+          <p className="text-white/40 text-lg font-['Inter']">Fique por dentro das principais notícias que afetam seus investimentos</p>
         </div>
 
+        {/* Stats - Liquid Bento */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="card-elevated">
-            <CardContent className="p-5 text-center">
-              <p className="text-slate-400 text-sm">Total Notícias</p>
-              <p className="text-white text-3xl font-bold">{news.length}</p>
-            </CardContent>
-          </Card>
-          <Card className="card-elevated border-emerald-500/20">
-            <CardContent className="p-5 text-center">
-              <p className="text-slate-400 text-sm">Positivas</p>
-              <p className="text-emerald-400 text-3xl font-bold">{news.filter(n => n.sentiment === 'positive').length}</p>
-            </CardContent>
-          </Card>
-          <Card className="card-elevated border-rose-500/20">
-            <CardContent className="p-5 text-center">
-              <p className="text-slate-400 text-sm">Negativas</p>
-              <p className="text-rose-400 text-3xl font-bold">{news.filter(n => n.sentiment === 'negative').length}</p>
-            </CardContent>
-          </Card>
-          <Card className="card-elevated border-cyan-500/20">
-            <CardContent className="p-5 text-center">
-              <p className="text-slate-400 text-sm">Fontes Confiáveis</p>
-              <p className="text-cyan-400 text-3xl font-bold">{news.filter(n => (n.sourceTrustworthiness || 0) >= 8).length}</p>
-            </CardContent>
-          </Card>
+          <div className="liquid-card p-5 text-center">
+            <p className="text-white/40 text-sm font-['Inter']">Total Noticias</p>
+            <p className="text-white text-3xl font-bold font-['Space_Grotesk']">{news.length}</p>
+          </div>
+          <div className="liquid-card p-5 text-center border-[#00C805]/20">
+            <p className="text-white/40 text-sm font-['Inter']">Positivas</p>
+            <p className="text-[#00C805] text-3xl font-bold font-['Space_Grotesk']">{news.filter(n => n.sentiment === 'positive').length}</p>
+          </div>
+          <div className="liquid-card p-5 text-center border-red-500/20">
+            <p className="text-white/40 text-sm font-['Inter']">Negativas</p>
+            <p className="text-red-400 text-3xl font-bold font-['Space_Grotesk']">{news.filter(n => n.sentiment === 'negative').length}</p>
+          </div>
+          <div className="liquid-card p-5 text-center border-[#adc6ff]/20">
+            <p className="text-white/40 text-sm font-['Inter']">Fontes Confiaveis</p>
+            <p className="text-[#adc6ff] text-3xl font-bold font-['Space_Grotesk']">{news.filter(n => (n.sourceTrustworthiness || 0) >= 8).length}</p>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-1">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30">
               <Search className="w-5 h-5" />
             </div>
             <input
@@ -223,7 +214,7 @@ export default function NoticiasPage() {
               placeholder="Buscar notícias..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-900/50 border border-slate-700/50 text-white px-12 py-4 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all card-elevated"
+              className="w-full bg-white/[0.03] border border-white/[0.08] text-white px-12 py-4 rounded-2xl focus:outline-none focus:border-[#adc6ff]/30 focus:bg-white/[0.05] transition-all font-['Inter']"
             />
           </div>
         </div>

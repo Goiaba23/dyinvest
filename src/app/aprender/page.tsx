@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components/layout/sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -111,8 +110,6 @@ export default function AprenderPage() {
 
   return (
     <div className="min-h-screen bg-void bg-aurora bg-grid">
-      <Header isLoggedIn user={{ email: "joao@email.com" }} />
-      
       <main className="pt-20 pb-24 lg:pt-8 px-4 max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2 font-display flex items-center gap-3">

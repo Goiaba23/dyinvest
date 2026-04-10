@@ -105,8 +105,6 @@ export default function BDRsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 pb-20 lg:pb-0">
-      <Header />
-      
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">

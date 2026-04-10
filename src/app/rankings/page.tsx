@@ -100,25 +100,23 @@ export default function RankingsPage() {
   const Icon = config.icon;
 
   return (
-    <div className="min-h-screen bg-void bg-aurora bg-grid">
-      <Header isLoggedIn user={{ email: "joao@email.com" }} />
-      
-      <main className="pt-20 pb-24 lg:pt-8 px-4 max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2 font-display flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-yellow-500/20 flex items-center justify-center border border-amber-500/30">
-              <Trophy className="w-6 h-6 text-amber-400" />
+    <div className="min-h-screen bg-[#050505]">
+      <main className="pt-4 pb-24 lg:pt-6 px-4 max-w-[1800px] mx-auto">
+        <div className="mb-8 animate-fade-in-up">
+          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 font-['Space_Grotesk'] flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#adc6ff]/10 flex items-center justify-center border border-[#adc6ff]/20">
+              <Trophy className="w-6 h-6 text-[#adc6ff]" />
             </div>
-            Rankings de <span className="text-gradient-neon">Ações</span>
+            Rankings de <span className="text-[#adc6ff]">Ações</span>
             <Tooltip 
               term="Ranking" 
               definition="Lista ordenada de ativos baseada em algum critério (maior dividend yield, maior lucro, etc). Ajuda a comparar rapidamente quais são os melhores."
             />
           </h1>
-          <p className="text-slate-400 text-lg ml-15">Compare as melhores ações do Ibovespa por diferentes critérios</p>
+          <p className="text-white/40 text-lg font-['Inter']">Compare as melhores ações do Ibovespa por diferentes critérios</p>
         </div>
 
-        {/* Abas de Rankings */}
+        {/* Abas de Rankings - Liquid Pills */}
         <div className="flex flex-wrap gap-3 mb-8">
           {Object.entries(rankingConfig).map(([key, conf]) => {
             const TabIcon = conf.icon;
@@ -127,10 +125,10 @@ export default function RankingsPage() {
                 key={key}
                 onClick={() => setActiveRanking(key as RankingType)}
                 className={cn(
-                  "flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all",
+                  "flex items-center gap-2 px-5 py-3 rounded-2xl font-medium transition-all font-['Space_Grotesk']",
                   activeRanking === key
-                    ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/25" 
-                    : "bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-white border border-slate-700/50"
+                    ? "bg-[#adc6ff] text-[#002e69] shadow-lg shadow-[#adc6ff]/25" 
+                    : "bg-white/[0.05] text-white/50 hover:bg-white/[0.08] hover:text-white border border-white/[0.08]"
                 )}
               >
                 <TabIcon className="w-4 h-4" />
@@ -140,43 +138,30 @@ export default function RankingsPage() {
           })}
         </div>
 
-        {/* Tabela de Ranking */}
-        <Card className="card-elevated overflow-hidden">
-          <CardHeader className="border-b border-slate-700/50">
-            <CardTitle className="text-white flex items-center gap-3">
-              <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br", config.color, "border border-white/10")}>
-                <Icon className="w-5 h-5 text-white" />
-              </div>
+        {/* Bento Grid de Ranking */}
+        <div className="bento-grid">
+          {/* Header do Bento */}
+          <div className="bento-item col-span-full flex items-center justify-between">
+            <h3 className="text-white font-bold text-lg font-['Space_Grotesk'] flex items-center gap-3">
+              <Icon className="w-5 h-5 text-[#adc6ff]" />
               {config.label}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-slate-800/30">
-                    <th className="text-left text-slate-400 py-4 px-5 font-medium text-sm">#</th>
-                    <th className="text-left text-slate-400 py-4 px-5 font-medium text-sm">Ação</th>
-                    <th className="text-right text-slate-400 py-4 px-5 font-medium text-sm">Preço</th>
-                    <th className="text-right text-slate-400 py-4 px-5 font-medium text-sm">Variação</th>
-                    <th className="text-right text-slate-400 py-4 px-5 font-medium text-sm">
-                      {config.label}
-                    </th>
-                    {activeRanking !== 'dy' && activeRanking !== 'pvp' && (
-                      <th className="text-right text-slate-400 py-4 px-5 font-medium text-sm">P/L <PopupTooltip acronym="P/L" className="ml-1" /></th>
-                    )}
-                    {activeRanking === 'dy' && (
-                      <>
-                        <th className="text-right text-slate-400 py-4 px-5 font-medium text-sm">P/L <PopupTooltip acronym="P/L" className="ml-1" /></th>
-                        <th className="text-right text-slate-400 py-4 px-5 font-medium text-sm">ROE <PopupTooltip acronym="ROE" className="ml-1" /></th>
-                      </>
-                    )}
-                    {activeRanking === 'pvp' && (
-                      <th className="text-right text-slate-400 py-4 px-5 font-medium text-sm">P/VP <PopupTooltip acronym="P/VP" className="ml-1" /></th>
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
+            </h3>
+            <span className="text-white/30 text-xs font-['Space_Grotesk'] uppercase tracking-widest">{data.length} ativos</span>
+          </div>
+          
+          {/* Tabela de Ranking - Liquid Table */}
+          <div className="liquid-card overflow-hidden col-span-full">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-white/[0.03]">
+                  <th className="text-left text-white/40 py-4 px-5 font-medium text-sm font-['Space_Grotesk']">#</th>
+                  <th className="text-left text-white/40 py-4 px-5 font-medium text-sm font-['Space_Grotesk']">Ação</th>
+                  <th className="text-right text-white/40 py-4 px-5 font-medium text-sm font-['Space_Grotesk']">Preço</th>
+                  <th className="text-right text-white/40 py-4 px-5 font-medium text-sm font-['Space_Grotesk']">Variação</th>
+                  <th className="text-right text-white/40 py-4 px-5 font-medium text-sm font-['Space_Grotesk']">{config.label}</th>
+                </tr>
+              </thead>
+              <tbody>
                   {data.map((stock, index) => (
                     <tr 
                       key={stock.symbol} 
@@ -245,9 +230,8 @@ export default function RankingsPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </main>
     </div>
   );

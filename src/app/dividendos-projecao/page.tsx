@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components/layout/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ACOES, FIIS, MarketData } from "@/lib/ia/market-data";
 import { 
@@ -36,8 +35,6 @@ export default function DividendProjectionPage() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      <Header isLoggedIn user={{ email: "joao@email.com", name: "João" }} />
-      
       <main className="pt-20 pb-24 lg:pt-8 px-4 max-w-5xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Projeção de Renda</h1>
@@ -168,3 +165,4 @@ export default function DividendProjectionPage() {
     </div>
   );
 }
+

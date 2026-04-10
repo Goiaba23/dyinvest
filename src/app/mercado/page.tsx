@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components/layout/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -92,15 +91,13 @@ export default function MercadoPage() {
   }, {} as Record<string, AssetData[]>);
 
   return (
-    <div className="min-h-screen bg-void bg-aurora bg-grid">
-      <Header isLoggedIn user={{ email: "joao@email.com" }} />
-      
-      <main className="pt-20 pb-24 lg:pt-8 px-4 max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white font-display">
-            Mercado <span className="text-gradient-neon">Financeiro</span>
+    <div className="min-h-screen bg-[#050505]">
+      <main className="pt-4 pb-24 lg:pt-6 px-4 max-w-[1800px] mx-auto">
+        <div className="mb-8 animate-fade-in-up">
+          <h1 className="text-3xl lg:text-4xl font-bold text-white font-['Space_Grotesk']">
+            Mercado <span className="text-[#adc6ff]">Financeiro</span>
           </h1>
-          <p className="text-slate-400 mt-2 text-lg flex items-center gap-2">
+          <p className="text-white/40 mt-2 text-lg flex items-center gap-2 font-['Inter']">
             Preços em tempo real (atualizado a cada 1 min)
             <Tooltip 
               definition="Dados de mercado são atualizados periodicamente. Os preços podem ter delay. Sempre verifique com sua corretora antes de operar."
@@ -108,9 +105,9 @@ export default function MercadoPage() {
           </p>
         </div>
 
-        {/* Search */}
+        {/* Search - Liquid Style */}
         <div className="relative mb-6">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30">
             <Search className="w-5 h-5" />
           </div>
           <input
@@ -118,18 +115,18 @@ export default function MercadoPage() {
             placeholder="Buscar ativo (ex: ouro, itau, bitcoin)..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all card-elevated"
+            className="w-full pl-12 pr-4 py-4 bg-white/[0.03] border border-white/[0.08] rounded-2xl text-white placeholder:text-white/25 focus:outline-none focus:border-[#adc6ff]/30 focus:bg-white/[0.05] transition-all font-['Inter']"
           />
         </div>
 
-        {/* Filters */}
+        {/* Filters - Liquid Pills */}
         <div className="flex flex-wrap gap-3 mb-8">
           <button
             onClick={() => setFilter(null)}
             className={cn(
-              "px-5 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2",
+              "px-5 py-2.5 rounded-2xl text-sm font-medium transition-all flex items-center gap-2 font-['Space_Grotesk']",
               filter === null 
-                ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/25" 
+                ? "bg-[#adc6ff] text-[#002e69] shadow-lg shadow-[#adc6ff]/25"
                 : "bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-white border border-slate-700/50"
             )}
           >

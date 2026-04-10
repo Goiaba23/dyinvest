@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { TopNav } from "@/components/layout/top-nav";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   keywords: ["investimento", "IA", "bolsa", "ações", "criptomoeda", "ouro", "dólar", "DYInvest"],
 };
 
-export default function RootLayout({
+export default function AppLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -26,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark">
       <body className={`${inter.variable} ${spaceGrotesk.variable} min-h-screen bg-terminal font-body text-on-surface antialiased`}>
-        {children}
+        <TopNav>
+          {children}
+        </TopNav>
       </body>
     </html>
   );

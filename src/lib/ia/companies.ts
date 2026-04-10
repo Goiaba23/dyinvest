@@ -13,6 +13,7 @@ export interface CompanyData {
   competitors: string[];
   risks: string[];
   positives: string[];
+  logo?: string;
 }
 
 // Empresas do Ibovespa ( Top 30 )
