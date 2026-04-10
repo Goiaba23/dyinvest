@@ -4,25 +4,27 @@ import { cn } from "@/lib/utils";
 import { HTMLAttributes, forwardRef } from "react";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "glass" | "gradient";
+  variant?: "default" | "glass" | "gradient" | "liquid";
   hover?: boolean;
 }
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = "default", hover = false, children, ...props }, ref) => {
     const variants = {
-      default: "bg-slate-800 border-slate-700",
-      glass: "bg-slate-800/50 backdrop-blur-xl border-slate-700/50",
-      gradient: "bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700",
+      default: "bg-gradient-to-b from-[#232328] to-[#1c1c1e] border border-white/[0.06] shadow-[0_4px_24px_rgba(0,0,0,0.5)]",
+      glass: "bg-gradient-to-b from-white/[0.08] to-white/[0.04] border border-white/[0.1] backdrop-blur-2xl",
+      gradient: "bg-gradient-to-br from-[#232328] to-[#141416] border border-white/[0.06]",
+      liquid: "bg-gradient-to-b from-[#2d2d32] to-[#232328] border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] hover:border-white/[0.15] hover:shadow-[0_12px_48px_rgba(0,0,0,0.6)]",
     };
 
     return (
       <div
         ref={ref}
         className={cn(
-          "rounded-2xl border p-6 transition-all duration-300",
+          "rounded-2xl p-5 transition-all duration-300 ease-out backdrop-blur-xl",
+          "hover:translate-y-[-2px] hover:scale-[1.01]",
           variants[variant],
-          hover && "hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10 cursor-pointer",
+          hover && "cursor-pointer",
           className
         )}
         {...props}

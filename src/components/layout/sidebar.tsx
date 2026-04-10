@@ -115,14 +115,14 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
   return (
     <>
       {/* Desktop - Sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-20 flex-col bg-slate-900 border-r border-slate-800 z-40">
+      <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-20 flex-col bg-[#0d0d0f]/90 backdrop-blur-xl border-r border-white/[0.06] z-40">
         {/* Logo */}
-        <div className="h-20 flex items-center justify-center border-b border-slate-800">
+        <div className="h-20 flex items-center justify-center border-b border-white/[0.06]">
           <Link href="/" className="flex flex-col items-center gap-1">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2997ff] to-[#0077ed] flex items-center justify-center shadow-lg shadow-[#2997ff]/20">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xs font-bold text-white">Invest<span className="text-emerald-400">10</span></span>
+            <span className="text-xs font-semibold text-white">DY<span className="text-[#2997ff]">Invest</span></span>
           </Link>
         </div>
 
@@ -135,8 +135,8 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
               className={cn(
                 "w-12 h-12 rounded-xl flex items-center justify-center transition-all",
                 pathname === item.href
-                  ? "bg-emerald-500/20 text-emerald-400"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  ? "bg-[#2997ff]/20 text-[#2997ff]"
+                  : "text-white/[0.5] hover:bg-white/[0.08] hover:text-white"
               )}
               title={item.label}
             >
@@ -144,7 +144,7 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
             </Link>
           ))}
           
-          <div className="w-10 h-[1px] bg-slate-700 my-2" />
+          <div className="w-10 h-[1px] bg-white/[0.06] my-2" />
           
           {/* Tools Section */}
           {toolsNavItems.map((item) => (
@@ -154,21 +154,21 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
               className={cn(
                 "w-12 h-12 rounded-xl flex flex-col items-center justify-center transition-all relative",
                 pathname === item.href
-                  ? "bg-emerald-500/20 text-emerald-400"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  ? "bg-[#2997ff]/20 text-[#2997ff]"
+                  : "text-white/[0.5] hover:bg-white/[0.08] hover:text-white"
               )}
               title={item.label}
             >
               {item.icon}
               {item.badge && (
-                <span className="absolute -top-1 -right-1 text-[8px] bg-blue-500 text-white px-1 rounded">
+                <span className="absolute -top-1 -right-1 text-[8px] bg-[#2997ff] text-white px-1.5 py-0.5 rounded-full font-medium">
                   {item.badge}
                 </span>
               )}
             </Link>
           ))}
 
-          <div className="w-10 h-[1px] bg-slate-700 my-2" />
+          <div className="w-10 h-[1px] bg-white/[0.06] my-2" />
           
           {/* Calculators Section */}
           {calcNavItems.map((item) => (
@@ -178,21 +178,21 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
               className={cn(
                 "w-12 h-12 rounded-xl flex flex-col items-center justify-center transition-all relative",
                 pathname === item.href
-                  ? "bg-emerald-500/20 text-emerald-400"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  ? "bg-[#2997ff]/20 text-[#2997ff]"
+                  : "text-white/[0.5] hover:bg-white/[0.08] hover:text-white"
               )}
               title={item.label}
             >
               {item.icon}
               {item.badge && (
-                <span className="absolute -top-1 -right-1 text-[8px] bg-blue-500 text-white px-1 rounded">
+                <span className="absolute -top-1 -right-1 text-[8px] bg-[#2997ff] text-white px-1.5 py-0.5 rounded-full font-medium">
                   {item.badge}
                 </span>
               )}
             </Link>
           ))}
           
-          <div className="w-10 h-[1px] bg-slate-700 my-2" />
+          <div className="w-10 h-[1px] bg-white/[0.06] my-2" />
           
           {/* Market Section */}
           {marketNavItems.map((item) => (
@@ -202,14 +202,14 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
               className={cn(
                 "w-12 h-12 rounded-xl flex flex-col items-center justify-center transition-all relative",
                 pathname === item.href
-                  ? "bg-emerald-500/20 text-emerald-400"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  ? "bg-[#2997ff]/20 text-[#2997ff]"
+                  : "text-white/[0.5] hover:bg-white/[0.08] hover:text-white"
               )}
               title={item.label}
             >
               {item.icon}
               {item.badge && (
-                <span className="absolute -top-1 -right-1 text-[8px] bg-blue-500 text-white px-1 rounded">
+                <span className="absolute -top-1 -right-1 text-[8px] bg-[#2997ff] text-white px-1.5 py-0.5 rounded-full font-medium">
                   {item.badge}
                 </span>
               )}
@@ -221,7 +221,7 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
         <div className="px-2 pb-2">
           <button
             onClick={() => setChatOpen(true)}
-            className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white hover:from-purple-600 hover:to-blue-600 transition-all shadow-lg shadow-purple-500/20"
+            className="w-12 h-12 rounded-2xl bg-gradient-to-r from-[#5e5ce6] to-[#2997ff] flex items-center justify-center text-white hover:opacity-90 transition-all shadow-lg shadow-[#5e5ce6]/20"
             title="Chat com IA"
           >
             <MessageSquare className="w-5 h-5" />
@@ -229,20 +229,20 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
         </div>
 
         {/* User */}
-        <div className="h-20 flex flex-col items-center justify-center border-t border-slate-800 gap-2">
+        <div className="h-20 flex flex-col items-center justify-center border-t border-white/[0.06] gap-2">
           {currentUser ? (
             <button 
               onClick={handleLogout}
-              className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 hover:bg-emerald-500/20 transition-all group relative"
+              className="w-10 h-10 rounded-full bg-white/[0.08] border border-white/[0.1] flex items-center justify-center text-white/[0.7] hover:bg-white/[0.12] hover:text-white transition-all group relative"
               title="Sair"
             >
               <LogOut className="w-5 h-5" />
-              <span className="absolute left-full ml-4 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity">
+              <span className="absolute left-full ml-4 px-2 py-1 bg-[#232328] text-white text-[10px] rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity">
                 Sair ({currentUser.email?.split('@')[0]})
               </span>
             </button>
           ) : (
-            <Link href="/login" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-all">
+            <Link href="/login" className="w-10 h-10 rounded-full bg-white/[0.08] border border-white/[0.1] flex items-center justify-center text-white/[0.5] hover:text-white transition-all">
               <User className="w-5 h-5" />
             </Link>
           )}
@@ -254,31 +254,31 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
 
       {/* Chat Modal */}
       {chatOpen && (
-        <div className="fixed inset-0 z-50 flex items-end lg:items-center justify-center bg-black/50">
-          <div className="w-full max-w-lg h-[600px] bg-slate-900 rounded-t-2xl lg:rounded-2xl border border-slate-800 shadow-2xl">
-            <div className="flex items-center justify-between p-4 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-end lg:items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-lg h-[600px] bg-gradient-to-b from-[#232328] to-[#1c1c1e] rounded-t-2xl lg:rounded-2xl border border-white/[0.06] shadow-2xl">
+            <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#5e5ce6] to-[#2997ff] flex items-center justify-center">
                   <Bot className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-white font-medium">DYInvest IA</p>
-                  <p className="text-slate-400 text-xs">Online • Análise em tempo real</p>
+                  <p className="text-white font-semibold">DYInvest IA</p>
+                  <p className="text-white/[0.5] text-xs">Online • Análise em tempo real</p>
                 </div>
               </div>
               <button 
                 onClick={() => setChatOpen(false)}
-                className="p-2 text-slate-400 hover:text-white"
+                className="p-2 text-white/[0.5] hover:text-white"
               >
                 <TrendingDown className="w-5 h-5" />
               </button>
             </div>
             <div className="p-4 h-[460px] overflow-y-auto">
               <div className="flex gap-3 mb-4">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#5e5ce6] to-[#2997ff] flex items-center justify-center flex-shrink-0">
                   <Bot className="w-4 h-4 text-white" />
                 </div>
-                <div className="bg-slate-800 rounded-xl p-3 max-w-[80%]">
+                <div className="bg-white/[0.08] rounded-xl p-3 max-w-[80%] border border-white/[0.06]">
                   <p className="text-white text-sm">
                     Olá! Sou a IA do DYInvest. Posso analisar o mercado, explicar notícias, 
                     calcular probabilidades e ajudar com seus investimentos. O que você quer saber?
@@ -286,11 +286,11 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
                 </div>
               </div>
             </div>
-            <div className="p-4 border-t border-slate-800">
+            <div className="p-4 border-t border-white/[0.06]">
               <input 
                 type="text" 
                 placeholder="Digite sua pergunta..."
-                className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500"
+                className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.08] rounded-xl text-white placeholder:text-white/[0.25] focus:outline-none focus:border-[#2997ff]/50"
               />
             </div>
           </div>
@@ -298,7 +298,7 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
       )}
 
       {/* Mobile/Tablet - Bottom Bar */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-900 border-t border-slate-800 z-40 flex items-center justify-around px-2 overflow-x-auto">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#0d0d0f]/90 backdrop-blur-xl border-t border-white/[0.06] z-40 flex items-center justify-around px-2 overflow-x-auto">
         {mainNavItems.map((item) => (
           <Link
             key={item.href}
@@ -306,8 +306,8 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
             className={cn(
               "flex flex-col items-center justify-center py-2 px-3 rounded-lg transition-colors flex-shrink-0",
               pathname === item.href
-                ? "text-emerald-400"
-                : "text-slate-400"
+                ? "text-[#2997ff]"
+                : "text-white/[0.5]"
             )}
           >
             {item.icon}
@@ -319,26 +319,26 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
       {/* Main Content Offset */}
       <div className="lg:ml-20">
         {/* Top Bar (mobile only) */}
-        <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-slate-900/90 backdrop-blur border-b border-slate-800 z-50">
+        <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-[#0d0d0f]/90 backdrop-blur-xl border-b border-white/[0.06] z-50">
           <div className="flex items-center justify-between h-full px-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#2997ff] to-[#0077ed] flex items-center justify-center shadow-lg shadow-[#2997ff]/20">
                 <TrendingUp className="w-4 h-4 text-white" />
               </div>
-              <span className="text-lg font-bold text-white">Invest<span className="text-emerald-400">10</span></span>
+              <span className="text-lg font-bold text-white">DY<span className="text-[#2997ff]">Invest</span></span>
             </Link>
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => setChatOpen(true)}
-                className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg"
+                className="p-2 bg-gradient-to-r from-[#5e5ce6] to-[#2997ff] rounded-xl"
               >
                 <MessageSquare className="w-4 h-4 text-white" />
               </button>
-              <button className="p-2 text-slate-400">
+              <button className="p-2 text-white/[0.5]">
                 <Bell className="w-5 h-5" />
               </button>
-              <button className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
-                <User className="w-4 h-4 text-slate-400" />
+              <button className="w-8 h-8 rounded-full bg-white/[0.08] border border-white/[0.1] flex items-center justify-center">
+                <User className="w-4 h-4 text-white/[0.5]" />
               </button>
             </div>
           </div>
