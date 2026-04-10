@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { 
@@ -104,7 +105,7 @@ const liveExamples = [
     positive: false,
     analysis: "Pressão vende após máximas históricas. Suporte em $67K.",
     confidence: 65,
-    news: "Fluxo de ETFs比特币 registra saídas de R$ 2,3B",
+    news: "Fluxo de ETFs registra saídas de US$ 2,3 bi",
     sparkline: [72, 70, 71, 69, 68, 70, 68, 65, 63, 61, 59, 58]
   },
   {
@@ -269,7 +270,7 @@ const liveExamples = [
     positive: true,
     analysis: "Rentabilidade acima do mercado.",
     confidence: 57,
-    news: "BB Seguridade lança新的 produto",
+    news: "BB Seguridade lança novo produto",
     sparkline: [26, 27, 26, 28, 29, 28, 30, 32, 31, 33, 35, 34]
   },
   {
@@ -331,6 +332,19 @@ const ctaExamples = [
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false);
   const [liveTime, setLiveTime] = useState<string>("");
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const scrollCarousel = (direction: "left" | "right") => {
+    if (!carouselRef.current) return;
+    const scrollAmount = 330;
+    const targetScroll = carouselRef.current.scrollLeft + (direction === "right" ? scrollAmount : -scrollAmount);
+    
+    gsap.to(carouselRef.current, {
+      scrollLeft: targetScroll,
+      duration: 0.6,
+      ease: "power3.inOut",
+    });
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -571,15 +585,21 @@ export default function LandingPage() {
           </div>
 
           <div className="relative">
-            {/* Navigation Arrows */}
-            <button className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-[#1c1c1e]/80 border border-white/[0.1] flex items-center justify-center text-white hover:bg-[#2997ff]/20 hover:border-[#2997ff]/30 transition-all -translate-x-4">
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <button className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-[#1c1c1e]/80 border border-white/[0.1] flex items-center justify-center text-white hover:bg-[#2997ff]/20 hover:border-[#2997ff]/30 transition-all translate-x-4">
-              <ChevronRight className="w-6 h-6" />
-            </button>
+      {/* Navigation Arrows with GSAP */}
+      <button 
+        onClick={() => scrollCarousel("left")}
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-[#1c1c1e]/80 border border-white/[0.1] flex items-center justify-center text-white hover:bg-[#2997ff]/20 hover:border-[#2997ff]/30 transition-all -translate-x-4 hover-lift"
+      >
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+      <button 
+        onClick={() => scrollCarousel("right")}
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-[#1c1c1e]/80 border border-white/[0.1] flex items-center justify-center text-white hover:bg-[#2997ff]/20 hover:border-[#2997ff]/30 transition-all translate-x-4 hover-lift"
+      >
+        <ChevronRight className="w-6 h-6" />
+      </button>
           
-          <div className="flex gap-4 overflow-x-auto pb-4 snap-x stagger-container px-12">
+          <div ref={carouselRef} className="flex gap-4 overflow-x-auto pb-4 snap-x px-12 no-scrollbar">
             {liveExamples.map((example, index) => (
               <div 
                 key={index}
@@ -607,18 +627,21 @@ export default function LandingPage() {
                   </div>
                 </div>
                 
-                {/* Sparkline Chart */}
-                <div className="h-12 mb-3 flex items-end justify-center gap-0.5 px-2">
+                {/* Sparkline Chart - smaller */}
+                <div className="h-8 mb-2 flex items-end justify-center gap-0.5 px-1">
                   {example.sparkline.map((value, i) => (
                     <div 
                       key={i}
                       className={cn(
-                        "w-3 rounded-sm transition-all",
+                        "w-2 rounded-sm transition-all animate-fade-in-up",
                         example.positive 
                           ? "bg-gradient-to-t from-[#00d4aa] to-[#2997ff]" 
                           : "bg-gradient-to-t from-rose-500 to-rose-400"
                       )}
-                      style={{ height: `${(value / 50) * 100}%` }}
+                      style={{ 
+                        height: `${(value / 50) * 100}%`,
+                        animationDelay: `${i * 30}ms`
+                      }}
                     />
                   ))}
                 </div>
@@ -670,10 +693,15 @@ export default function LandingPage() {
               <Zap className="w-4 h-4 text-[#00d4aa]" />
               <span className="text-[#00d4aa] text-sm font-medium">100% gratuito - sem login</span>
             </div>
-            <div>
-              <Link href="/mercado">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/login">
                 <button className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#2997ff] to-[#0077ed] text-white font-semibold hover:shadow-xl hover:shadow-[#2997ff]/25 hover:-translate-y-1 transition-all">
-                  Explorar todos os ativos →
+                  Criar conta com Gmail →
+                </button>
+              </Link>
+              <Link href="/mercado">
+                <button className="px-8 py-4 rounded-xl bg-white/[0.05] border border-white/[0.1] text-white font-medium hover:bg-white/[0.08] hover:border-white/[0.2] transition-all">
+                  Explorar sem conta
                 </button>
               </Link>
             </div>

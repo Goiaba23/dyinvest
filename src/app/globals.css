@@ -554,6 +554,16 @@ body {
 .stagger-container > *:nth-child(9) { animation-delay: 400ms; }
 .stagger-container > *:nth-child(10) { animation-delay: 450ms; }
 
+/* Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Liquid Card Variant */
 .card-liquid {
   background: linear-gradient(145deg, 
