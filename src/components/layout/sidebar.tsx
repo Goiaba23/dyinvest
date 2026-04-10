@@ -133,7 +133,7 @@ export function Header({ isLoggedIn = false, user }: { isLoggedIn?: boolean; use
               key={item.href}
               href={item.href}
               className={cn(
-                "w-12 h-12 rounded-xl flex items-center justify-center transition-all",
+                "w-12 h-12 rounded-xl flex items-center justify-center transition-all hover-lift",
                 pathname === item.href
                   ? "bg-[#2997ff]/20 text-[#2997ff]"
                   : "text-white/[0.5] hover:bg-white/[0.08] hover:text-white"

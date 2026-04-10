@@ -50,10 +50,10 @@ const features = [
 ];
 
 const stats = [
-  { label: "Ativos Monitorados", value: "300+", icon: Layers },
-  { label: "Fontes de Notícias", value: "20+", icon: Globe },
-  { label: "Análises Diárias", value: "100+", icon: Activity },
-  { label: "Precisão IA", value: "85%", icon: Zap }
+  { label: "Ativos Monitorados", value: "300+", icon: Layers, delay: 0 },
+  { label: "Fontes de Notícias", value: "20+", icon: Globe, delay: 100 },
+  { label: "Análises Diárias", value: "100+", icon: Activity, delay: 200 },
+  { label: "Precisão IA", value: "85%", icon: Zap, delay: 300 }
 ];
 
 const steps = [

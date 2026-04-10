@@ -52,27 +52,27 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-liquid-dark liquid-noise flex items-center justify-center p-4">
-      <div className="absolute top-8 left-8">
+    <div className="min-h-screen bg-liquid-dark liquid-noise flex items-center justify-center p-4 overflow-hidden">
+      <div className="absolute top-8 left-8 animate-fade-in-up" style={{ animationDelay: "0ms" }}>
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2997ff] to-[#0077ed] flex items-center justify-center shadow-lg shadow-[#2997ff]/20 group-hover:scale-110 transition-transform">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2997ff] to-[#0077ed] flex items-center justify-center shadow-lg shadow-[#2997ff]/20 group-hover:scale-110 transition-transform hover-lift">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-bold text-white tracking-tight">DY<span className="text-[#2997ff]">Invest</span></span>
         </Link>
       </div>
 
-      <Card variant="liquid" className="w-full max-w-md border-white/[0.06] shadow-2xl overflow-hidden relative group">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#2997ff]/5 to-[#5e5ce6]/5 pointer-events-none rounded-2xl" />
+      <Card variant="liquid" className="w-full max-w-md border-white/[0.06] shadow-2xl overflow-hidden relative group animate-scale-in">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2997ff]/5 to-[#5e5ce6]/5 pointer-events-none rounded-2xl animate-gradient-flow" />
         
         <CardHeader className="space-y-2 pb-8 pt-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-b from-white/[0.1] to-white/[0.05] flex items-center justify-center mb-4 border border-white/[0.08]">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-b from-white/[0.1] to-white/[0.05] flex items-center justify-center mb-4 border border-white/[0.08] animate-float">
             {isLogin ? <Lock className="w-6 h-6 text-[#2997ff]" /> : <Mail className="w-6 h-6 text-[#5e5ce6]" />}
           </div>
-          <CardTitle className="text-3xl font-bold text-white">
+          <CardTitle className="text-3xl font-bold text-white animate-fade-in-up" style={{ animationDelay: "100ms" }}>
             {isLogin ? "Bem-vindo de volta" : "Criar sua conta"}
           </CardTitle>
-          <CardDescription className="text-white/[0.5]">
+          <CardDescription className="text-white/[0.5] animate-fade-in-up" style={{ animationDelay: "200ms" }}>
             {isLogin 
               ? "Acesse sua inteligência financeira." 
               : "Junte-se aos investidores que decidem com dados."}
@@ -134,7 +134,7 @@ export default function LoginPage() {
 
             <Button 
               type="submit" 
-              className="w-full font-semibold py-6 rounded-xl group h-12"
+              className="w-full font-semibold py-6 rounded-xl group h-12 hover-lift hover-glow"
               disabled={loading}
             >
               {loading ? (
