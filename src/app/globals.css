@@ -8,11 +8,11 @@
   --color-border: #2a2a32;
   --color-border-subtle: #222228;
   
-  --color-accent: #7dd3fc;
-  --color-accent-dim: #0ea5e9;
-  --color-success: #4ade80;
-  --color-danger: #f87171;
-  --color-warning: #fbbf24;
+  --color-accent: #22c55e;
+  --color-accent-dim: #16a34a;
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
   
   --color-text-primary: #f4f4f5;
   --color-text-secondary: #a1a1aa;
@@ -24,7 +24,7 @@
 }
 
 :root {
-  --accent: #7dd3fc;
+  --accent: #22c55e;
   --accent-glow: rgba(125, 211, 252, 0.15);
   --accent-gradient: linear-gradient(135deg, #7dd3fc 0%, #0ea5e9 50%, #6366f1 100%);
   --bg-card: #121216;

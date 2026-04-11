@@ -6,89 +6,41 @@ import { gsap } from "gsap";
 import { cn } from "@/lib/utils";
 import { 
   Search,
-  ArrowRight,
-  Building2,
-  List,
-  BarChart3,
-  Wallet,
-  FileText,
-  Home,
-  Bell,
-  Layers,
-  Settings,
-  LogOut,
-  ChevronRight,
   TrendingUp,
-  TrendingDown,
-  ArrowUpRight,
-  ArrowDownRight
+  ArrowUp,
+  ArrowDown,
+  BarChart3,
+  RefreshCw,
+  Filter
 } from "lucide-react";
-import { getAllCompanies, getSectors, CompanyData } from "@/lib/ia/companies";
+import { ACOES } from "@/lib/ia/market-data";
 
-interface StockWithPrice extends CompanyData {
-  price?: number;
-  change?: number;
-  changePercent?: number;
-}
-
-const navItems = [
-  { href: '/dashboard', icon: Home, label: 'Início', active: false },
-  { href: '/acoes', icon: BarChart3, label: 'Ações', active: true },
-  { href: '/fiis', icon: Layers, label: 'FIIs', active: false },
-  { href: '/carteira', icon: Wallet, label: 'Carteira', active: false },
-  { href: '/noticias', icon: FileText, label: 'News', active: false },
-];
+type RankingType = 'valor' | 'dy' | 'pl' | 'roe' | 'margem' | 'receita' | 'lucro';
 
 export default function AcoesPage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [stocks, setStocks] = useState<StockWithPrice[]>([]);
-  const [filteredStocks, setFilteredStocks] = useState<StockWithPrice[]>([]);
-  const [search, setSearch] = useState('');
-  const [selectedSector, setSelectedSector] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const sectors = getSectors();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [rankingType, setRankingType] = useState<RankingType>('valor');
+  const [stocks, setStocks] = useState<typeof ACOES>([]);
 
   useEffect(() => {
-    // Simular carregamento para evitar SSR issues
-    setTimeout(() => {
-      const allCompanies = getAllCompanies();
-      const withMockPrices = allCompanies.map(c => ({
-        ...c,
-        price: Math.random() * 100 + 10,
-        change: (Math.random() - 0.5) * 10,
-        changePercent: (Math.random() - 0.5) * 10
-      }));
-      setStocks(withMockPrices);
-      setFilteredStocks(withMockPrices);
-      setLoading(false);
-    }, 500);
+    const sorted = [...ACOES].map(s => ({
+      ...s,
+      valorMercado: s.valorMercado || Math.random() * 500,
+      margemLiquida: s.margemLiquida || Math.random() * 30,
+     changePercent: s.changePercent || (Math.random() - 0.5) * 10,
+    }));
+    setStocks(sorted);
   }, []);
-
-  useEffect(() => {
-    let result = stocks;
-    
-    if (search) {
-      result = result.filter(s => 
-        s.symbol.toLowerCase().includes(search.toLowerCase()) ||
-        s.name.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    
-    if (selectedSector) {
-      result = result.filter(s => s.sector === selectedSector);
-    }
-    
-    setFilteredStocks(result);
-  }, [search, selectedSector, stocks]);
 
   useEffect(() => {
     if (containerRef.current) {
       const ctx = gsap.context(() => {
         gsap.from('.fade-item', {
-          y: 15,
+          y: 10,
           opacity: 0,
-          duration: 0.4,
-          stagger: 0.03,
+          duration: 0.3,
+          stagger: 0.02,
           ease: 'power2.out'
         });
       }, containerRef);
@@ -96,180 +48,167 @@ export default function AcoesPage() {
     }
   }, []);
 
+  const getSortedStocks = () => {
+    const filtered = searchTerm 
+      ? stocks.filter(s => 
+          s.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          s.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : stocks;
+
+    switch (rankingType) {
+      case 'valor': return [...filtered].sort((a, b) => (b.valorMercado || 0) - (a.valorMercado || 0));
+      case 'dy': return [...filtered].sort((a, b) => (b.dy || 0) - (a.dy || 0));
+      case 'pl': return [...filtered].filter(s => (s.pl || 0) > 0).sort((a, b) => (a.pl || 999) - (b.pl || 999));
+      case 'roe': return [...filtered].sort((a, b) => (b.roe || 0) - (a.roe || 0));
+      case 'margem': return [...filtered].sort((a, b) => (b.margemLiquida || 0) - (a.margemLiquida || 0));
+      case 'receita': return [...filtered].sort((a, b) => (b.receita || 0) - (a.receita || 0));
+      case 'lucro': return [...filtered].sort((a, b) => (b.lucro || 0) - (a.lucro || 0));
+      default: return filtered;
+    }
+  };
+
+  const formatMarketValue = (value?: number) => {
+    if (!value) return '-';
+    if (value >= 1e9) return `${(value / 1e9).toFixed(2)} B`;
+    if (value >= 1e6) return `${(value / 1e6).toFixed(2)} M`;
+    return value.toLocaleString('pt-BR');
+  };
+
+  const rankingOptions = [
+    { key: 'valor', label: 'Valor de Mercado' },
+    { key: 'dy', label: 'Dividend Yield' },
+    { key: 'pl', label: 'Menores P/L' },
+    { key: 'roe', label: 'Maiores ROE' },
+    { key: 'margem', label: 'Margem Líquida' },
+    { key: 'receita', label: 'Maiores Receitas' },
+    { key: 'lucro', label: 'Maiores Lucros' },
+  ];
+
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#0a0a0c]">
-      {/* Top Navigation - Same as Dashboard */}
-      <header className="h-12 bg-[#0d0d10]/80 backdrop-blur-xl border-b border-white/[0.06] flex items-center justify-between px-4 sticky top-0 z-50">
-        <div className="flex items-center gap-5">
-          <Link href="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7dd3fc] to-[#0ea5e9] flex items-center justify-center shadow-lg shadow-[#7dd3fc]/20">
-              <BarChart3 className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="font-display font-bold text-sm text-white tracking-tight">DYInvest</span>
-          </Link>
-          
-          <nav className="hidden md:flex items-center gap-0.5">
-            {navItems.map((item) => (
-              <Link 
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
-                  item.active 
-                    ? "text-white bg-white/[0.06]" 
-                    : "text-[#71717a] hover:text-white hover:bg-white/[0.03]"
-                )}
-              >
-                <item.icon className="w-3.5 h-3.5" />
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="relative group">
-            <Search className="w-3.5 h-3.5 text-[#52525b] absolute left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-[#7dd3fc] transition-colors" />
-            <input 
-              placeholder="Buscar..."
-              className="h-7 pl-8 pr-3 rounded-md bg-[#18181b] border border-white/[0.06] text-xs text-white placeholder:text-[#52525b] w-36 focus:w-48 transition-all focus:outline-none focus:border-[#7dd3fc]/30"
-            />
-          </div>
-          <button className="relative p-1.5 rounded-md hover:bg-white/[0.05] transition-colors">
-            <Bell className="w-4 h-4 text-[#52525b]" />
-            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-[#7dd3fc] rounded-full"></span>
-          </button>
-          <button className="w-7 h-7 rounded-full bg-gradient-to-br from-[#27272a] to-[#18181b] border border-white/[0.08] flex items-center justify-center text-xs font-medium text-[#a1a1aa]">
-            U
-          </button>
-        </div>
-      </header>
-
-      {/* Main Content - Compact like Dashboard */}
-      <main className="p-4 max-w-[1600px] mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4 fade-item">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#7dd3fc]/10 flex items-center justify-center border border-[#7dd3fc]/20">
-              <List className="w-5 h-5 text-[#7dd3fc]" />
+    <div ref={containerRef} className="min-h-screen bg-[#0d0d10]">
+      {/* Header */}
+      <div className="bg-[#18181b] border-b border-white/[0.06]">
+        <div className="max-w-[1600px] mx-auto px-4 py-4">
+          <div className="flex items-center gap-3 mb-4 fade-item">
+            <div className="w-10 h-10 rounded-lg bg-[#22c55e]/10 flex items-center justify-center border border-[#22c55e]/20">
+              <BarChart3 className="w-5 h-5 text-[#22c55e]" />
             </div>
             <div>
-              <h1 className="text-lg font-display font-semibold text-white tracking-tight">
-                Ações <span className="text-[#7dd3fc]">Brasileiras</span>
-              </h1>
-              <p className="text-[#52525b] text-xs">B3 • {filteredStocks.length} ativos</p>
+              <h1 className="text-lg font-semibold text-white">Ações</h1>
+              <p className="text-[#52525b] text-xs">B3 • {stocks.length} ativos</p>
             </div>
           </div>
-        </div>
 
-        {/* Search & Filters - Compact Row */}
-        <div className="flex flex-col md:flex-row gap-3 mb-4 fade-item">
-          <div className="relative flex-1">
-            <Search className="w-3.5 h-3.5 text-[#52525b] absolute left-3 top-1/2 -translate-y-1/2" />
+          {/* Search */}
+          <div className="relative mb-4 fade-item">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#52525b]" />
             <input
               type="text"
               placeholder="Buscar ação..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2.5 bg-[#18181b] border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#52525b] focus:outline-none focus:border-[#7dd3fc]/30 transition-all"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full max-w-md h-9 pl-10 pr-4 bg-[#27272a] border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#52525b] focus:outline-none focus:border-[#22c55e]/30 transition-all"
             />
           </div>
-        </div>
 
-        {/* Sector Pills - Compact */}
-        <div className="flex flex-wrap gap-1.5 mb-4 fade-item">
-          <button
-            onClick={() => setSelectedSector(null)}
-            className={cn(
-              "px-3 py-1.5 rounded-md text-[11px] font-medium transition-all",
-              selectedSector === null 
-                ? "bg-[#7dd3fc] text-[#0a0a0c]" 
-                : "bg-[#18181b] text-[#71717a] hover:text-white border border-white/[0.04]"
-            )}
-          >
-            Todos
-          </button>
-          {sectors.slice(0, 8).map(sector => (
-            <button
-              key={sector}
-              onClick={() => setSelectedSector(sector)}
-              className={cn(
-                "px-3 py-1.5 rounded-md text-[11px] font-medium transition-all",
-                selectedSector === sector 
-                  ? "bg-[#7dd3fc] text-[#0a0a0c]" 
-                  : "bg-[#18181b] text-[#71717a] hover:text-white border border-white/[0.04]"
-              )}
-            >
-              {sector}
-            </button>
-          ))}
-        </div>
-
-        {/* Stocks Grid - 3 Columns Dense */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="bg-[#18181b] border border-white/[0.04] rounded-lg p-3 animate-pulse">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#27272a]" />
-                  <div>
-                    <div className="h-4 w-16 bg-[#27272a] rounded mb-1" />
-                    <div className="h-3 w-24 bg-[#27272a] rounded" />
-                  </div>
-                </div>
-              </div>
+          {/* Ranking Tabs */}
+          <div className="flex items-center gap-1 overflow-x-auto pb-3 fade-item">
+            <Filter className="w-4 h-4 text-[#52525b] mr-2 flex-shrink-0" />
+            {rankingOptions.map((opt) => (
+              <button
+                key={opt.key}
+                onClick={() => setRankingType(opt.key as RankingType)}
+                className={cn(
+                  "px-3 py-1.5 rounded-md text-[11px] font-medium whitespace-nowrap transition-all",
+                  rankingType === opt.key
+                    ? "bg-[#22c55e] text-black"
+                    : "text-[#71717a] hover:text-white bg-[#27272a]"
+                )}
+              >
+                {opt.label}
+              </button>
             ))}
           </div>
-        ) : filteredStocks.length === 0 ? (
-          <div className="text-center py-12 bg-[#18181b] border border-white/[0.04] rounded-lg">
-            <Search className="w-8 h-8 text-[#52525b] mx-auto mb-3" />
-            <p className="text-[#71717a] text-sm">Nenhuma ação encontrada</p>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="max-w-[1600px] mx-auto px-4 py-4">
+        <div className="bg-[#18181b] border border-white/[0.06] rounded-lg overflow-hidden fade-item">
+          {/* Table Header */}
+          <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-[#27272a]/50 border-b border-white/[0.04] text-[10px] font-semibold text-[#71717a] uppercase tracking-wider">
+            <div className="col-span-1">#</div>
+            <div className="col-span-2">Ativo</div>
+            <div className="col-span-1 text-right">Valor Mercado</div>
+            <div className="col-span-1 text-right">P/L</div>
+            <div className="col-span-1 text-right">P/VP</div>
+            <div className="col-span-1 text-right">DY</div>
+            <div className="col-span-1 text-right">Margem</div>
+            <div className="col-span-1 text-right">ROE</div>
+            <div className="col-span-2 text-right">Variação</div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {filteredStocks.slice(0, 30).map((stock, i) => (
-            <Link key={stock.symbol} href={`/ativo/${stock.symbol}`}>
-              <div 
-                className="fade-item bg-[#18181b] border border-white/[0.04] rounded-lg p-3 cursor-pointer hover:bg-[#1f1f23] hover:border-[#7dd3fc]/20 transition-all group"
-                style={{ animationDelay: `${i * 20}ms` }}
+
+          {/* Table Body */}
+          <div className="divide-y divide-white/[0.02]">
+            {getSortedStocks().slice(0, 50).map((stock, i) => (
+              <Link 
+                key={stock.symbol}
+                href={`/ativo/${stock.symbol}`}
+                className="grid grid-cols-12 gap-2 px-4 py-3 hover:bg-white/[0.02] transition-colors items-center"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#27272a] to-[#18181b] flex items-center justify-center border border-white/[0.06]">
-                      <Building2 className="w-4 h-4 text-[#71717a]" />
-                    </div>
-                    <div>
-                      <p className="text-white text-sm font-semibold">{stock.symbol}</p>
-                      <p className="text-[#52525b] text-[10px] truncate max-w-[100px]">{stock.name}</p>
-                    </div>
+                <div className="col-span-1 text-[#52525b] text-xs">{i + 1}</div>
+                <div className="col-span-2 flex items-center gap-2">
+                  <div className="w-8 h-8 rounded bg-[#27272a] flex items-center justify-center text-[10px] font-bold text-[#71717a]">
+                    {stock.symbol.slice(0, 2)}
                   </div>
-                  <div className="text-right">
-                    <p className="text-white text-sm font-mono">
-                      {stock.price ? `R$ ${stock.price.toFixed(2)}` : '--'}
-                    </p>
-                    <p className={cn(
-                      "text-[10px] font-mono font-medium flex items-center gap-0.5",
-                      (stock.changePercent || 0) >= 0 ? "text-green-400/80" : "text-red-400/80"
-                    )}>
-                      {(stock.changePercent || 0) >= 0 ? (
-                        <ArrowUpRight className="w-2.5 h-2.5" />
-                      ) : (
-                        <ArrowDownRight className="w-2.5 h-2.5" />
-                      )}
-                      {(stock.changePercent || 0) >= 0 ? '+' : ''}{(stock.changePercent || 0).toFixed(2)}%
-                    </p>
+                  <div>
+                    <p className="text-white text-xs font-medium">{stock.symbol}</p>
+                    <p className="text-[#52525b] text-[10px] truncate max-w-[80px]">{stock.name}</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/[0.02]">
-                  <span className="text-[#52525b] text-[9px]">{stock.sector}</span>
-                  <ChevronRight className="w-3 h-3 text-[#52525b] group-hover:text-[#7dd3fc] transition-colors" />
+                <div className="col-span-1 text-right text-white text-xs font-mono">
+                  {formatMarketValue(stock.valorMercado)}
                 </div>
-              </div>
+                <div className="col-span-1 text-right text-white text-xs font-mono">
+                  {(stock.pl || 0).toFixed(2)}x
+                </div>
+                <div className="col-span-1 text-right text-white text-xs font-mono">
+                  {(stock.pvp || 0).toFixed(2)}
+                </div>
+                <div className="col-span-1 text-right">
+                  <span className="text-green-400 text-xs font-mono font-medium">
+                    {(stock.dy || 0).toFixed(2)}%
+                  </span>
+                </div>
+                <div className="col-span-1 text-right text-white text-xs font-mono">
+                  {(stock.margemLiquida || 0).toFixed(1)}%
+                </div>
+                <div className="col-span-1 text-right text-white text-xs font-mono">
+                  {(stock.roe || 0).toFixed(1)}%
+                </div>
+                <div className="col-span-2 text-right">
+                  <span className={cn(
+                    "text-xs font-mono font-medium px-2 py-1 rounded",
+                    (stock.changePercent || 0) >= 0 
+                      ? "text-green-400 bg-green-500/10" 
+                      : "text-red-400 bg-red-500/10"
+                  )}>
+                    {(stock.changePercent || 0) >= 0 ? '+' : ''}{(stock.changePercent || 0).toFixed(2)}%
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
-        )}
-      </main>
+        </div>
+
+        {/* Load More */}
+        <div className="text-center mt-4 fade-item">
+          <button className="px-6 py-2 bg-[#18181b] border border-white/[0.06] rounded-lg text-[#71717a] text-sm hover:text-white hover:border-white/[0.1] transition-all">
+            Ver mais ações
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
