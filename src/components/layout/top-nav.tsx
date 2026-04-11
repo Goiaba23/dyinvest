@@ -111,20 +111,26 @@ export function TopNav({ children }: { children: React.ReactNode }) {
     <>
       {/* Liquid Glass Top Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50">
-        {/* Main Nav Bar */}
-        <div className="bg-[#0a0a0a]/85 backdrop-blur-[50px] border-b border-white/[0.06]">
-          <div className="max-w-[1920px] mx-auto px-4 lg:px-6">
+        {/* Main Nav Bar with gradient mesh effect */}
+        <div className="bg-[#0a0a0a]/90 backdrop-blur-2xl border-b border-white/[0.06] relative overflow-hidden">
+          {/* Gradient mesh background */}
+          <div className="absolute inset-0 opacity-30 pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-96 h-32 bg-gradient-to-r from-[#7dd3fc]/10 to-transparent rounded-full blur-3xl" />
+            <div className="absolute top-0 right-1/4 w-64 h-24 bg-gradient-to-l from-[#6366f1]/10 to-transparent rounded-full blur-3xl" />
+          </div>
+          
+          <div className="max-w-[1920px] mx-auto px-4 lg:px-6 relative">
             <div className="flex items-center justify-between h-16 lg:h-18">
               {/* Logo */}
               <Link href="/" className="flex items-center gap-3 group">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-2xl bg-gradient-to-br from-[#adc6ff] to-[#4b8eff] flex items-center justify-center shadow-lg shadow-[#4b8eff]/40 group-hover:scale-105 transition-transform duration-300">
-                  <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6 text-[#002e69]" />
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-2xl bg-gradient-to-br from-[#7dd3fc] via-[#6366f1] to-[#8b5cf6] flex items-center justify-center shadow-lg shadow-[#7dd3fc]/30 group-hover:scale-105 group-hover:shadow-[#7dd3fc]/50 transition-all duration-300">
+                  <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                 </div>
                 <div className="hidden sm:block">
-                  <span className="text-lg lg:text-xl font-bold tracking-tight text-white font-['Space_Grotesk']">
-                    DY<span className="text-[#adc6ff]">invest</span>
+                  <span className="text-lg lg:text-xl font-bold tracking-tight text-white font-['Plus_Jakarta_Sans']">
+                    DY<span className="text-gradient">invest</span>
                   </span>
-                  <span className="hidden lg:inline text-[10px] text-white/25 ml-2 uppercase tracking-widest font-medium">Terminal</span>
+                  <span className="hidden lg:inline text-[10px] text-white/30 ml-2 uppercase tracking-widest font-medium">Terminal</span>
                 </div>
               </Link>
 
@@ -137,7 +143,7 @@ export function TopNav({ children }: { children: React.ReactNode }) {
                     className={cn(
                       "nav-item flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-medium transition-all duration-300 relative group",
                       isActive(item.href)
-                        ? "text-[#adc6ff] bg-[#adc6ff]/10"
+                        ? "text-[#7dd3fc] bg-[#7dd3fc]/10 shadow-lg shadow-[#7dd3fc]/10"
                         : "text-white/50 hover:text-white hover:bg-white/[0.06]"
                     )}
                   >
@@ -147,7 +153,7 @@ export function TopNav({ children }: { children: React.ReactNode }) {
                     )}>{item.icon}</span>
                     {item.label}
                     {item.badge && (
-                      <span className="absolute -top-1 -right-1 text-[7px] bg-[#4b8eff] text-white px-1.5 py-0.5 rounded-full font-bold">
+                      <span className="absolute -top-1 -right-1 text-[7px] bg-gradient-to-r from-[#7dd3fc] to-[#6366f1] text-white px-1.5 py-0.5 rounded-full font-bold shadow-lg">
                         {item.badge}
                       </span>
                     )}
@@ -249,18 +255,18 @@ export function TopNav({ children }: { children: React.ReactNode }) {
                   <input
                     type="text"
                     placeholder="Buscar ativos..."
-                    className="w-44 lg:w-64 h-10 pl-11 pr-4 bg-white/[0.03] border border-white/[0.06] rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#adc6ff]/20 focus:bg-white/[0.05] focus:w-56 lg:focus:w-72 transition-all duration-300"
+                    className="w-44 lg:w-64 h-10 pl-11 pr-4 bg-white/[0.03] border border-white/[0.06] rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#7dd3fc]/30 focus:bg-white/[0.05] focus:w-56 lg:focus:w-72 transition-all duration-300"
                   />
                 </div>
 
                 {/* Notifications */}
-                <button className="relative p-2.5 text-white/40 hover:text-white hover:bg-white/[0.06] rounded-xl transition-all duration-200">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#4b8eff] rounded-full animate-pulse"></span>
+                <button className="relative p-2.5 text-white/40 hover:text-white hover:bg-white/[0.06] rounded-xl transition-all duration-200 group">
+                  <Bell className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-gradient-to-r from-[#7dd3fc] to-[#6366f1] rounded-full animate-pulse"></span>
                 </button>
 
                 {/* Chat AI */}
-                <button className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#5e5ce6] to-[#4b8eff] rounded-2xl text-sm font-semibold text-white hover:brightness-110 transition-all duration-300 shadow-lg shadow-[#5e5ce6]/30">
+                <button className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7dd3fc] via-[#6366f1] to-[#8b5cf6] rounded-2xl text-sm font-semibold text-white hover:brightness-110 hover:shadow-lg hover:shadow-[#7dd3fc]/30 transition-all duration-300 btn-shine">
                   <MessageSquare className="w-4 h-4" />
                   <span className="hidden lg:inline">Assistente AI</span>
                 </button>

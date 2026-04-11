@@ -113,59 +113,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#0a0a0c]">
-      {/* Top Navigation - Minimal like Obsidianos */}
-      <header className="h-12 bg-[#0d0d10]/80 backdrop-blur-xl border-b border-white/[0.06] flex items-center justify-between px-4 sticky top-0 z-50">
-        <div className="flex items-center gap-5">
-          <Link href="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7dd3fc] to-[#0ea5e9] flex items-center justify-center shadow-lg shadow-[#7dd3fc]/20">
-              <BarChart3 className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="font-display font-bold text-sm text-white tracking-tight">DYInvest</span>
-          </Link>
-          
-          <nav className="hidden md:flex items-center gap-0.5">
-            {[
-              { href: '/dashboard', icon: Home, label: 'Início', active: true },
-              { href: '/acoes', icon: BarChart3, label: 'Ações', active: false },
-              { href: '/fiis', icon: Layers, label: 'FIIs', active: false },
-              { href: '/carteira', icon: Wallet, label: 'Carteira', active: false },
-              { href: '/noticias', icon: FileText, label: 'News', active: false },
-            ].map((item) => (
-              <Link 
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
-                  item.active 
-                    ? "text-white bg-white/[0.06]" 
-                    : "text-[#71717a] hover:text-white hover:bg-white/[0.03]"
-                )}
-              >
-                <item.icon className="w-3.5 h-3.5" />
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="relative group">
-            <Search className="w-3.5 h-3.5 text-[#52525b] absolute left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-[#7dd3fc] transition-colors" />
-            <input 
-              placeholder="Buscar..."
-              className="h-7 pl-8 pr-3 rounded-md bg-[#18181b] border border-white/[0.06] text-xs text-white placeholder:text-[#52525b] w-36 focus:w-48 transition-all focus:outline-none focus:border-[#7dd3fc]/30"
-            />
-          </div>
-          <button className="relative p-1.5 rounded-md hover:bg-white/[0.05] transition-colors">
-            <Bell className="w-4 h-4 text-[#52525b]" />
-            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-[#7dd3fc] rounded-full"></span>
-          </button>
-          <button className="w-7 h-7 rounded-full bg-gradient-to-br from-[#27272a] to-[#18181b] border border-white/[0.08] flex items-center justify-center text-xs font-medium text-[#a1a1aa]">
-            U
-          </button>
-        </div>
-      </header>
+    <div ref={containerRef} className="min-h-screen bg-[#0a0a0c] relative">
+      {/* Mesh gradient background effect */}
+      <div className="absolute inset-0 mesh-gradient pointer-events-none" />
 
       {/* Main Content */}
       <main className="p-4 max-w-[1600px] mx-auto">
@@ -188,7 +138,7 @@ export default function DashboardPage() {
           {indices.map((idx, i) => (
             <div 
               key={idx.symbol} 
-              className="fade-item group bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5 cursor-pointer hover:bg-[#1f1f23] hover:border-[#7dd3fc]/20 transition-all"
+              className="fade-item group bg-[#18181b] border border-white/[0.04] rounded-lg p-2.5 cursor-pointer card-hover"
               style={{ animationDelay: `${i * 50}ms` }}
             >
               <div className="flex items-center justify-between mb-1.5">

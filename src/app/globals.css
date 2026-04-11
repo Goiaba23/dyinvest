@@ -26,9 +26,15 @@
 :root {
   --accent: #7dd3fc;
   --accent-glow: rgba(125, 211, 252, 0.15);
+  --accent-gradient: linear-gradient(135deg, #7dd3fc 0%, #0ea5e9 50%, #6366f1 100%);
   --bg-card: #121216;
   --bg-hover: #1a1a1f;
   --border: #2a2a32;
+  
+  /* Mesh gradient vars */
+  --mesh-1: rgba(125, 211, 252, 0.08);
+  --mesh-2: rgba(99, 102, 241, 0.08);
+  --mesh-3: rgba(236, 72, 153, 0.05);
 }
 
 * {
@@ -219,11 +225,181 @@ h1, h2, h3, h4, h5, h6 {
 .text-mono { font-family: var(--font-mono); }
 .text-display { font-family: var(--font-display); }
 
+/* Mesh gradient background effect */
+.mesh-gradient {
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--mesh-1), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 50%, var(--mesh-2), transparent),
+    radial-gradient(ellipse 50% 30% at 20% 80%, var(--mesh-3), transparent);
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(18, 18, 22, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Glow effects */
+.glow-accent {
+  box-shadow: 0 0 20px rgba(125, 211, 252, 0.15), 0 0 40px rgba(125, 211, 252, 0.05);
+}
+
+.glow-accent-subtle {
+  box-shadow: 0 0 10px rgba(125, 211, 252, 0.1);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(125, 211, 252, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Gradient text */
+.text-gradient {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button shine effect */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: left 0.5s;
+}
+
+.btn-shine:hover::after {
+  left: 150%;
+}
+
+/* Pulse dot for notifications */
+.pulse-dot {
+  position: relative;
+}
+
+.pulse-dot::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  background: #7dd3fc;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(125, 211, 252, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(125, 211, 252, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(125, 211, 252, 0);
+  }
+}
+
+/* Stagger animation delays */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+
+/* Skeleton loading animation */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Focus ring */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #0a0a0c, 0 0 0 4px #7dd3fc;
+}
+
+/* Animated underline for links */
+.underline-animate {
+  position: relative;
+}
+
+.underline-animate::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #7dd3fc;
+  transition: width 0.3s ease;
+}
+
+.underline-animate:hover::after {
+  width: 100%;
+}
+
+/* Fade animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .animate-in {
   animation: fadeIn 0.2s ease-out;
+}
+
+.animate-in-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.animate-in-scale {
+  animation: fadeInScale 0.3s ease-out;
 }
