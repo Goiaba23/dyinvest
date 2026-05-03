@@ -1,454 +1,138 @@
-"use client";
+import Link from "next/link";
+import { ArrowRight, TrendingUp, Calendar } from "lucide-react";
 
-import { useState, useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { SectionHeader, StatCard, PremiumCard, Badge } from "@/components/ui/premium";
-import { fadeInUp, slideInLeft } from "@/lib/animations";
-import { 
-  Newspaper, TrendingUp, TrendingDown, Search, ArrowRight, 
-  AlertTriangle, Clock, Filter, Flame, Zap, Globe,
-  RefreshCw, ExternalLink, ThumbsUp, ThumbsDown, Bookmark
-} from "lucide-react";
-
-interface NewsItem {
-  id: string;
-  title: string;
-  description: string;
-  source: string;
-  sourceId: string;
-  url: string;
-  publishedAt: string;
-  sentiment: 'positive' | 'negative' | 'neutral';
-  importancia?: 'quente' | 'alta' | 'media' | 'baixa';
-  category?: string;
-  readTime?: string;
-}
-
-const newsData: NewsItem[] = [
-  { 
-    id: '1', 
-    title: 'Petrobras despenca 5,7% após queda do petróleo', 
-    description: 'Ações da Petrobras registram a maior queda do Ibovespa após anúncio de corte na produção pela OPEP+. Analistas revisam projeções para o setor de energia.',
-    source: 'InfoMoney', 
-    sourceId: 'infomoney', 
-    url: '#', 
-    publishedAt: '2h atrás', 
-    sentiment: 'negative', 
-    importancia: 'quente',
-    category: 'Energia',
-    readTime: '3 min'
+const noticias = [
+  {
+    title: "Petrobras anuncia lucro recorde no trimestre e surpreende analistas",
+    excerpt: "A estatal reportou lucro líquido de R$ 32 bilhões, superando expectativas do mercado...",
+    category: "Mercado",
+    date: "2h atrás",
+    image: "https://placehold.co/800x400/002B5C/FFFFFF?text=Not%C3%ADcia",
+    featured: true,
   },
-  { 
-    id: '2', 
-    title: 'Itaúsa sobe 3% com resultados do Itaú', 
-    description: 'A holding Itaúsa tem forte alta após banco publicar resultado trimestral acima das expectativas. ROE atinge 22% com expansão da margem.',
-    source: 'Reuters', 
-    sourceId: 'reuters', 
-    url: '#', 
-    publishedAt: '3h atrás', 
-    sentiment: 'positive', 
-    importancia: 'alta',
-    category: 'Financeiro',
-    readTime: '4 min'
+  {
+    title: "Banco Central mantém Selic em 10,75% e sinaliza cautela",
+    excerpt: "Copom decidiu manter a taxa básica de juros inalterada pela terceira reunião consecutiva...",
+    category: "Economia",
+    date: "4h atrás",
+    image: "https://placehold.co/800x400/00A86B/FFFFFF?text=Selic",
   },
-  { 
-    id: '3', 
-    title: 'Bitcoin mantém queda mesmo com trégua EUA-Irã', 
-    description: 'Criptomoeda segue pressionada após acordo de cessar-fogo. Investidores aguardam dados de inflação dos EUA para direção do Fed.',
-    source: 'CoinDesk', 
-    sourceId: 'coindesk', 
-    url: '#', 
-    publishedAt: '4h atrás', 
-    sentiment: 'negative', 
-    importancia: 'media',
-    category: 'Cripto',
-    readTime: '5 min'
+  {
+    title: "Vale anuncia programa de recompra de ações de R$ 5 bilhões",
+    excerpt: "A mineradora anunciou um novo programa de recompra visando retornar capital aos acionistas...",
+    category: "Empresas",
+    date: "6h atrás",
+    image: "https://placehold.co/800x400/1F2937/FFFFFF?text=Vale",
   },
-  { 
-    id: '4', 
-    title: 'Ibovespa sobe 2,25% e supera 126 mil pontos', 
-    description: 'Índice brasileiro tem melhor dia em meses impulsionado por fluxo estrangeiro e commodities. Volume negociado supera média de 30 dias.',
-    source: 'Bloomberg', 
-    sourceId: 'bloomberg', 
-    url: '#', 
-    publishedAt: '5h atrás', 
-    sentiment: 'positive', 
-    importancia: 'alta',
-    category: 'Índices',
-    readTime: '3 min'
+  {
+    title: "Bitcoin ultrapassa US$ 100 mil pela primeira vez na história",
+    excerpt: "A criptomoeda atingiu novo recorde histórico impulsionada por adoção institucional...",
+    category: "Cripto",
+    date: "8h atrás",
+    image: "https://placehold.co/800x400/F59E0B/FFFFFF?text=Bitcoin",
   },
-  { 
-    id: '5', 
-    title: 'Dólar cai para R$ 5,09 com fluxo positivo', 
-    description: 'Moeda americana recua mais de 1% após acordo comercial entre EUA e China. Banco Central intervém com swap cambial.',
-    source: 'G1 Economia', 
-    sourceId: 'g1', 
-    url: '#', 
-    publishedAt: '6h atrás', 
-    sentiment: 'positive', 
-    importancia: 'media',
-    category: 'Câmbio',
-    readTime: '2 min'
-  },
-  { 
-    id: '6', 
-    title: 'WEG dispara 3,5% com resultados trimestrais', 
-    description: 'Fabricante de equipamentos elétricos reportou lucro 25% acima do consenso. Guidance de crescimento mantido para 2026.',
-    source: 'Valor Econômico', 
-    sourceId: 'valor', 
-    url: '#', 
-    publishedAt: '8h atrás', 
-    sentiment: 'positive', 
-    importancia: 'alta',
-    category: 'Industrial',
-    readTime: '4 min'
-  },
-  { 
-    id: '7', 
-    title: 'Tech brasileiras atraem US$ 1.2B em funding', 
-    description: 'Setor de tecnologia no Brasil capta volume recorde no trimestre. Startups de IA e fintechs lideram investimentos.',
-    source: 'Exame', 
-    sourceId: 'exame', 
-    url: '#', 
-    publishedAt: '3h atrás', 
-    sentiment: 'positive', 
-    importancia: 'media',
-    category: 'Tecnologia',
-    readTime: '5 min'
-  },
-  { 
-    id: '8', 
-    title: 'Selic sinaliza corte mais lento que o esperado', 
-    description: 'Copom indica que próximos cortes serão menores devido a incertezas fiscais. Mercado ajusta projeções para taxa terminal.',
-    source: 'Estadão', 
-    sourceId: 'estadao', 
-    url: '#', 
-    publishedAt: '1h atrás', 
-    sentiment: 'negative', 
-    importancia: 'quente',
-    category: 'Política Monetária',
-    readTime: '6 min'
+  {
+    title: "Setor bancário brasileiro apresenta resultados sólidos no 3T24",
+    excerpt: "Os principais bancos reportaram crescimento consistente em receita e lucro líquido...",
+    category: "Setorial",
+    date: "12h atrás",
+    image: "https://placehold.co/800x400/3B82F6/FFFFFF?text=Bancos",
   },
 ];
-
-const sources = [
-  { id: 'all', label: 'Todas', icon: Globe },
-  { id: 'brasil', label: 'Brasil', icon: Globe },
-  { id: 'global', label: 'Global', icon: Globe },
-  { id: 'crawl4ai', label: 'Crawl4AI', icon: Zap },
-];
-
-const sentimentFilters = [
-  { id: 'all', label: 'Todas', count: newsData.length },
-  { id: 'positive', label: 'Altas', count: newsData.filter(n => n.sentiment === 'positive').length },
-  { id: 'negative', label: 'Baixas', count: newsData.filter(n => n.sentiment === 'negative').length },
-  { id: 'quente', label: 'Quente', count: newsData.filter(n => n.importancia === 'quente').length },
-];
-
-const categoryColors: { [key: string]: string } = {
-  'Energia': 'bg-orange-500/10 text-orange-400 border-orange-500/20',
-  'Financeiro': 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  'Cripto': 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-  'Índices': 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-  'Câmbio': 'bg-green-500/10 text-green-400 border-green-500/20',
-  'Industrial': 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-  'Tecnologia': 'bg-pink-500/10 text-pink-400 border-pink-500/20',
-  'Política Monetária': 'bg-red-500/10 text-red-400 border-red-500/20',
-};
 
 export default function NoticiasPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sourceFilter, setSourceFilter] = useState('all');
-  const [sentimentFilter, setSentimentFilter] = useState('all');
-  const [saved, setSaved] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    if (containerRef.current) {
-      const ctx = gsap.context(() => {
-        gsap.from(".page-header", fadeInUp);
-        gsap.from(".filter-button", { ...slideInLeft, stagger: 0.05, delay: 0.2 });
-        gsap.from(".news-card", { ...fadeInUp, stagger: 0.1, delay: 0.3 });
-        gsap.from(".stats-card", { ...fadeInUp, stagger: 0.1, delay: 0.4 });
-      }, containerRef);
-      return () => ctx.revert();
-    }
-  }, []);
-
-  const filteredNews = newsData.filter(item => {
-    if (sourceFilter !== 'all' && item.sourceId !== sourceFilter) return false;
-    if (sentimentFilter !== 'all') {
-      if (sentimentFilter === 'positive' && item.sentiment !== 'positive') return false;
-      if (sentimentFilter === 'negative' && item.sentiment !== 'negative') return false;
-      if (sentimentFilter === 'quente' && item.importancia !== 'quente') return false;
-    }
-    if (searchTerm && !item.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
-        !item.description.toLowerCase().includes(searchTerm.toLowerCase())) return false;
-    return true;
-  });
-
-  const toggleSave = (id: string) => {
-    setSaved(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) newSet.delete(id);
-      else newSet.add(id);
-      return newSet;
-    });
-  };
-
-  const stats = {
-    total: newsData.length,
-    positive: newsData.filter(n => n.sentiment === 'positive').length,
-    negative: newsData.filter(n => n.sentiment === 'negative').length,
-    quente: newsData.filter(n => n.importancia === 'quente').length,
-  };
-
-  const getSentimentStyle = (sentiment: string, importancia?: string) => {
-    if (importancia === 'quente') return 'bg-red-500/10 text-red-400 border-red-500/30';
-    if (sentiment === 'positive') return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-    if (sentiment === 'negative') return 'bg-red-500/10 text-red-400 border-red-500/20';
-    return 'bg-zinc-800/50 text-zinc-400 border-zinc-700';
-  };
-
-  const getSentimentLabel = (sentiment: string, importancia?: string) => {
-    if (importancia === 'quente') return 'QUENTE';
-    if (sentiment === 'positive') return 'ALTA';
-    if (sentiment === 'negative') return 'BAIXA';
-    return 'NEUTRO';
-  };
-
   return (
-    <div ref={containerRef} className="p-6 max-w-[1600px] mx-auto">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="page-header mb-8">
-        <SectionHeader
-          title="Notícias do Mercado"
-          subtitle="Feed em tempo real via Crawl4AI e fontes globais"
-          badge={`${newsData.length} notícias`}
-          action={
-            <div className="flex gap-3">
-              <button className="px-4 py-2.5 bg-[#121216] text-zinc-300 border border-[#252529] rounded-xl hover:bg-[#1E1E1E] hover:border-zinc-700 transition-all duration-200 flex items-center gap-2 text-sm font-medium">
-                <RefreshCw className="w-4 h-4" />
-                Atualizar
-              </button>
-              <button className="px-4 py-2.5 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-xl hover:bg-blue-600/30 transition-all duration-200 flex items-center gap-2 text-sm font-medium">
-                <Zap className="w-4 h-4" />
-                Extrair IA
-              </button>
-            </div>
-          }
-        />
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="stats-card">
-          <PremiumCard className="p-5">
-            <div className="flex items-start justify-between mb-3">
-              <span className="text-zinc-500 text-xs uppercase tracking-wider font-medium">Total</span>
-              <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <Newspaper className="w-4 h-4 text-blue-400" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-mono text-3xl font-bold text-white">{stats.total}</span>
-            </div>
-            <div className="mt-3 pt-3 border-t border-[#252529]">
-              <span className="text-zinc-600 text-xs">Notícias</span>
-            </div>
-          </PremiumCard>
-        </div>
-
-        <div className="stats-card">
-          <PremiumCard className="p-5">
-            <div className="flex items-start justify-between mb-3">
-              <span className="text-zinc-500 text-xs uppercase tracking-wider font-medium">Altas</span>
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-mono text-3xl font-bold text-emerald-400">{stats.positive}</span>
-            </div>
-            <div className="mt-3 pt-3 border-t border-[#252529]">
-              <span className="text-emerald-500/60 text-xs">Positivas</span>
-            </div>
-          </PremiumCard>
-        </div>
-
-        <div className="stats-card">
-          <PremiumCard className="p-5">
-            <div className="flex items-start justify-between mb-3">
-              <span className="text-zinc-500 text-xs uppercase tracking-wider font-medium">Baixas</span>
-              <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
-                <TrendingDown className="w-4 h-4 text-red-400" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-mono text-3xl font-bold text-red-400">{stats.negative}</span>
-            </div>
-            <div className="mt-3 pt-3 border-t border-[#252529]">
-              <span className="text-red-500/60 text-xs">Negativas</span>
-            </div>
-          </PremiumCard>
-        </div>
-
-        <div className="stats-card">
-          <PremiumCard className="p-5">
-            <div className="flex items-start justify-between mb-3">
-              <span className="text-zinc-500 text-xs uppercase tracking-wider font-medium">Quente</span>
-              <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                <Flame className="w-4 h-4 text-orange-400" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-mono text-3xl font-bold text-orange-400">{stats.quente}</span>
-            </div>
-            <div className="mt-3 pt-3 border-t border-[#252529]">
-              <span className="text-orange-500/60 text-xs">Urgentes</span>
-            </div>
-          </PremiumCard>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        {/* Search */}
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-          <input
-            type="text"
-            placeholder="Buscar notícias..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-[#121216] border border-[#252529] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500/50 transition-all duration-200"
-          />
-        </div>
-
-        {/* Source Filters */}
-        <div className="flex gap-1 bg-[#121216] p-1 rounded-xl border border-[#252529]">
-          {sources.map((source) => (
-            <button
-              key={source.id}
-              onClick={() => setSourceFilter(source.id)}
-              className={`filter-button px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
-                sourceFilter === source.id
-                  ? "bg-blue-500/20 text-blue-400 shadow-sm"
-                  : "text-zinc-400 hover:text-white hover:bg-[#252529]"
-              }`}
-            >
-              <source.icon className="w-3.5 h-3.5" />
-              {source.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Sentiment Filters */}
-        <div className="flex gap-1 bg-[#121216] p-1 rounded-xl border border-[#252529]">
-          {sentimentFilters.map((filter) => (
-            <button
-              key={filter.id}
-              onClick={() => setSentimentFilter(filter.id)}
-              className={`filter-button px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 ${
-                sentimentFilter === filter.id
-                  ? "bg-blue-500/20 text-blue-400 shadow-sm"
-                  : "text-zinc-400 hover:text-white hover:bg-[#252529]"
-              }`}
-            >
-              {filter.label} ({filter.count})
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* News Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {filteredNews.map((news) => (
-          <div 
-            key={news.id} 
-            className="news-card cursor-pointer"
-          >
-            <PremiumCard className="p-5 hover:border-zinc-700 transition-all duration-200">
-              {/* Header */}
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge 
-                    variant={
-                      news.importancia === 'quente' ? 'red' : 
-                      news.sentiment === 'positive' ? 'green' : 
-                      news.sentiment === 'negative' ? 'red' : 'blue'
-                    } 
-                    size="sm"
-                  >
-                    {getSentimentLabel(news.sentiment, news.importancia)}
-                  </Badge>
-                  {news.category && (
-                    <Badge variant="blue" size="sm">{news.category}</Badge>
-                  )}
-                </div>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSave(news.id);
-                  }}
-                  className={`p-1.5 rounded-lg transition-all duration-200 ${
-                    saved.has(news.id) 
-                      ? 'bg-blue-500/20 text-blue-400' 
-                      : 'hover:bg-[#252529] text-zinc-500 hover:text-zinc-300'
-                  }`}
-                >
-                  <Bookmark className="w-4 h-4" fill={saved.has(news.id) ? 'currentColor' : 'none'} />
-                </button>
-              </div>
-
-              {/* Title */}
-              <h3 className="text-white font-medium text-base mb-2 hover:text-blue-400 transition-colors duration-200 leading-snug">
-                {news.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-zinc-500 text-sm leading-relaxed mb-4 line-clamp-2">
-                {news.description}
-              </p>
-
-              {/* Footer */}
-              <div className="flex items-center justify-between pt-3 border-t border-[#252529]">
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-zinc-500 font-medium">{news.source}</span>
-                  <span className="text-xs text-zinc-600">•</span>
-                  <span className="text-xs text-zinc-500 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {news.publishedAt}
-                  </span>
-                  {news.readTime && (
-                    <>
-                      <span className="text-xs text-zinc-600">•</span>
-                      <span className="text-xs text-zinc-500">{news.readTime}</span>
-                    </>
-                  )}
-                </div>
-                <a 
-                  href={news.url} 
-                  className="text-xs text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Ler mais
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            </PremiumCard>
+      <div className="bg-gray-50 border-b border-gray-200 py-8 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+            <Link href="/" className="hover:text-[#002B5C]">Home</Link>
+            <span>/</span>
+            <span className="text-gray-900">Notícias</span>
           </div>
-        ))}
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Últimas Notícias</h1>
+          <p className="text-gray-600">Fique por dentro do mercado financeiro</p>
+        </div>
       </div>
 
-      {/* Empty State */}
-      {filteredNews.length === 0 && (
-        <div className="text-center py-12">
-          <Newspaper className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
-          <p className="text-zinc-400 text-lg mb-2">Nenhuma notícia encontrada</p>
-          <p className="text-zinc-600 text-sm">Tente ajustar os filtros ou buscar por outros termos</p>
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="md:col-span-2">
+            {/* Featured News */}
+            {noticias[0] && (
+              <Link href={`/noticias/0`} className="block mb-8 group">
+                <div className="relative overflow-hidden rounded-xl mb-4">
+                  <img src={noticias[0].image} alt={noticias[0].title} className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-[#00A86B] text-white text-xs font-semibold rounded-full">{noticias[0].category}</span>
+                  </div>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-[#002B5C] transition-colors">{noticias[0].title}</h2>
+                <p className="text-gray-600">{noticias[0].excerpt}</p>
+                <div className="flex items-center gap-2 mt-3 text-sm text-gray-500">
+                  <Calendar className="w-4 h-4" />
+                  <span>{noticias[0].date}</span>
+                </div>
+              </Link>
+            )}
+
+            {/* Other News */}
+            <div className="space-y-6">
+              {noticias.slice(1).map((noticia, idx) => (
+                <Link key={idx} href={`/noticias/${idx + 1}`} className="flex gap-4 group">
+                  <div className="w-48 h-32 flex-shrink-0 overflow-hidden rounded-lg">
+                    <img src={noticia.image} alt={noticia.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-medium rounded">{noticia.category}</span>
+                      <span className="text-sm text-gray-500">{noticia.date}</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-[#002B5C] transition-colors">{noticia.title}</h3>
+                    <p className="text-sm text-gray-600 line-clamp-2">{noticia.excerpt}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Mais Lidas */}
+            <div className="bg-gray-50 p-6 rounded-xl">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Mais Lidas</h3>
+              <ol className="space-y-3">
+                {noticias.slice(0, 5).map((noticia, idx) => (
+                  <li key={idx}>
+                    <Link href={`/noticias/${idx}`} className="flex items-start gap-3 group">
+                      <span className="text-2xl font-bold text-gray-300 group-hover:text-[#00A86B] transition-colors">{idx + 1}</span>
+                      <span className="text-sm text-gray-700 group-hover:text-[#002B5C] transition-colors">{noticia.title}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Categorias */}
+            <div className="bg-gray-50 p-6 rounded-xl">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Categorias</h3>
+              <ul className="space-y-2">
+                {["Mercado", "Economia", "Empresas", "Cripto", "Setorial", "Internacional"].map((cat) => (
+                  <li key={cat}>
+                    <Link href={`/noticias/categoria/${cat.toLowerCase()}`} className="flex items-center justify-between text-sm text-gray-700 hover:text-[#002B5C] transition-colors">
+                      <span>{cat}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
