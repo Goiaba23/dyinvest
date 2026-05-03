@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { ArrowRight, TrendingUp, Brain, Shield, Zap, BarChart3, CheckCircle2, Globe, Users, Sparkles, Star, ChevronRight, FileText } from "lucide-react";
 
-// Container component para centralizar tudo
+// Container para centralizar tudo
 function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`px-5 w-full max-w-7xl mx-auto ${className}`}>
+    <div className={`px-5 w-full max-w-6xl mx-auto ${className}`}>
       {children}
     </div>
   );
@@ -16,7 +16,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm">
         <Container className="h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
@@ -43,69 +43,69 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-40 pb-24 px-6">
+      <section className="pt-40 pb-20 px-6">
         <Container>
-          {/* Trust Badge */}
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 rounded-full border border-blue-100">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Trust Badge */}
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 rounded-full mb-8 border border-blue-100">
               <Sparkles className="w-4 h-4 text-blue-600" />
               <span className="text-sm font-medium text-blue-700">IA Avançada • Dados em Tempo Real • Conformidade Total</span>
             </div>
-          </div>
 
-          {/* Main Headline - Centralized */}
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight text-center">
-            Entenda o mercado.<br />
-            <span className="text-blue-600">Invista com dados.</span>
-          </h1>
+            {/* Main Headline */}
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight">
+              Entenda o mercado.<br />
+              <span className="text-blue-600">Invista com dados.</span>
+            </h1>
 
-          {/* Subheadline */}
-          <p className="text-xl text-gray-500 mb-4 max-w-3xl mx-auto text-center leading-relaxed">
-            O primeiro assistente de investimentos com IA que traduz notícias globais 
-            para linguagem simples. Com probabilidades baseadas em dados reais.
-          </p>
+            {/* Subheadline */}
+            <p className="text-xl text-gray-500 mb-4 max-w-3xl mx-auto leading-relaxed">
+              O primeiro assistente de investimentos com IA que traduz notícias globais 
+              para linguagem simples. Com probabilidades baseadas em dados reais.
+            </p>
           
-          <p className="text-base text-gray-400 mb-10 max-w-2xl mx-auto text-center">
-            Não use achismos. Use inteligência artificial para tomar decisões informadas 
-            no mercado financeiro brasileiro e global.
-          </p>
+            <p className="text-base text-gray-400 mb-10 max-w-2xl mx-auto">
+              Não use achismos. Use inteligência artificial para tomar decisões informadas 
+              no mercado financeiro brasileiro e global.
+            </p>
 
-          {/* Dual CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <Link href="/register" className="w-full sm:w-auto bg-blue-600 text-white font-semibold px-8 py-4 rounded-full hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-500/30 text-base">
-              Começar gratuitamente
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link href="/dashboard" className="w-full sm:w-auto border-2 border-gray-200 text-gray-700 font-semibold px-8 py-4 rounded-full hover:bg-gray-50 transition-all flex items-center justify-center gap-2 text-base">
-              Ver demonstração
-              <ChevronRight className="w-5 h-5" />
-            </Link>
-          </div>
+            {/* Dual CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+              <Link href="/register" className="w-full sm:w-auto bg-blue-600 text-white font-semibold px-8 py-4 rounded-full hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-500/30 text-base">
+                Começar gratuitamente
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link href="/dashboard" className="w-full sm:w-auto border-2 border-gray-200 text-gray-700 font-semibold px-8 py-4 rounded-full hover:bg-gray-50 transition-all flex items-center justify-center gap-2 text-base">
+                Ver demonstração
+                <ChevronRight className="w-5 h-5" />
+              </Link>
+            </div>
 
-          {/* Social Proof Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mb-8">
-            {[
-              { value: "50K+", label: "Investidores ativos" },
-              { value: "500+", label: "Ativos monitorados" },
-              { value: "40+", label: "Fontes de dados" },
-              { value: "99.9%", label: "Disponibilidade" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-gray-900">{stat.value}</div>
-                <div className="text-sm text-gray-500 mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+            {/* Social Proof Metrics */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+              {[
+                { value: "50K+", label: "Investidores ativos" },
+                { value: "500+", label: "Ativos monitorados" },
+                { value: "40+", label: "Fontes de dados" },
+                { value: "99.9%", label: "Disponibilidade" },
+              ].map((stat, i) => (
+                <div key={i} className="text-center">
+                  <div className="text-3xl md:text-4xl font-bold text-gray-900">{stat.value}</div>
+                  <div className="text-sm text-gray-500 mt-1">{stat.label}</div>
+                </div>
+              ))}
+            </div>
 
-          {/* Trust signals */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
-            <span>Grátis para sempre</span>
-            <span>•</span>
-            <span>Sem cartão de crédito</span>
-            <span>•</span>
-            <span>Dados criptografados</span>
-            <span>•</span>
-            <span>Conformidade total</span>
+            {/* Trust signals */}
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
+              <span>Grátis para sempre</span>
+              <span>•</span>
+              <span>Sem cartão de crédito</span>
+              <span>•</span>
+              <span>Dados criptografados</span>
+              <span>•</span>
+              <span>Conformidade total</span>
+            </div>
           </div>
         </Container>
       </section>
