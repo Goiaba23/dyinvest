@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import Link from "next/link";
 import { Search, Menu, X, ChevronDown, Star, TrendingUp, Trophy, Newspaper, Brain, Calculator, BookOpen } from "lucide-react";
+import { microInteractions } from "@/lib/animations";
 
 const navItems = [
   {
@@ -85,11 +87,34 @@ const navItems = [
 ];
 
 export default function Header() {
+  const headerRef = useRef<HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    // Scroll effect for header
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      // Animate header on mount
+      gsap.from(headerRef.current, {
+        y: -20,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power3.out"
+      });
+    }
+  }, []);
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header ref={headerRef} className={`bg-white border-b transition-all duration-300 sticky top-0 z-50 ${scrolled ? 'shadow-md' : 'border-gray-200'}`}>
       {/* Top Bar */}
       <div className="bg-[#002B5C] text-white py-2 px-4 text-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -124,11 +149,11 @@ export default function Header() {
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 {item.href ? (
-                  <Link href={item.href} className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#002B5C] transition-colors">
+                  <Link href={item.href} className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#1e40af] transition-colors">
                     {item.label}
                   </Link>
                 ) : (
-                  <button className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#002B5C] transition-colors flex items-center gap-1">
+                  <button className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#1e40af] transition-colors flex items-center gap-1">
                     {item.label}
                     <ChevronDown className="w-4 h-4" />
                   </button>
