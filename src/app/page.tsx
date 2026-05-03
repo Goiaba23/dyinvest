@@ -16,10 +16,10 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
+    <div className="min-h-screen bg-gray-950">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f]/80 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-4xl mx-auto px-8 h-16 flex items-center justify-between">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-950/90 backdrop-blur-md border-b border-gray-800">
+        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
               <TrendingUp className="w-5 h-5 text-white" />
@@ -39,9 +39,9 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-40 pb-20 px-8">
+      <section className="pt-40 pb-20 px-6">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full mb-8 border border-white/10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 rounded-full mb-8 border border-gray-800">
             <Brain className="w-4 h-4 text-cyan-400" />
             <span className="text-sm text-gray-400">Inteligência artificial para investimentos</span>
           </div>
@@ -63,7 +63,7 @@ export default function LandingPage() {
               Começar gratuitamente
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href="/dashboard" className="w-full sm:w-auto border border-white/20 text-white font-medium px-8 py-4 rounded-full hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+            <Link href="/dashboard" className="w-full sm:w-auto border border-gray-700 text-white font-medium px-8 py-4 rounded-full hover:bg-gray-900 transition-all flex items-center justify-center gap-2">
               Ver plataforma
               <ChevronRight className="w-5 h-5" />
             </Link>
@@ -72,7 +72,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-16 px-8 bg-[#0f0f14]">
+      <section className="py-16 px-6 bg-gray-900">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl font-semibold text-white mb-2">Tudo que você precisa</h2>
@@ -88,7 +88,7 @@ export default function LandingPage() {
               { icon: Zap, title: "Tempo Real", desc: "Dados atualizados do mercado brasileiro." },
               { icon: BarChart3, title: "Visual Intuitivo", desc: "Gráficos que transformam dados em insights." },
             ].map((item, i) => (
-              <div key={i} className="bg-white/5 rounded-2xl p-5 border border-white/10 hover:border-cyan-500/30 hover:bg-white/10 transition-all">
+              <div key={i} className="bg-gray-950 rounded-2xl p-5 border border-gray-800 hover:border-cyan-500/30 hover:bg-gray-900 transition-all">
                 <item.icon className="w-6 h-6 text-cyan-400 mb-3" />
                 <h3 className="text-base font-semibold text-white mb-1">{item.title}</h3>
                 <p className="text-sm text-gray-400">{item.desc}</p>
@@ -99,7 +99,7 @@ export default function LandingPage() {
       </section>
 
       {/* Notebooks */}
-      <section className="py-16 px-8">
+      <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl font-semibold text-white mb-2">Suas áreas de análise</h2>
@@ -113,9 +113,9 @@ export default function LandingPage() {
               { title: "ETFs", count: 42 },
               { title: "Criptomoedas", count: 28 },
             ].map((item, i) => (
-              <div key={i} className="bg-white/5 rounded-2xl p-5 border border-white/10 hover:border-cyan-500/30 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-between">
+              <div key={i} className="bg-gray-900 rounded-2xl p-5 border border-gray-800 hover:border-cyan-500/30 hover:bg-gray-800 transition-all cursor-pointer flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center">
                     <FileText className="w-5 h-5 text-gray-400" />
                   </div>
                   <div>
@@ -123,7 +123,7 @@ export default function LandingPage() {
                     <p className="text-sm text-gray-500">{item.count} ativos</p>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-gray-500" />
+                <ChevronRight className="w-5 h-5 text-gray-600" />
               </div>
             ))}
           </div>
@@ -131,7 +131,7 @@ export default function LandingPage() {
       </section>
 
       {/* Stats */}
-      <section className="py-12 px-8 bg-gradient-to-r from-cyan-900/30 to-blue-900/30">
+      <section className="py-12 px-6 bg-gradient-to-r from-cyan-950/50 to-blue-950/50">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-4 gap-4 text-center">
             {[
@@ -150,7 +150,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-8">
+      <section className="py-20 px-6">
         <div className="max-w-xl mx-auto text-center">
           <h2 className="text-2xl font-semibold text-white mb-3">
             Pronto para começar?
@@ -166,7 +166,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-6 px-8">
+      <footer className="border-t border-gray-800 py-6 px-6">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
