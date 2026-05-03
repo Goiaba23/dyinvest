@@ -3,12 +3,21 @@
 import Link from "next/link";
 import { ArrowRight, TrendingUp, Brain, Shield, Zap, BarChart3, CheckCircle2, Globe, Users, Sparkles, Star, ChevronRight, FileText } from "lucide-react";
 
+// Container component para centralizar tudo
+function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`px-5 w-full max-w-7xl mx-auto ${className}`}>
+      {children}
+    </div>
+  );
+}
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation - 64px height, proper spacing */}
+      {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <Container className="h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
               <TrendingUp className="w-5 h-5 text-white" />
@@ -30,37 +39,38 @@ export default function LandingPage() {
               Começar grátis
             </Link>
           </div>
-        </div>
+        </Container>
       </nav>
 
-      {/* Hero Section - Perfect proportions */}
+      {/* Hero Section */}
       <section className="pt-40 pb-24 px-6">
-        <div className="max-w-5xl mx-auto text-center">
-          {/* Trust Badge - 40px height */}
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 rounded-full mb-8 border border-blue-100">
-            <Sparkles className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium text-blue-700">IA Avançada • Dados em Tempo Real • Conformidade Total</span>
+        <Container>
+          {/* Trust Badge */}
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 rounded-full border border-blue-100">
+              <Sparkles className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-medium text-blue-700">IA Avançada • Dados em Tempo Real • Conformidade Total</span>
+            </div>
           </div>
 
-          {/* H1: 48px (text-5xl), line-height 1.1 - 3x body size */}
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight">
+          {/* Main Headline - Centralized */}
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight text-center">
             Entenda o mercado.<br />
             <span className="text-blue-600">Invista com dados.</span>
           </h1>
 
-          {/* Subheadline: 20px (text-xl), line-height 1.6 */}
-          <p className="text-xl text-gray-500 mb-4 max-w-3xl mx-auto leading-relaxed">
+          {/* Subheadline */}
+          <p className="text-xl text-gray-500 mb-4 max-w-3xl mx-auto text-center leading-relaxed">
             O primeiro assistente de investimentos com IA que traduz notícias globais 
             para linguagem simples. Com probabilidades baseadas em dados reais.
           </p>
           
-          {/* Body text: 16px, line-height 1.6 */}
-          <p className="text-base text-gray-400 mb-10 max-w-2xl mx-auto">
+          <p className="text-base text-gray-400 mb-10 max-w-2xl mx-auto text-center">
             Não use achismos. Use inteligência artificial para tomar decisões informadas 
             no mercado financeiro brasileiro e global.
           </p>
 
-          {/* Dual CTAs - 48px min height (p-4 + text-base = 16+32 = 48px) */}
+          {/* Dual CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <Link href="/register" className="w-full sm:w-auto bg-blue-600 text-white font-semibold px-8 py-4 rounded-full hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-500/30 text-base">
               Começar gratuitamente
@@ -72,7 +82,7 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Social Proof Metrics - Proper 48px gap between items */}
+          {/* Social Proof Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mb-8">
             {[
               { value: "50K+", label: "Investidores ativos" },
@@ -87,7 +97,7 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Trust signals - 24px gap */}
+          {/* Trust signals */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
             <span>Grátis para sempre</span>
             <span>•</span>
@@ -97,12 +107,12 @@ export default function LandingPage() {
             <span>•</span>
             <span>Conformidade total</span>
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* Product Preview - 96px padding top/bottom */}
+      {/* Product Preview */}
       <section id="como-funciona" className="py-24 px-6 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+        <Container>
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Veja como funciona
@@ -112,9 +122,9 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Product Mockup - 32px padding internal */}
-          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-            {/* Mock header - 48px height */}
+          {/* Product Mockup */}
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden max-w-5xl mx-auto">
+            {/* Mock header */}
             <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
@@ -129,9 +139,9 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* 3-panel layout - 400px min height */}
+            {/* 3-panel layout */}
             <div className="grid grid-cols-12 min-h-[400px]">
-              {/* Sources panel - 16px padding */}
+              {/* Sources panel */}
               <div className="col-span-3 bg-gray-50 border-r border-gray-200 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-gray-900">Fontes</h3>
@@ -149,7 +159,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Chat panel - 24px padding */}
+              {/* Chat panel */}
               <div className="col-span-6 p-6">
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-4">
@@ -177,7 +187,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Studio panel - 16px padding */}
+              {/* Studio panel */}
               <div className="col-span-3 bg-gray-50 border-l border-gray-200 p-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Globe className="w-5 h-5 text-blue-600" />
@@ -199,12 +209,12 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* Features - Proper grid with 32px gaps and 32px padding */}
+      {/* Features */}
       <section id="recursos" className="py-24 px-6">
-        <div className="max-w-7xl mx-auto">
+        <Container>
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Por que DYInvest?
@@ -214,7 +224,6 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Grid: 32px gap, Cards: 32px padding */}
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { 
@@ -269,12 +278,12 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* How it works - 3 steps, 48px gap */}
+      {/* How it works */}
       <section className="py-24 px-6 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
+        <Container>
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Como funciona
@@ -284,7 +293,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-12">
+          <div className="grid md:grid-cols-3 gap-12 max-w-4xl mx-auto">
             {[
               {
                 step: "01",
@@ -311,12 +320,12 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* Social Proof - 32px gap, 24px padding */}
+      {/* Social Proof */}
       <section id="prova-social" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
+        <Container>
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               O que dizem sobre nós
@@ -326,7 +335,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[
               {
                 name: "Ricardo M.",
@@ -361,31 +370,33 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* Final CTA - 96px padding */}
+      {/* Final CTA */}
       <section className="py-24 px-6 bg-blue-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            Pronto para investir com inteligência?
-          </h2>
-          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-            Junte-se a milhares de investidores que já usam IA para tomar decisões melhores. Comece gratuitamente hoje.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/register" className="w-full sm:w-auto bg-white text-blue-600 font-semibold px-10 py-4 rounded-full hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-2xl text-base">
-              Criar conta grátis
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+        <Container>
+          <div className="text-center">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+              Pronto para investir com inteligência?
+            </h2>
+            <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+              Junte-se a milhares de investidores que já usam IA para tomar decisões melhores. Comece gratuitamente hoje.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/register" className="w-full sm:w-auto bg-white text-blue-600 font-semibold px-10 py-4 rounded-full hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-2xl text-base">
+                Criar conta grátis
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+            <p className="text-blue-200 text-sm mt-6">Sem cartão de crédito • Seguro e confiável • Cancele quando quiser</p>
           </div>
-          <p className="text-blue-200 text-sm mt-6">Sem cartão de crédito • Seguro e confiável • Cancele quando quiser</p>
-        </div>
+        </Container>
       </section>
 
-      {/* Footer - Proper spacing 48px top, 32px bottom */}
+      {/* Footer */}
       <footer className="border-t border-gray-200 py-12 px-6">
-        <div className="max-w-7xl mx-auto">
+        <Container>
           <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
@@ -434,7 +445,7 @@ export default function LandingPage() {
               <a href="#" className="text-blue-600 hover:underline">aviso de risco</a>.
             </p>
           </div>
-        </div>
+        </Container>
       </footer>
     </div>
   );
