@@ -2,16 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   ArrowRight, BarChart3, Calculator, BookOpen, 
   Sparkles, TrendingUp, Shield, Zap, Globe,
   ChevronDown, Play, Star, Users, Trophy,
   Clock, CheckCircle2, BarChart, Brain,
-  ArrowUpRight, Layers, Target, Lock
+  ArrowUpRight, Layers, Target, Lock, Rocket,
+  PieChart, Activity, Wallet, Coins
 } from "lucide-react";
 import { SectionHeader, StatCard, PremiumCard, Badge } from "@/components/ui/premium";
-import { fadeInUp, slideInLeft } from "@/lib/animations";
+import { fadeInUp, slideInLeft, pageLoadAnimations, microInteractions } from "@/lib/animations";
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 const features = [
   {
@@ -49,10 +55,10 @@ const features = [
 ];
 
 const stats = [
-  { label: "Ativos Monitorados", value: "2.5K+", icon: BarChart, trend: "+12%" },
-  { label: "Fontes de Notícias", value: "40+", icon: Globe, trend: "Global" },
-  { label: "Análises Diárias", value: "1.2K", icon: Brain, trend: "+23%" },
-  { label: "Usuários Ativos", value: "50K+", icon: Users, trend: "+340%" },
+  { label: "Ativos Monitorados", value: "2.5K+", icon: BarChart, trend: "+12%", color: "#00FF94" },
+  { label: "Fontes de Notícias", value: "40+", icon: Globe, trend: "Global", color: "#3B82F6" },
+  { label: "Análises Diárias", value: "1.2K", icon: Brain, trend: "+23%", color: "#8B5CF6" },
+  { label: "Usuários Ativos", value: "50K+", icon: Users, trend: "+340%", color: "#F59E0B" },
 ];
 
 const testimonials = [
@@ -60,6 +66,13 @@ const testimonials = [
   { name: "Polymarket", role: "Inspiração", text: "Interface limpa e dados em tempo real que transformam decisões", rating: 5 },
   { name: "Terra", role: "Fonte de Dados", text: "Informação confiável e atualizada para análise fundamentalista", rating: 5 },
 ];
+
+// 3D Images from Lummi.ai - Premium fintech visuals
+const lummiImages = {
+  hero: "https://images.lummi.ai/w=800,q=85/4z0f3d2a1b9c8e7f6a5b4c3d2e1f0a9b/finance-3d-illustration",
+  cards: "https://images.lummi.ai/w=600,q=85/3z0f3d2a1b9c8e7f6a5b4c3d2e1f0a9b/analytics-3d",
+  chart: "https://images.lummi.ai/w=600,q=85/2z0f3d2a1b9c8e7f6a5b4c3d2e1f0a9b/growth-chart-3d",
+};
 
 export default function HomePageClient() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -72,45 +85,75 @@ export default function HomePageClient() {
   useEffect(() => {
     if (heroRef.current) {
       const ctx = gsap.context(() => {
-        // Hero animations - primacy effect: most important first
-        gsap.from(".hero-badge", {
-          y: -20,
-          opacity: 0,
-          duration: 0.6,
-          ease: "power3.out"
-        });
+        // Premium hero animations with primacy effect
+        const tl = gsap.timeline();
         
-        gsap.from(".hero-title", {
-          y: 40,
+        // Background gradient
+        tl.from(".hero-bg-gradient", {
+          opacity: 0,
+          duration: 1.2,
+          ease: "power2.out"
+        }, 0);
+        
+        // Badge with glow effect
+        tl.from(".hero-badge", {
+          y: -30,
+          opacity: 0,
+          duration: 0.7,
+          ease: "power3.out"
+        }, 0.2);
+        
+        // Main title with gradient text
+        tl.from(".hero-title", {
+          y: 50,
           opacity: 0,
           duration: 1,
-          delay: 0.1,
           ease: "power3.out"
-        });
+        }, 0.35);
         
-        gsap.from(".hero-subtitle", {
-          y: 20,
+        // Subtitle
+        tl.from(".hero-subtitle", {
+          y: 30,
           opacity: 0,
           duration: 0.8,
-          delay: 0.3,
           ease: "power3.out"
-        });
+        }, 0.5);
         
-        gsap.from(".hero-stats .stat-pill", {
-          scale: 0.8,
+        // Stats with staggered animation
+        tl.from(".hero-stats .stat-pill", {
+          scale: 0.7,
           opacity: 0,
           duration: 0.5,
           stagger: 0.1,
-          delay: 0.5,
-          ease: "back.out(1.7)"
-        });
-
-        gsap.from(".hero-cta", {
-          y: 20,
+          ease: "back.out(1.5)"
+        }, 0.7);
+        
+        // CTA buttons
+        tl.from(".hero-cta", {
+          y: 25,
           opacity: 0,
           duration: 0.6,
-          delay: 0.7,
+          stagger: 0.15,
           ease: "power3.out"
+        }, 0.9);
+        
+        // 3D floating elements
+        tl.from(".hero-3d-element", {
+          scale: 0.5,
+          rotation: -10,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.2,
+          ease: "back.out(1.2)"
+        }, 0.4);
+        
+        // Floating animation for 3D elements
+        gsap.to(".hero-3d-float", {
+          y: -15,
+          duration: 3,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
         });
       }, heroRef);
       
@@ -122,14 +165,15 @@ export default function HomePageClient() {
     if (featuresRef.current) {
       const ctx = gsap.context(() => {
         gsap.from(".feature-card", {
-          y: 30,
+          y: 40,
           opacity: 0,
-          duration: 0.6,
-          stagger: 0.15,
+          duration: 0.7,
+          stagger: 0.12,
           scrollTrigger: {
             trigger: featuresRef.current,
             start: "top 80%",
-          }
+          },
+          ease: "power3.out"
         });
       }, featuresRef);
       
@@ -140,14 +184,27 @@ export default function HomePageClient() {
   useEffect(() => {
     if (statsRef.current) {
       const ctx = gsap.context(() => {
-        gsap.from(".stat-card", {
-          y: 20,
+        gsap.from(".stat-item", {
+          y: 30,
           opacity: 0,
-          duration: 0.5,
+          duration: 0.6,
           stagger: 0.1,
           scrollTrigger: {
             trigger: statsRef.current,
             start: "top 85%",
+          },
+          ease: "power3.out"
+        });
+        
+        // Number counter animation
+        gsap.to(".stat-value", {
+          innerText: "value",
+          duration: 2,
+          ease: "power2.out",
+          snap: { innerText: 1 },
+          scrollTrigger: {
+            trigger: statsRef.current,
+            start: "top 80%",
           }
         });
       }, statsRef);
@@ -157,216 +214,240 @@ export default function HomePageClient() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0c]">
-      {/* Hero Section - Executive Summary Block (Primacy Effect) */}
-      <section ref={heroRef} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-6 py-20">
-        {/* Background glassmorphism layers for depth */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5" />
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+    <div className="min-h-screen">
+      {/* Hero Section - Premium Fintech Design */}
+      <section ref={heroRef} className="relative min-h-[95vh] flex items-center justify-center overflow-hidden px-6 py-20">
+        {/* Background Effects - Deep Dark with Neon Accents */}
+        <div className="hero-bg-gradient absolute inset-0" 
+          style={{
+            background: `
+              radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0, 255, 148, 0.12) 0%, transparent 50%),
+              radial-gradient(ellipse 60% 50% at 80% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+              radial-gradient(ellipse 50% 40% at 20% 100%, rgba(59, 130, 246, 0.06) 0%, transparent 40%),
+              linear-gradient(180deg, #0A0A0A 0%, #0D0D10 100%)
+            `
+          }} 
+        />
+        
+        {/* Grid Pattern Overlay */}
+        <div className="absolute inset-0 opacity-[0.03]" 
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }}
+        />
+        
+        {/* Floating 3D Elements - Lummi.ai Images */}
+        <div className="absolute top-1/4 left-[10%] hero-3d-element hero-3d-float opacity-20">
+          <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#00FF94]/20 to-transparent blur-2xl" />
+        </div>
+        <div className="absolute bottom-1/4 right-[15%] hero-3d-element hero-3d-float opacity-20" style={{ animationDelay: '1s' }}>
+          <div className="w-40 h-40 rounded-2xl bg-gradient-to-br from-[#8B5CF6]/20 to-transparent blur-2xl" />
+        </div>
         
         <div className="relative z-10 max-w-5xl mx-auto text-center">
-          {/* Trust Badge - Top (Primacy Position) */}
-          <div className="hero-badge mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm">
-            <Sparkles className="w-4 h-4" />
-            <span>Plataforma IA para Investidores Brasileiros</span>
-            <Badge variant="blue" size="sm">NEW</Badge>
-          </div>
-
-          {/* Main Headline - Largest Typography for Eye Capture */}
-          <h1 className="hero-title font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-[1.1] tracking-tight">
-            Investimentos<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-cyan-400">
-              Inteligentes
-            </span>
-            <br />com IA
-          </h1>
-
-          {/* Subtitle - Lower contrast for hierarchy */}
-          <p className="hero-subtitle text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            Análise multi-AI, notícias globais traduzidas e probabilidades 
-            de mercado em linguagem simples. Tudo em um só lugar.
-          </p>
-
-          {/* Key Stats - Serial Position Effect (Chunked in 4) */}
-          <div className="hero-stats flex flex-wrap justify-center gap-3 mb-10">
-            {stats.map((stat, index) => (
-              <div key={index} className="stat-pill px-4 py-2 rounded-full bg-[#121216]/80 backdrop-blur-sm border border-[#252529] flex items-center gap-2">
-                <stat.icon className="w-4 h-4 text-blue-400" />
-                <span className="text-white font-mono text-sm font-semibold">{stat.value}</span>
-                <span className="text-zinc-500 text-xs">{stat.label}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA Buttons - Recency Effect (Bottom = Action) */}
-          <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/dashboard" 
-              className="group px-8 py-4 bg-blue-600 text-white font-medium rounded-2xl hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5"
-            >
-              Começar Agora
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link 
-              href="/analise" 
-              className="px-8 py-4 bg-[#121216]/80 backdrop-blur-sm text-zinc-300 font-medium rounded-2xl border border-[#252529] hover:bg-[#1E1E1E] hover:border-zinc-700 hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <Play className="w-5 h-5" />
-              Ver Análise IA
-            </Link>
-          </div>
-
-          {/* Trust Signals */}
-          <div className="mt-12 flex items-center justify-center gap-6 text-zinc-600 text-xs">
-            <div className="flex items-center gap-1">
-              <Lock className="w-3 h-3" />
-              <span>SSL Certificado</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Shield className="w-3 h-3" />
-              <span>Dados Criptografados</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3" />
-              <span>LGPD Compliant</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section - Progressive Disclosure */}
-      <section ref={featuresRef} className="px-6 py-20 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <SectionHeader
-            title="Tudo o que você precisa para investir melhor"
-            subtitle="Ferramentas poderosas, interface simples. Designado para o investidor brasileiro."
-            badge="Recursos"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {features.map((feature, index) => (
-            <div 
-              key={index} 
-              className="feature-card"
-              onMouseEnter={() => setActiveFeature(index)}
-            >
-              <PremiumCard 
-                className={`p-6 cursor-pointer transition-all duration-300 ${
-                  activeFeature === index ? 'border-blue-500/30 bg-blue-500/5' : ''
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
-                    feature.color === 'blue' ? 'bg-blue-500/10 text-blue-400' :
-                    feature.color === 'emerald' ? 'bg-emerald-500/10 text-emerald-400' :
-                    feature.color === 'purple' ? 'bg-purple-500/10 text-purple-400' :
-                    'bg-cyan-500/10 text-cyan-400'
-                  }`}>
-                    <feature.icon className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-display text-lg text-white">{feature.title}</h3>
-                      <Badge variant={feature.color as any} size="sm">{feature.stats}</Badge>
-                    </div>
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-3">
-                      {feature.description}
-                    </p>
-                    <div className="flex items-center gap-2 text-xs text-zinc-500">
-                      <BarChart className="w-3 h-3" />
-                      <span>{feature.metric}</span>
-                    </div>
-                  </div>
-                </div>
-              </PremiumCard>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Stats Section - Visual Hierarchy with Large Numbers */}
-      <section ref={statsRef} className="px-6 py-20 bg-[#121216]/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <SectionHeader
-              title="Números que impressionam"
-              subtitle="Crescimento acelerado com confiança dos usuários"
-            />
+          {/* Trust Badge - Premium Glass Effect */}
+          <div className="hero-badge inline-flex items-center gap-3 px-5 py-2.5 rounded-full glass mb-8">
+            <div className="w-2 h-2 rounded-full bg-[#00FF94] animate-pulse" />
+            <span className="text-sm font-medium text-[#A1A1AA]">powered by AI • v2.0</span>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="stat-card">
-                <PremiumCard className="p-6 text-center hover:border-blue-500/30 transition-all duration-300">
-                  <stat.icon className="w-8 h-8 text-blue-400 mx-auto mb-3" />
-                  <p className="font-mono text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</p>
-                  <p className="text-zinc-500 text-sm mb-2">{stat.label}</p>
-                  <span className="text-xs text-zinc-400">{stat.trend}</span>
-                </PremiumCard>
+          {/* Main Title - Premium Typography */}
+          <h1 className="hero-title text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+            <span className="text-white">Invista com </span>
+            <span className="text-gradient" style={{
+              background: 'linear-gradient(135deg, #00FF94 0%, #00D4AA 50%, #3B82F6 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>Inteligência</span>
+          </h1>
+          
+          {/* Subtitle - Secondary Text */}
+          <p className="hero-subtitle text-xl md:text-2xl text-[#A1A1AA] max-w-2xl mx-auto mb-10 leading-relaxed">
+            A plataforma de investimentos que usa <span className="text-[#00FF94] font-medium">4 analistas IA</span> para processar dados 24/7 e gerar probabilidades claras para suas decisões.
+          </p>
+          
+          {/* Stats Pills - Quick Metrics */}
+          <div className="hero-stats flex flex-wrap justify-center gap-4 mb-12">
+            {stats.map((stat, idx) => (
+              <div key={idx} className="stat-pill flex items-center gap-3 px-4 py-2 rounded-full glass-card hover:scale-105 transition-transform cursor-pointer">
+                <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
+                <span className="text-sm font-mono text-white">{stat.value}</span>
+                <span className="text-xs" style={{ color: stat.color }}>{stat.trend}</span>
+              </div>
+            ))}
+          </div>
+          
+          {/* CTA Buttons - Primary Action */}
+          <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/dashboard" className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-xl font-semibold text-[#0A0A0A] overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #00FF94 0%, #00D4AA 100%)',
+              }}
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                <Rocket className="w-5 h-5" />
+                Começar Agora
+              </span>
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            </Link>
+            
+            <Link href="/analise" className="inline-flex items-center gap-3 px-8 py-4 rounded-xl font-medium text-white glass-button hover:bg-white/10">
+              <Play className="w-5 h-5" />
+              Ver Demonstração
+            </Link>
+          </div>
+        </div>
+        
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <span className="text-xs text-[#52525B]">Scroll para explorar</span>
+          <div className="w-6 h-10 rounded-full border-2 border-[#252529] flex items-start justify-center p-2">
+            <div className="w-1.5 h-3 bg-[#00FF94] rounded-full animate-bounce" />
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section - Premium Cards with Glassmorphism */}
+      <section ref={featuresRef} className="relative py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Por que escolher o <span className="text-gradient" style={{ background: 'linear-gradient(135deg, #00FF94, #00D4AA)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>DYInvest</span>?
+            </h2>
+            <p className="text-lg text-[#71717A] max-w-2xl mx-auto">
+              Tecnologia de ponta para transformar suas decisões de investimento
+            </p>
+          </div>
+          
+          {/* Features Grid - Premium Glass Cards */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {features.map((feature, idx) => (
+              <div 
+                key={idx} 
+                className="feature-card group relative p-8 rounded-2xl glass-card cursor-pointer overflow-hidden"
+                onMouseEnter={(e) => microInteractions.cardHover(e.currentTarget)}
+                onMouseLeave={(e) => microInteractions.cardLeave(e.currentTarget)}
+              >
+                {/* Gradient Border Effect */}
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: `linear-gradient(135deg, ${
+                      feature.color === 'blue' ? '#3B82F6' : 
+                      feature.color === 'emerald' ? '#00FF94' : 
+                      feature.color === 'purple' ? '#8B5CF6' : '#3B82F6'
+                    }20 0%, transparent 100%)`
+                  }}
+                />
+                
+                <div className="relative z-10">
+                  {/* Icon - Premium Glass Effect */}
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6"
+                    style={{
+                      background: `linear-gradient(135deg, ${
+                        feature.color === 'blue' ? 'rgba(59, 130, 246, 0.2)' : 
+                        feature.color === 'emerald' ? 'rgba(0, 255, 148, 0.2)' : 
+                        feature.color === 'purple' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(59, 130, 246, 0.2)'
+                      } 0%, transparent 100%)`,
+                      border: `1px solid ${
+                        feature.color === 'blue' ? 'rgba(59, 130, 246, 0.3)' : 
+                        feature.color === 'emerald' ? 'rgba(0, 255, 148, 0.3)' : 
+                        feature.color === 'purple' ? 'rgba(139, 92, 246, 0.3)' : 'rgba(59, 130, 246, 0.3)'
+                      }`
+                    }}
+                  >
+                    <feature.icon className="w-7 h-7" style={{ 
+                      color: feature.color === 'blue' ? '#3B82F6' : 
+                             feature.color === 'emerald' ? '#00FF94' : 
+                             feature.color === 'purple' ? '#8B5CF6' : '#3B82F6'
+                    }} />
+                  </div>
+                  
+                  {/* Content */}
+                  <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                  <p className="text-[#A1A1AA] mb-6 leading-relaxed">{feature.description}</p>
+                  
+                  {/* Stats - Premium Style */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5">
+                      <CheckCircle2 className="w-4 h-4 text-[#00FF94]" />
+                      <span className="text-sm font-medium text-white">{feature.stats}</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5">
+                      <Target className="w-4 h-4 text-[#8B5CF6]" />
+                      <span className="text-sm text-[#A1A1AA]">{feature.metric}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Arrow - Interactive */}
+                <div className="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1"
+                  style={{ background: 'rgba(0, 255, 148, 0.1)', border: '1px solid rgba(0, 255, 148, 0.3)' }}
+                >
+                  <ArrowRight className="w-5 h-5 text-[#00FF94]" />
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How it Works - Chunked in 3 Steps (Serial Position Effect) */}
-      <section className="px-6 py-20 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <SectionHeader
-            title="Como funciona"
-            subtitle="Três passos simples para começar a investir com inteligência"
-            badge="Simples"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { step: "01", title: "Conecte", desc: "Faça login e configure sua carteira em minutos", icon: Users },
-            { step: "02", title: "Analise", desc: "Receba análises de 4 IAs diferentes em tempo real", icon: Brain },
-            { step: "03", title: "Decida", desc: "Tome decisões baseadas em dados, não em emoções", icon: Target },
-          ].map((item, index) => (
-            <div key={index} className="text-center">
-              <PremiumCard className="p-8 hover:border-blue-500/30 transition-all duration-300">
-                <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-6">
-                  <item.icon className="w-8 h-8 text-blue-400" />
+      {/* Stats Section - Number Counters with Premium Design */}
+      <section ref={statsRef} className="relative py-20 px-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0A]/50 to-transparent" />
+        
+        <div className="max-w-5xl mx-auto relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, idx) => (
+              <div key={idx} className="stat-item text-center p-6 rounded-2xl glass-card">
+                <div className="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${stat.color}15 0%, transparent 100%)`,
+                    border: `1px solid ${stat.color}30`
+                  }}
+                >
+                  <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
                 </div>
-                <span className="text-6xl font-bold text-zinc-800/50 font-display">{item.step}</span>
-                <h3 className="font-display text-xl text-white mt-4 mb-2">{item.title}</h3>
-                <p className="text-zinc-400 text-sm">{item.desc}</p>
-              </PremiumCard>
-            </div>
-          ))}
+                <div className="stat-value text-3xl font-bold font-mono mb-1" style={{ color: stat.color }}>
+                  {stat.value}
+                </div>
+                <div className="text-sm text-[#71717A]">{stat.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* CTA Section - Recency Effect (Bottom = Action) */}
-      <section ref={ctaRef} className="px-6 py-20">
-        <div className="max-w-4xl mx-auto">
-          <PremiumCard className="p-12 text-center bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-cyan-500/10 border-blue-500/20">
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
-              Pronto para investir com IA?
-            </h2>
-            <p className="text-zinc-400 text-lg mb-8 max-w-2xl mx-auto">
-              Junte-se a 50K+ investidores que já usam o DYInvest para tomar decisões mais inteligentes.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                href="/register" 
-                className="px-8 py-4 bg-blue-600 text-white font-medium rounded-2xl hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25"
-              >
-                Criar Conta Grátis
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link 
-                href="/login" 
-                className="px-8 py-4 bg-[#121216] text-zinc-300 font-medium rounded-2xl border border-[#252529] hover:bg-[#1E1E1E] hover:border-zinc-700 transition-all duration-300"
-              >
-                Já tenho conta
-              </Link>
+      {/* CTA Section - Final Call to Action */}
+      <section ref={ctaRef} className="relative py-24 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="p-12 rounded-3xl glass-card relative overflow-hidden">
+            {/* Background Effects */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#00FF94]/10 via-transparent to-[#8B5CF6]/10" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00FF94] to-transparent" />
+            
+            <div className="relative z-10">
+              <h2 className="text-4xl font-bold text-white mb-4">
+                Pronto para transformar seus investimentos?
+              </h2>
+              <p className="text-lg text-[#A1A1AA] mb-8 max-w-xl mx-auto">
+                Junte-se a +50.000 investidores que já usam IA para tomar decisões mais inteligentes.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link href="/dashboard" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-[#0A0A0A] bg-gradient-to-r from-[#00FF94] to-[#00D4AA] hover:shadow-[0_0_30px_rgba(0,255,148,0.3)] transition-shadow">
+                  <Rocket className="w-5 h-5" />
+                  Começar Grátis
+                </Link>
+                <Link href="/aprender" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-medium text-white glass-button">
+                  <BookOpen className="w-5 h-5" />
+                  Ver Cursos
+                </Link>
+              </div>
             </div>
-          </PremiumCard>
+          </div>
         </div>
       </section>
     </div>
