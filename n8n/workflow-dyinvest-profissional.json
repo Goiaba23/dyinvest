@@ -1,0 +1,407 @@
+{
+  "name": "DYInvest - Automação Profissional Completa",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "trigger-main",
+      "name": "⏰ A cada 30 Minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/noticias?type=brasil",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "news-brasil",
+      "name": "📰 Notícias Brasil",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 150]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/noticias?type=global",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "news-global",
+      "name": "🌎 Notícias Globais",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/mercado?type=indices",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "market-indices",
+      "name": "📊 Índices Mercado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 450]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/mercado?type=stocks",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "market-stocks",
+      "name": "💹 Ações Brasil",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 150]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/mercado?type=crypto",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "market-crypto",
+      "name": "₿ Criptomoedas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/mercado?type=commodities",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "market-commodities",
+      "name": "🛢️ Commodities",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 450]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/economic",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "economic-data",
+      "name": "📈 Dados Econômicos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 150]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/api/portfolio/sync",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "portfolio-sync",
+      "name": "💼 Sincronizar Portfólio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/api/sentinel/check",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "sentinel-check",
+      "name": "🛡️ Análise Sentinela",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 450]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      },
+      "id": "trigger-ai",
+      "name": "🤖 A cada 3 Horas - IA",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 700]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/api/ai/analyze",
+        "body": {
+          "prompt": "Analise o mercado brasileiro atual considerando notícias, dados econômicos e tendências. Forneça insights em português."
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "ai-analysis",
+      "name": "🧠 Análise IA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 700]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/api/chat",
+        "body": {
+          "message": "Qual a tendência do mercado hoje?"
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "ai-chat",
+      "name": "💬 Chat IA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 700]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "id": "trigger-deep",
+      "name": "� deep A cada 12 Horas",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 950]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/scraped?source=statusinvest",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "scrape-statusinvest",
+      "name": "🕸️ StatusInvest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 950]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/scraped?source=infomoney",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "scrape-infomoney",
+      "name": "🕸️ InfoMoney",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [750, 950]
+    }
+  ],
+  "connections": {
+    "⏰ A cada 30 Minutos": {
+      "main": [
+        [
+          {
+            "node": "📰 Notícias Brasil",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🌎 Notícias Globais",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📊 Índices Mercado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📰 Notícias Brasil": {
+      "main": [
+        [
+          {
+            "node": "💹 Ações Brasil",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🌎 Notícias Globais": {
+      "main": [
+        [
+          {
+            "node": "₿ Criptomoedas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Índices Mercado": {
+      "main": [
+        [
+          {
+            "node": "🛢️ Commodities",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💹 Ações Brasil": {
+      "main": [
+        [
+          {
+            "node": "📈 Dados Econômicos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "₿ Criptomoedas": {
+      "main": [
+        [
+          {
+            "node": "📈 Dados Econômicos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🛢️ Commodities": {
+      "main": [
+        [
+          {
+            "node": "📈 Dados Econômicos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📈 Dados Econômicos": {
+      "main": [
+        [
+          {
+            "node": "💼 Sincronizar Portfólio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💼 Sincronizar Portfólio": {
+      "main": [
+        [
+          {
+            "node": "🛡️ Análise Sentinela",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 A cada 3 Horas - IA": {
+      "main": [
+        [
+          {
+            "node": "🧠 Análise IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Análise IA": {
+      "main": [
+        [
+          {
+            "node": "💬 Chat IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "� deep A cada 12 Horas": {
+      "main": [
+        [
+          {
+            "node": "🕸️ StatusInvest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🕸️ StatusInvest": {
+      "main": [
+        [
+          {
+            "node": "🕸️ InfoMoney",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["dyinvest", "automacao", "mercado"],
+  "triggerCount": 3,
+  "updatedAt": "2026-04-10T12:00:00.000Z",
+  "versionId": "1"
+}

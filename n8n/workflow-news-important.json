@@ -1,0 +1,84 @@
+{
+  "name": "Important News - Economy & Finance",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "id": "schedule-2h",
+      "name": "Every 2 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": "1.1",
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/news?filter=important",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "news-important",
+      "name": "1. Important News",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [500, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/news?filter=economy",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "news-economy",
+      "name": "2. Economy News",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [500, 400]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/news?filter=politics",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "news-politics",
+      "name": "3. Politics & Government",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 300]
+    }
+  ],
+  "connections": {
+    "Every 2 Hours": {
+      "main": [
+        [
+          { "node": "1. Important News", "type": "main", "index": 0 },
+          { "node": "2. Economy News", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "2. Economy News": {
+      "main": [
+        [
+          { "node": "3. Politics & Government", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "tags": ["investimento", "news", "economy", "politics"]
+}

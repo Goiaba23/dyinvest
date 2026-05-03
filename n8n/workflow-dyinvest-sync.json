@@ -1,0 +1,89 @@
+{
+  "name": "DYInvest - Sync Dados (sem IA)",
+  "nodes": [
+    {
+      "parameters": {"rule": {"interval": [{"field": "minutes", "minutesInterval": 15}]}},
+      "id": "mkt",
+      "name": "Mercado 15min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://api.hgbrasil.com/finance?key=3f313604", "options": {"timeout": 30000}},
+      "id": "hg",
+      "name": "HG Brasil",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 150]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://api.bitvalor.com/v1/ticker.json", "options": {"timeout": 15000}},
+      "id": "btc",
+      "name": "Bitcoin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {"rule": {"interval": [{"field": "hours", "hoursInterval": 1}]}},
+      "id": "news",
+      "name": "Noticias 1h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 500]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://g1.globo.com/economia/", "options": {"timeout": 20000}},
+      "id": "g1",
+      "name": "G1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 500]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://oglobo.globo.com/economia/", "options": {"timeout": 20000}},
+      "id": "oglobo",
+      "name": "O Globo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 650]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.cnbc.com/", "options": {"timeout": 25000}},
+      "id": "cnbc",
+      "name": "CNBC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 800]
+    },
+    {
+      "parameters": {"method": "GET", "url": "https://www.reuters.com/", "options": {"timeout": 25000}},
+      "id": "reuters",
+      "name": "Reuters",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 950]
+    },
+    {
+      "parameters": {"method": "POST", "url": "https://dyinvest.vercel.app/api/mercado/sync", "body": {"hg": "{{hg}}", "btc": "{{btc}}"}, "options": {"timeout": 30000}},
+      "id": "save",
+      "name": "SalvarDados",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 200]
+    }
+  ],
+  "connections": {
+    "Mercado 15min": {"main": [[{"node": "HG Brasil", "type": "main", "index": 0}, {"node": "Bitcoin", "type": "main", "index": 0}]]},
+    "Noticias 1h": {"main": [[{"node": "G1", "type": "main", "index": 0}, {"node": "O Globo", "type": "main", "index": 0}, {"node": "CNBC", "type": "main", "index": 0}, {"node": "Reuters", "type": "main", "index": 0}]]},
+    "HG Brasil": {"main": [[{"node": "SalvarDados", "type": "main", "index": 0}]]},
+    "Bitcoin": {"main": [[{"node": "SalvarDados", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1"},
+  "staticData": null,
+  "tags": ["dyinvest"],
+  "triggerCount": 2,
+  "updatedAt": "2026-04-10T22:00:00.000Z",
+  "versionId": "1"
+}

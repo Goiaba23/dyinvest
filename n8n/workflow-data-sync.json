@@ -1,0 +1,98 @@
+{
+  "name": "Meu Investimento AI - Data Sync",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Scheduled Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:3000/api/sync?action=sync",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "http-request-sync",
+      "name": "Sync Market Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\n\nconst summary = {\n  success: data.success,\n  updated: data.updated,\n  errors: data.errors?.length || 0,\n  lastUpdate: data.lastUpdate,\n  message: data.updated > 0 ? `✅ Sincronizados ${data.updated} ativos` : '⚠️ Nenhum dado atualizado'\n};\n\nreturn { json: summary };"
+      },
+      "id": "transform",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [750, 300]
+    },
+    {
+      "parameters": {
+        "to": "seu-email@email.com",
+        "subject": "📊 Dados do Mercado Sincronizados",
+        "body": "={{ $json.message }}\n\nAtivos atualizados: {{ $json.updated }}\nErros: {{ $json.errors }}\nÚltima atualização: {{ $json.lastUpdate }}"
+      },
+      "id": "email-notification",
+      "name": "Email Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1.2,
+      "position": [1000, 300]
+    }
+  ],
+  "connections": {
+    "Scheduled Trigger": {
+      "main": [
+        [
+          {
+            "node": "Sync Market Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sync Market Data": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Email Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "tags": ["investimento", "market-data"],
+  "triggerCount": 1,
+  "updatedAt": "2026-04-08T12:00:00.000Z",
+  "versionId": "1"
+}

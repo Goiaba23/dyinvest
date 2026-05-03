@@ -1,0 +1,99 @@
+{
+  "name": "Portfolio AI Analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 4
+            }
+          ]
+        }
+      },
+      "id": "schedule-4h",
+      "name": "Every 4 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": "1.1",
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/portfolio?action=recommendations",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "get-portfolio",
+      "name": "1. Get Portfolio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [500, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/sync?action=quote&symbol=PETR4",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "quote1",
+      "name": "2. Get PETR4 Price",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [500, 400]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/sync?action=quote&symbol=VALE3",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "quote2",
+      "name": "3. Get VALE3 Price",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [500, 600]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/ai?action=full_analysis",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "ai-analysis",
+      "name": "4. AI Market Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": "3",
+      "position": [750, 400]
+    }
+  ],
+  "connections": {
+    "Every 4 Hours": {
+      "main": [
+        [
+          { "node": "1. Get Portfolio", "type": "main", "index": 0 },
+          { "node": "2. Get PETR4 Price", "type": "main", "index": 0 },
+          { "node": "3. Get VALE3 Price", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "2. Get PETR4 Price": {
+      "main": [
+        [
+          { "node": "4. AI Market Analysis", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "tags": ["investimento", "portfolio", "ai"]
+}
