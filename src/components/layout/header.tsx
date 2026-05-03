@@ -1,219 +1,221 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { 
-  TrendingUp, 
-  Menu, 
-  X, 
-  User, 
-  LogOut,
-  LayoutDashboard,
-  Wallet,
-  BarChart3,
-  List,
-  PieChart,
-  BookOpen
-} from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { GlossaryModal } from "@/components/ui/tooltip";
+import Link from "next/link";
+import { Search, Menu, X, ChevronDown, Star, TrendingUp, Trophy, Newspaper, Brain, Calculator, BookOpen } from "lucide-react";
 
-interface HeaderProps {
-  isLoggedIn?: boolean;
-  user?: {
-    email: string;
-  } | null;
-}
+const navItems = [
+  {
+    label: "Ideias",
+    icon: Star,
+    columns: [
+      {
+        title: "Investimento Inteligente",
+        links: [
+          { label: "Maiores Dividendos", href: "/acoes/rankings/dy" },
+          { label: "Encontre Oportunidades", href: "/acoes/rankings" },
+          { label: "Ações para Iniciantes", href: "/aprender" },
+          { label: "Mantenha-se Informado", href: "/noticias" },
+          { label: "Ativos Mais Buscados", href: "/acoes" },
+          { label: "Imposto de Renda", href: "/irpf" },
+        ]
+      }
+    ]
+  },
+  {
+    label: "Ações",
+    icon: TrendingUp,
+    columns: [
+      {
+        title: "Ações",
+        links: [
+          { label: "Todas as Ações", href: "/acoes" },
+          { label: "Rankings", href: "/acoes/rankings" },
+          { label: "Mais Buscadas", href: "/acoes/mais-buscadas" },
+          { label: "Por Setor", href: "/acoes/setores" },
+          { label: "Agenda de Dividendos", href: "/dividendos" },
+          { label: "Comparador de Ações", href: "/comparar" },
+          { label: "Rastreador de Carteira", href: "/rastreador" },
+        ]
+      }
+    ]
+  },
+  {
+    label: "FIIs",
+    icon: TrendingUp,
+    columns: [
+      {
+        title: "Fundos Imobiliários",
+        links: [
+          { label: "Todos os FIIs", href: "/etfs" },
+          { label: "Rankings", href: "/rankings" },
+          { label: "Mais Buscados", href: "/etfs/mais-buscados" },
+          { label: "Por Segmento", href: "/etfs/segmentos" },
+          { label: "Agenda de Dividendos", href: "/dividendos" },
+          { label: "Comparador de FIIs", href: "/comparar" },
+        ]
+      }
+    ]
+  },
+  {
+    label: "Cripto",
+    icon: TrendingUp,
+    columns: [
+      {
+        title: "Criptomoedas",
+        links: [
+          { label: "Todas as Criptos", href: "/criptos" },
+          { label: "Rankings", href: "/rankings" },
+          { label: "Mais Buscadas", href: "/criptos/mais-buscadas" },
+          { label: "Análise IA", href: "/analise" },
+        ]
+      }
+    ]
+  },
+  {
+    label: "Notícias",
+    icon: Newspaper,
+    href: "/noticias"
+  },
+  {
+    label: "Análise IA",
+    icon: Brain,
+    href: "/analise"
+  },
+];
 
-export function Header({ isLoggedIn = false, user }: HeaderProps) {
+export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [glossaryOpen, setGlossaryOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      {/* Top Bar */}
+      <div className="bg-[#002B5C] text-white py-2 px-4 text-sm">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <span className="text-white/80">Investimento Inteligente com IA</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="text-white/80 hover:text-white transition-colors">Entrar</Link>
+            <Link href="/register" className="bg-[#00A86B] text-white px-4 py-1 rounded hover:bg-[#008F5B] transition-colors">Cadastrar</Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Header */}
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30 group-hover:scale-105 transition-transform">
-              <TrendingUp className="w-5 h-5 text-white" />
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-[#00A86B] rounded flex items-center justify-center">
+              <span className="text-white font-bold text-lg">D</span>
             </div>
-            <span className="text-xl font-bold text-white font-display">
-              DY<span className="text-gradient-neon">Invest</span>
-            </span>
+            <span className="text-xl font-bold text-[#002B5C]">DYInvest</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-4">
-            {isLoggedIn ? (
-              <>
-                <Link 
-                  href="/dashboard" 
-                  className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors"
-                >
-                  <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
-                </Link>
-                <Link 
-                  href="/carteira" 
-                  className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors"
-                >
-                  <Wallet className="w-4 h-4" />
-                  Carteira
-                </Link>
-                <Link 
-                  href="/analise" 
-                  className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors"
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  Análise IA
-                </Link>
-                <Link 
-                  href="/acoes" 
-                  className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors"
-                >
-                  <List className="w-4 h-4" />
-                  Ações
-                </Link>
-                <Link 
-                  href="/etfs" 
-                  className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors"
-                >
-                  <PieChart className="w-4 h-4" />
-                  ETFs
-                </Link>
-                <button 
-                  onClick={() => setGlossaryOpen(true)}
-                  className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors"
-                >
-                  <BookOpen className="w-4 h-4" />
-                  Glossário
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="#funcionalidades" className="text-slate-300 hover:text-white transition-colors">
-                  Funcionalidades
-                </Link>
-                <Link href="#como-funciona" className="text-slate-300 hover:text-white transition-colors">
-                  Como Funciona
-                </Link>
-                <Link href="#precos" className="text-slate-300 hover:text-white transition-colors">
-                  Preços
-                </Link>
-                <button 
-                  onClick={() => setGlossaryOpen(true)}
-                  className="text-slate-300 hover:text-white transition-colors"
-                >
-                  Glossário
-                </button>
-              </>
-            )}
+          <nav className="hidden lg:flex items-center gap-1">
+            {navItems.map((item) => (
+              <div
+                key={item.label}
+                className="relative"
+                onMouseEnter={() => setActiveDropdown(item.label)}
+                onMouseLeave={() => setActiveDropdown(null)}
+              >
+                {item.href ? (
+                  <Link href={item.href} className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#002B5C] transition-colors">
+                    {item.label}
+                  </Link>
+                ) : (
+                  <button className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#002B5C] transition-colors flex items-center gap-1">
+                    {item.label}
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                )}
+
+                {/* Dropdown Menu */}
+                {activeDropdown === item.label && !item.href && item.columns && (
+                  <div className="absolute top-full left-0 mt-0 w-96 bg-white rounded-lg shadow-lg border border-gray-200 py-4 z-50">
+                    {item.columns.map((col, idx) => (
+                      <div key={idx} className="px-4">
+                        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">{col.title}</h3>
+                        <ul className="space-y-1">
+                          {col.links.map((link) => (
+                            <li key={link.label}>
+                              <Link href={link.href} className="block px-2 py-1.5 text-sm text-gray-700 hover:text-[#002B5C] hover:bg-gray-50 rounded transition-colors">
+                                {link.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
           </nav>
 
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center gap-3">
-            {isLoggedIn ? (
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 rounded-lg">
-                  <User className="w-4 h-4 text-slate-400" />
-                  <span className="text-sm text-slate-300">{user?.email}</span>
-                </div>
-                <Button variant="ghost" size="sm">
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sair
-                </Button>
-              </div>
-            ) : (
-              <>
-                <Link href="/login">
-                  <Button variant="ghost">Entrar</Button>
-                </Link>
-                <Link href="/register">
-                  <Button>Começar Agora</Button>
-                </Link>
-              </>
-            )}
+          {/* Search and Actions */}
+          <div className="flex items-center gap-3">
+            <Link href="/calculadoras" className="hidden md:flex items-center gap-1 px-3 py-2 text-sm text-gray-700 hover:text-[#002B5C] transition-colors">
+              <Calculator className="w-4 h-4" />
+              <span>Calculadoras</span>
+            </Link>
+            <Link href="/aprender" className="hidden md:flex items-center gap-1 px-3 py-2 text-sm text-gray-700 hover:text-[#002B5C] transition-colors">
+              <BookOpen className="w-4 h-4" />
+              <span>Aprender</span>
+            </Link>
+            
+            {/* Mobile menu button */}
+            <button
+              className="lg:hidden p-2 text-gray-700 hover:text-[#002B5C]"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-slate-300 hover:text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
         </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-slate-800">
-            <nav className="flex flex-col gap-2">
-              {isLoggedIn ? (
-                <>
-                  <Link href="/dashboard" className="px-4 py-2 text-slate-300 hover:bg-slate-800 rounded-lg">
-                    Dashboard
-                  </Link>
-                  <Link href="/carteira" className="px-4 py-2 text-slate-300 hover:bg-slate-800 rounded-lg">
-                    Carteira
-                  </Link>
-                  <Link href="/analise" className="px-4 py-2 text-slate-300 hover:bg-slate-800 rounded-lg">
-                    Análise IA
-                  </Link>
-                  <Link href="/acoes" className="px-4 py-2 text-slate-300 hover:bg-slate-800 rounded-lg">
-                    Ações
-                  </Link>
-                  <Link href="/etfs" className="px-4 py-2 text-slate-300 hover:bg-slate-800 rounded-lg">
-                    ETFs
-                  </Link>
-                  <button 
-                    onClick={() => { setGlossaryOpen(true); setMobileMenuOpen(false); }}
-                    className="px-4 py-2 text-slate-300 hover:bg-slate-800 rounded-lg text-left"
-                  >
-                    Glossário
-                  </button>
-                  <div className="border-t border-slate-800 pt-2 mt-2">
-                    <span className="px-4 text-sm text-slate-500">{user?.email}</span>
-                    <Button variant="ghost" className="w-full mt-2 justify-start">
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Sair
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <Link href="#funcionalidades" className="px-4 py-2 text-slate-300">
-                    Funcionalidades
-                  </Link>
-                  <Link href="#como-funciona" className="px-4 py-2 text-slate-300">
-                    Como Funciona
-                  </Link>
-                  <Link href="#precos" className="px-4 py-2 text-slate-300">
-                    Preços
-                  </Link>
-                  <button 
-                    onClick={() => { setGlossaryOpen(true); setMobileMenuOpen(false); }}
-                    className="px-4 py-2 text-slate-300 hover:bg-slate-800 rounded-lg text-left"
-                  >
-                    Glossário
-                  </button>
-                  <div className="border-t border-slate-800 pt-2 mt-2">
-                    <Link href="/login">
-                      <Button variant="outline" className="w-full">Entrar</Button>
-                    </Link>
-                    <Link href="/register">
-                      <Button className="w-full mt-2">Começar Agora</Button>
-                    </Link>
-                  </div>
-                </>
-              )}
-            </nav>
-          </div>
-        )}
       </div>
 
-      <GlossaryModal isOpen={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-gray-200 py-4">
+          <nav className="max-w-7xl mx-auto px-4 space-y-2">
+            {navItems.map((item) => (
+              <div key={item.label}>
+                {item.href ? (
+                  <Link href={item.href} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#002B5C] hover:bg-gray-50 rounded">
+                    {item.label}
+                  </Link>
+                ) : (
+                  <div className="px-3 py-2 text-sm font-medium text-gray-700">
+                    {item.label}
+                    <ul className="ml-4 mt-2 space-y-1">
+                      {item.columns?.map((col, idx) => (
+                        col.links.map((link) => (
+                          <li key={link.label}>
+                            <Link href={link.href} className="block px-2 py-1 text-sm text-gray-600 hover:text-[#002B5C]">
+                              {link.label}
+                            </Link>
+                          </li>
+                        ))
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ))}
+            <div className="pt-4 border-t border-gray-200 space-y-2">
+              <Link href="/calculadoras" className="block px-3 py-2 text-sm text-gray-700 hover:text-[#002B5C]">Calculadoras</Link>
+              <Link href="/aprender" className="block px-3 py-2 text-sm text-gray-700 hover:text-[#002B5C]">Aprender</Link>
+              <Link href="/login" className="block px-3 py-2 text-sm text-[#002B5C] font-medium">Entrar</Link>
+              <Link href="/register" className="block px-3 py-2 text-sm bg-[#00A86B] text-white rounded text-center">Cadastrar</Link>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

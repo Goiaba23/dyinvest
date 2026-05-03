@@ -1,146 +1,85 @@
 import Link from "next/link";
-import { TrendingUp, BarChart3, Wallet, FileText, Brain, Shield, Mail, ExternalLink } from "lucide-react";
 
-export function Footer() {
-  const currentYear = new Date().getFullYear();
-  
-  const footerLinks = {
-    produto: [
-      { href: '/dashboard', label: 'Dashboard' },
-      { href: '/acoes', label: 'Ações' },
-      { href: '/fiis', label: 'FIIs' },
-      { href: '/criptos', label: 'Cripto' },
-    ],
-    analise: [
-      { href: '/analise', label: 'Análise IA' },
-      { href: '/sentinel', label: 'Sentinel' },
-      { href: '/rankings', label: 'Rankings' },
-      { href: '/comparar', label: 'Comparar' },
-    ],
-    ferramentas: [
-      { href: '/carteira', label: 'Carteira' },
-      { href: '/alertas', label: 'Alertas' },
-      { href: '/calendario', label: 'Calendário' },
-      { href: '/calculadoras', label: 'Calculadoras' },
-    ],
-  };
+const footerLinks = {
+  "DYInvest": [
+    { label: "Sobre Nós", href: "/sobre" },
+    { label: "Carreiras", href: "/carreiras" },
+    { label: "Imprensa", href: "/imprensa" },
+    { label: "Contato", href: "/contato" },
+  ],
+  "Produtos": [
+    { label: "Ações", href: "/acoes" },
+    { label: "FIIs", href: "/etfs" },
+    { label: "Criptomoedas", href: "/criptos" },
+    { label: "Renda Fixa", href: "/renda-fixa" },
+    { label: "BDRs", href: "/bdrs" },
+    { label: "ETFs", href: "/etfs" },
+  ],
+  "Ferramentas": [
+    { label: "Calculadoras", href: "/calculadoras" },
+    { label: "Comparador", href: "/comparar" },
+    { label: "Rankings", href: "/rankings" },
+    { label: "Rastreador", href: "/rastreador" },
+    { label: "Análise IA", href: "/analise" },
+    { label: "Notícias", href: "/noticias" },
+  ],
+  "Educação": [
+    { label: "Cursos", href: "/aprender" },
+    { label: "Glossário", href: "/glossario" },
+    { label: "Artigos", href: "/artigos" },
+    { label: "Tutorial", href: "/tutorial" },
+  ],
+  "Legal": [
+    { label: "Termos de Uso", href: "/termos" },
+    { label: "Política de Privacidade", href: "/privacidade" },
+    { label: "Disclaimer", href: "/disclaimer" },
+    { label: "Cookies", href: "/cookies" },
+  ],
+};
 
+export default function Footer() {
   return (
-    <footer className="bg-[#0a0a0c] border-t border-white/[0.06]">
-      <div className="max-w-[1600px] mx-auto px-4 py-8">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-6 mb-8">
-          {/* Brand */}
-          <div className="col-span-2">
-            <Link href="/dashboard" className="flex items-center gap-2.5 mb-4 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7dd3fc] to-[#0ea5e9] flex items-center justify-center shadow-lg shadow-[#7dd3fc]/20 group-hover:scale-105 transition-transform">
-                <BarChart3 className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-base font-display font-bold text-white tracking-tight">
-                DY<span className="text-[#7dd3fc]">Invest</span>
-              </span>
-            </Link>
-            <p className="text-[#52525b] text-xs leading-relaxed max-w-[240px] mb-4">
-              Plataforma de investimentos com IA para análise do mercado brasileiro.
-            </p>
-            <div className="flex items-center gap-3">
-              <a href="#" className="text-[#52525b] hover:text-[#7dd3fc] transition-colors">
-                <ExternalLink className="w-4 h-4" />
-              </a>
-              <a href="#" className="text-[#52525b] hover:text-[#7dd3fc] transition-colors">
-                <ExternalLink className="w-4 h-4" />
-              </a>
-              <a href="#" className="text-[#52525b] hover:text-[#7dd3fc] transition-colors">
-                <Mail className="w-4 h-4" />
-              </a>
+    <footer className="bg-gray-50 border-t border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+          {Object.entries(footerLinks).map(([title, links]) => (
+            <div key={title}>
+              <h3 className="text-sm font-semibold text-gray-900 mb-4">{title}</h3>
+              <ul className="space-y-2">
+                {links.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className="text-sm text-gray-600 hover:text-[#002B5C] transition-colors">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-
-          {/* Produto */}
-          <div>
-            <h4 className="text-[#71717a] text-[10px] font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <BarChart3 className="w-3 h-3" />
-              Produto
-            </h4>
-            <ul className="space-y-2">
-              {footerLinks.produto.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-[#a1a1aa] text-xs hover:text-[#7dd3fc] transition-colors">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Análise */}
-          <div>
-            <h4 className="text-[#71717a] text-[10px] font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Brain className="w-3 h-3" />
-              Análise
-            </h4>
-            <ul className="space-y-2">
-              {footerLinks.analise.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-[#a1a1aa] text-xs hover:text-[#7dd3fc] transition-colors">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Ferramentas */}
-          <div>
-            <h4 className="text-[#71717a] text-[10px] font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Wallet className="w-3 h-3" />
-              Ferramentas
-            </h4>
-            <ul className="space-y-2">
-              {footerLinks.ferramentas.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-[#a1a1aa] text-xs hover:text-[#7dd3fc] transition-colors">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 className="text-[#71717a] text-[10px] font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Shield className="w-3 h-3" />
-              Legal
-            </h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/termos" className="text-[#a1a1aa] text-xs hover:text-[#7dd3fc] transition-colors">
-                  Termos
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacidade" className="text-[#a1a1aa] text-xs hover:text-[#7dd3fc] transition-colors">
-                  Privacidade
-                </Link>
-              </li>
-              <li>
-                <Link href="/disclaimer" className="text-[#a1a1aa] text-xs hover:text-[#7dd3fc] transition-colors">
-                  Disclaimer
-                </Link>
-              </li>
-            </ul>
-          </div>
+          ))}
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-4 border-t border-white/[0.04] flex flex-col md:flex-row items-center justify-between gap-2">
-          <p className="text-[#52525b] text-[10px]">
-            © {currentYear} DYInvest. Todos os direitos reservados.
-          </p>
-          <p className="text-[#3f3f46] text-[9px] text-center md:text-right max-w-md">
-            Investir envolve riscos. Não oferecemos recomendações de compra ou venda.
-          </p>
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-[#00A86B] rounded flex items-center justify-center">
+                <span className="text-white font-bold text-xs">D</span>
+              </div>
+              <span className="text-sm font-semibold text-gray-900">DYInvest</span>
+            </div>
+            
+            <p className="text-sm text-gray-500 text-center">
+              © {new Date().getFullYear()} DYInvest. Todos os direitos reservados. Dados meramente informativos. Não constitui recomendação de investimento.
+            </p>
+
+            <div className="flex items-center gap-4">
+              <Link href="https://twitter.com" className="text-gray-400 hover:text-gray-600">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"/></svg>
+              </Link>
+              <Link href="https://linkedin.com" className="text-gray-400 hover:text-gray-600">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
