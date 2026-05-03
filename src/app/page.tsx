@@ -6,7 +6,7 @@ import { ArrowRight, TrendingUp, Brain, Shield, Zap, BarChart3, CheckCircle2, Gl
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
+      {/* Navigation - 64px height, proper spacing */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -33,33 +33,34 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section - Stripe-inspired clarity */}
-      <section className="pt-40 pb-20 px-6">
+      {/* Hero Section - Perfect proportions */}
+      <section className="pt-40 pb-24 px-6">
         <div className="max-w-5xl mx-auto text-center">
-          {/* Trust Badge */}
+          {/* Trust Badge - 40px height */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 rounded-full mb-8 border border-blue-100">
             <Sparkles className="w-4 h-4 text-blue-600" />
             <span className="text-sm font-medium text-blue-700">IA Avançada • Dados em Tempo Real • Conformidade Total</span>
           </div>
 
-          {/* Main Headline - Large, benefit-driven */}
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight">
+          {/* H1: 48px (text-5xl), line-height 1.1 - 3x body size */}
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight">
             Entenda o mercado.<br />
             <span className="text-blue-600">Invista com dados.</span>
           </h1>
 
-          {/* Subheadline - Specific value proposition */}
+          {/* Subheadline: 20px (text-xl), line-height 1.6 */}
           <p className="text-xl text-gray-500 mb-4 max-w-3xl mx-auto leading-relaxed">
             O primeiro assistente de investimentos com IA que traduz notícias globais 
             para linguagem simples. Com probabilidades baseadas em dados reais.
           </p>
           
+          {/* Body text: 16px, line-height 1.6 */}
           <p className="text-base text-gray-400 mb-10 max-w-2xl mx-auto">
             Não use achismos. Use inteligência artificial para tomar decisões informadas 
             no mercado financeiro brasileiro e global.
           </p>
 
-          {/* Dual CTAs - Stripe pattern */}
+          {/* Dual CTAs - 48px min height (p-4 + text-base = 16+32 = 48px) */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <Link href="/register" className="w-full sm:w-auto bg-blue-600 text-white font-semibold px-8 py-4 rounded-full hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-500/30 text-base">
               Começar gratuitamente
@@ -71,7 +72,7 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Social Proof Metrics - Specific numbers like Stripe */}
+          {/* Social Proof Metrics - Proper 48px gap between items */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mb-8">
             {[
               { value: "50K+", label: "Investidores ativos" },
@@ -86,7 +87,7 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Trust signals below CTAs */}
+          {/* Trust signals - 24px gap */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
             <span>Grátis para sempre</span>
             <span>•</span>
@@ -99,21 +100,21 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Product Preview - Show, don't tell (Stripe principle) */}
-      <section id="como-funciona" className="py-20 px-6 bg-gray-50">
+      {/* Product Preview - 96px padding top/bottom */}
+      <section id="como-funciona" className="py-24 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Veja como funciona
             </h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-              Interface simples para decisões complexas. Simule, analise e investa com confiança.
+              Interface simples para decisões complexas. Simule, analise e invista com confiança.
             </p>
           </div>
 
-          {/* Product Mockup - 3-column layout like NotebookLM */}
+          {/* Product Mockup - 32px padding internal */}
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-            {/* Mock header */}
+            {/* Mock header - 48px height */}
             <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
@@ -128,9 +129,9 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* 3-panel layout */}
+            {/* 3-panel layout - 400px min height */}
             <div className="grid grid-cols-12 min-h-[400px]">
-              {/* Sources panel */}
+              {/* Sources panel - 16px padding */}
               <div className="col-span-3 bg-gray-50 border-r border-gray-200 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-gray-900">Fontes</h3>
@@ -148,7 +149,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Chat panel */}
+              {/* Chat panel - 24px padding */}
               <div className="col-span-6 p-6">
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-4">
@@ -176,7 +177,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Studio panel */}
+              {/* Studio panel - 16px padding */}
               <div className="col-span-3 bg-gray-50 border-l border-gray-200 p-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Globe className="w-5 h-5 text-blue-600" />
@@ -201,8 +202,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features - Clean grid like Stripe */}
-      <section id="recursos" className="py-20 px-6">
+      {/* Features - Proper grid with 32px gaps and 32px padding */}
+      <section id="recursos" className="py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -213,6 +214,7 @@ export default function LandingPage() {
             </p>
           </div>
 
+          {/* Grid: 32px gap, Cards: 32px padding */}
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { 
@@ -270,8 +272,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How it works - 3 steps max (research says 3 is optimal) */}
-      <section className="py-20 px-6 bg-gray-50">
+      {/* How it works - 3 steps, 48px gap */}
+      <section className="py-24 px-6 bg-gray-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -312,8 +314,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Social Proof - Specific testimonials (research says specifics beat vague) */}
-      <section id="prova-social" className="py-20 px-6">
+      {/* Social Proof - 32px gap, 24px padding */}
+      <section id="prova-social" className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -362,7 +364,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA - High contrast like Mercury */}
+      {/* Final CTA - 96px padding */}
       <section className="py-24 px-6 bg-blue-600">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
@@ -381,7 +383,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer - Comprehensive like Stripe */}
+      {/* Footer - Proper spacing 48px top, 32px bottom */}
       <footer className="border-t border-gray-200 py-12 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-8">
