@@ -3,21 +3,12 @@
 import Link from "next/link";
 import { ArrowRight, TrendingUp, Brain, Shield, Zap, BarChart3, CheckCircle2, Globe, Users, Sparkles, Star, ChevronRight, FileText } from "lucide-react";
 
-// Container para centralizar tudo
-function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`px-5 w-full max-w-6xl mx-auto ${className}`}>
-      {children}
-    </div>
-  );
-}
-
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm">
-        <Container className="h-16 flex items-center justify-between">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
               <TrendingUp className="w-5 h-5 text-white" />
@@ -39,80 +30,83 @@ export default function LandingPage() {
               Começar grátis
             </Link>
           </div>
-        </Container>
+        </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-40 pb-20 px-6">
-        <Container>
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Trust Badge */}
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 rounded-full mb-8 border border-blue-100">
-              <Sparkles className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-700">IA Avançada • Dados em Tempo Real • Conformidade Total</span>
-            </div>
+      <section className="pt-40 pb-20 px-4">
+        <div className="max-w-5xl mx-auto text-center">
+          {/* Trust Badge */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 rounded-full mb-8 border border-blue-100">
+            <Sparkles className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-700">IA Avançada • Dados em Tempo Real • Conformidade Total</span>
+          </div>
 
-            {/* Main Headline */}
-            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight">
-              Entenda o mercado.<br />
-              <span className="text-blue-600">Invista com dados.</span>
-            </h1>
+          {/* Main Headline */}
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight">
+            Entenda o mercado.<br />
+            <span className="text-blue-600">Invista com dados.</span>
+          </h1>
 
-            {/* Subheadline */}
-            <p className="text-xl text-gray-500 mb-4 max-w-3xl mx-auto leading-relaxed">
-              O primeiro assistente de investimentos com IA que traduz notícias globais 
-              para linguagem simples. Com probabilidades baseadas em dados reais.
-            </p>
+          {/* Subheadline */}
+          <p className="text-xl text-gray-500 mb-4 max-w-3xl mx-auto leading-relaxed">
+            O primeiro assistente de investimentos com IA que traduz notícias globais 
+            para linguagem simples. Com probabilidades baseadas em dados reais.
+          </p>
           
-            <p className="text-base text-gray-400 mb-10 max-w-2xl mx-auto">
-              Não use achismos. Use inteligência artificial para tomar decisões informadas 
-              no mercado financeiro brasileiro e global.
-            </p>
+          <p className="text-base text-gray-400 mb-10 max-w-2xl mx-auto">
+            Não use achismos. Use inteligência artificial para tomar decisões informadas 
+            no mercado financeiro brasileiro e global.
+          </p>
 
-            {/* Dual CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Link href="/register" className="w-full sm:w-auto bg-blue-600 text-white font-semibold px-8 py-4 rounded-full hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-500/30 text-base">
-                Começar gratuitamente
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link href="/dashboard" className="w-full sm:w-auto border-2 border-gray-200 text-gray-700 font-semibold px-8 py-4 rounded-full hover:bg-gray-50 transition-all flex items-center justify-center gap-2 text-base">
-                Ver demonstração
-                <ChevronRight className="w-5 h-5" />
-              </Link>
+          {/* Dual CTAs */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <Link href="/register" className="w-full sm:w-auto bg-blue-600 text-white font-semibold px-8 py-4 rounded-full hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-500/30 text-base">
+              Começar gratuitamente
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="/dashboard" className="w-full sm:w-auto border-2 border-gray-200 text-gray-700 font-semibold px-8 py-4 rounded-full hover:bg-gray-50 transition-all flex items-center justify-center gap-2 text-base">
+              Ver demonstração
+              <ChevronRight className="w-5 h-5" />
+            </Link>
+          </div>
+
+          {/* Social Proof Metrics */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mb-8">
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-gray-900">50K+</div>
+              <div className="text-sm text-gray-500 mt-1">Investidores ativos</div>
             </div>
-
-            {/* Social Proof Metrics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-              {[
-                { value: "50K+", label: "Investidores ativos" },
-                { value: "500+", label: "Ativos monitorados" },
-                { value: "40+", label: "Fontes de dados" },
-                { value: "99.9%", label: "Disponibilidade" },
-              ].map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-gray-900">{stat.value}</div>
-                  <div className="text-sm text-gray-500 mt-1">{stat.label}</div>
-                </div>
-              ))}
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-gray-900">500+</div>
+              <div className="text-sm text-gray-500 mt-1">Ativos monitorados</div>
             </div>
-
-            {/* Trust signals */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
-              <span>Grátis para sempre</span>
-              <span>•</span>
-              <span>Sem cartão de crédito</span>
-              <span>•</span>
-              <span>Dados criptografados</span>
-              <span>•</span>
-              <span>Conformidade total</span>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-gray-900">40+</div>
+              <div className="text-sm text-gray-500 mt-1">Fontes de dados</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-gray-900">99.9%</div>
+              <div className="text-sm text-gray-500 mt-1">Disponibilidade</div>
             </div>
           </div>
-        </Container>
+
+          {/* Trust signals */}
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
+            <span>Grátis para sempre</span>
+            <span>•</span>
+            <span>Sem cartão de crédito</span>
+            <span>•</span>
+            <span>Dados criptografados</span>
+            <span>•</span>
+            <span>Conformidade total</span>
+          </div>
+        </div>
       </section>
 
       {/* Product Preview */}
-      <section id="como-funciona" className="py-24 px-6 bg-gray-50">
-        <Container>
+      <section id="como-funciona" className="py-20 px-4 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Veja como funciona
@@ -150,12 +144,22 @@ export default function LandingPage() {
                   </button>
                 </div>
                 <div className="space-y-2">
-                  {["Notícias B3", "Relatório Petrobras", "Análise Vale", "Dados Macro"].map((source, i) => (
-                    <div key={i} className="flex items-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
-                      <BarChart3 className="w-4 h-4 text-gray-400" />
-                      <span className="text-xs text-gray-600 truncate">{source}</span>
-                    </div>
-                  ))}
+                  <div className="flex items-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200">
+                    <BarChart3 className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-600 truncate">Notícias B3</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200">
+                    <BarChart3 className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-600 truncate">Relatório Petrobras</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200">
+                    <BarChart3 className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-600 truncate">Análise Vale</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200">
+                    <BarChart3 className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-600 truncate">Dados Macro</span>
+                  </div>
                 </div>
               </div>
 
@@ -194,27 +198,32 @@ export default function LandingPage() {
                   <h3 className="text-sm font-semibold text-gray-900">Studio</h3>
                 </div>
                 <div className="space-y-2">
-                  {[
-                    { icon: BarChart3, label: "Gráfico de Performance" },
-                    { icon: FileText, label: "Relatório Completo" },
-                    { icon: Users, label: "Resumo Executivo" },
-                    { icon: Shield, label: "Análise de Risco" },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
-                      <item.icon className="w-4 h-4 text-gray-400" />
-                      <span className="text-xs text-gray-600">{item.label}</span>
-                    </div>
-                  ))}
+                  <div className="flex items-center gap-2 p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
+                    <BarChart3 className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-600">Gráfico de Performance</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
+                    <FileText className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-600">Relatório Completo</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
+                    <Users className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-600">Resumo Executivo</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
+                    <Shield className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-600">Análise de Risco</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </Container>
+        </div>
       </section>
 
       {/* Features */}
-      <section id="recursos" className="py-24 px-6">
-        <Container>
+      <section id="recursos" className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Por que DYInvest?
@@ -225,65 +234,66 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { 
-                icon: Brain, 
-                title: "IA que entende você", 
-                desc: "Traduzimos notícias complexas de Wall Street para linguagem simples. Sem jargões financeiros que confundem.",
-                color: "text-blue-600",
-                bg: "bg-blue-50"
-              },
-              { 
-                icon: BarChart3, 
-                title: "Probabilidades reais", 
-                desc: "Não damos apenas opiniões. Mostramos as chances baseadas em dados reais do mercado brasileiro e global.",
-                color: "text-green-600",
-                bg: "bg-green-50"
-              },
-              { 
-                icon: Globe, 
-                title: "Mercado global", 
-                desc: "Acompanhe 500+ ativos entre ações brasileiras, FIIs, ETFs e criptomoedas em uma única plataforma.",
-                color: "text-purple-600",
-                bg: "bg-purple-50"
-              },
-              { 
-                icon: Shield, 
-                title: "Dados confiáveis", 
-                desc: "Fontes verificadas com citações claras. Sabemos exatamente de onde vem cada informação apresentada.",
-                color: "text-orange-500",
-                bg: "bg-orange-50"
-              },
-              { 
-                icon: Zap, 
-                title: "Tempo real", 
-                desc: "Mercado abre? Já estamos analisando. Dados frescos direto da fonte, 24/7, atualizados a cada segundo.",
-                color: "text-yellow-500",
-                bg: "bg-yellow-50"
-              },
-              { 
-                icon: Users, 
-                title: "Para quem não é expert", 
-                desc: "Criado para investidores leigos que querem entender o mercado sem dores de cabeça ou termos complicados.",
-                color: "text-blue-600",
-                bg: "bg-blue-50"
-              },
-            ].map((item, i) => (
-              <div key={i} className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all group">
-                <div className={`w-14 h-14 ${item.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <item.icon className={`w-7 h-7 ${item.color}`} />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
-                <p className="text-gray-500 leading-relaxed">{item.desc}</p>
+            {/* Feature 1 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all">
+              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6">
+                <Brain className="w-7 h-7 text-blue-600" />
               </div>
-            ))}
+              <h3 className="text-xl font-bold text-gray-900 mb-3">IA que entende você</h3>
+              <p className="text-gray-500 leading-relaxed">Traduzimos notícias complexas de Wall Street para linguagem simples. Sem jargões financeiros que confundem.</p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all">
+              <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center mb-6">
+                <BarChart3 className="w-7 h-7 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Probabilidades reais</h3>
+              <p className="text-gray-500 leading-relaxed">Não damos apenas opiniões. Mostramos as chances baseadas em dados reais do mercado brasileiro e global.</p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all">
+              <div className="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center mb-6">
+                <Globe className="w-7 h-7 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Mercado global</h3>
+              <p className="text-gray-500 leading-relaxed">Acompanhe 500+ ativos entre ações brasileiras, FIIs, ETFs e criptomoedas em uma única plataforma.</p>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all">
+              <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-6">
+                <Shield className="w-7 h-7 text-orange-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Dados confiáveis</h3>
+              <p className="text-gray-500 leading-relaxed">Fontes verificadas com citações claras. Sabemos exatamente de onde vem cada informação apresentada.</p>
+            </div>
+
+            {/* Feature 5 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all">
+              <div className="w-14 h-14 bg-yellow-50 rounded-2xl flex items-center justify-center mb-6">
+                <Zap className="w-7 h-7 text-yellow-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Tempo real</h3>
+              <p className="text-gray-500 leading-relaxed">Mercado abre? Já estamos analisando. Dados frescos direto da fonte, 24/7, atualizados a cada segundo.</p>
+            </div>
+
+            {/* Feature 6 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all">
+              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6">
+                <Users className="w-7 h-7 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Para quem não é expert</h3>
+              <p className="text-gray-500 leading-relaxed">Criado para investidores leigos que querem entender o mercado sem dores de cabeça ou termos complicados.</p>
+            </div>
           </div>
-        </Container>
+        </div>
       </section>
 
       {/* How it works */}
-      <section className="py-24 px-6 bg-gray-50">
-        <Container>
+      <section className="py-20 px-4 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Como funciona
@@ -293,39 +303,40 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-12 max-w-4xl mx-auto">
-            {[
-              {
-                step: "01",
-                title: "Adicione suas fontes",
-                desc: "Selecione ativos para acompanhar ou importe suas análises. Nós processamos notícias, relatórios e dados de mercado automaticamente."
-              },
-              {
-                step: "02",
-                title: "Converse com a IA",
-                desc: "Faça perguntas sobre seus investimentos. Receba respostas fundamentadas com citações claras das fontes analisadas."
-              },
-              {
-                step: "03",
-                title: "Tome decisões inteligentes",
-                desc: "Use análises, gráficos e projeções para tomar decisões informadas. Exporte relatórios e acompanhe seu progresso."
-              }
-            ].map((item, i) => (
-              <div key={i} className="text-center">
-                <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg border border-gray-200">
-                  <span className="text-2xl font-bold text-blue-600">{item.step}</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
-                <p className="text-gray-500 leading-relaxed">{item.desc}</p>
+          <div className="grid md:grid-cols-3 gap-12">
+            {/* Step 1 */}
+            <div className="text-center">
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg border border-gray-200">
+                <span className="text-2xl font-bold text-blue-600">01</span>
               </div>
-            ))}
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Adicione suas fontes</h3>
+              <p className="text-gray-500 leading-relaxed">Selecione ativos para acompanhar ou importe suas análises. Nós processamos notícias, relatórios e dados de mercado automaticamente.</p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="text-center">
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg border border-gray-200">
+                <span className="text-2xl font-bold text-blue-600">02</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Converse com a IA</h3>
+              <p className="text-gray-500 leading-relaxed">Faça perguntas sobre seus investimentos. Receba respostas fundamentadas com citações claras das fontes analisadas.</p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="text-center">
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg border border-gray-200">
+                <span className="text-2xl font-bold text-blue-600">03</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Tome decisões inteligentes</h3>
+              <p className="text-gray-500 leading-relaxed">Use análises, gráficos e projeções para tomar decisões informadas. Exporte relatórios e acompanhe seu progresso.</p>
+            </div>
           </div>
-        </Container>
+        </div>
       </section>
 
       {/* Social Proof */}
-      <section id="prova-social" className="py-24 px-6">
-        <Container>
+      <section id="prova-social" className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               O que dizem sobre nós
@@ -335,68 +346,80 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {[
-              {
-                name: "Ricardo M.",
-                role: "Investidor de Dividendos",
-                text: "Finalmente uma ferramenta que traduz o mercado financeiro para quem não é expert. A IA explica tudo em linguagem simples.",
-                rating: 5
-              },
-              {
-                name: "Ana Paula S.",
-                role: "Investidora Iniciante",
-                text: "Comecei a investir há 3 meses e o DYInvest me ajuda a entender as notícias que antes eu não compreendia.",
-                rating: 5
-              },
-              {
-                name: "Carlos E.",
-                role: "Trader de Curto Prazo",
-                text: "A análise em tempo real e as probabilidades baseadas em dados reais mudaram minha forma de operar no mercado.",
-                rating: 5
-              }
-            ].map((testimonial, i) => (
-              <div key={i} className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-all">
-                <div className="flex items-center gap-1 mb-4">
-                  {[1,2,3,4,5].map((star) => (
-                    <Star key={star} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-6 leading-relaxed">"{testimonial.text}"</p>
-                <div>
-                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.role}</p>
-                </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Testimonial 1 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-all">
+              <div className="flex items-center gap-1 mb-4">
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
               </div>
-            ))}
+              <p className="text-gray-700 mb-6 leading-relaxed">"Finalmente uma ferramenta que traduz o mercado financeiro para quem não é expert. A IA explica tudo em linguagem simples."</p>
+              <div>
+                <p className="font-semibold text-gray-900">Ricardo M.</p>
+                <p className="text-sm text-gray-500">Investidor de Dividendos</p>
+              </div>
+            </div>
+
+            {/* Testimonial 2 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-all">
+              <div className="flex items-center gap-1 mb-4">
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+              </div>
+              <p className="text-gray-700 mb-6 leading-relaxed">"Comecei a investir há 3 meses e o DYInvest me ajuda a entender as notícias que antes eu não compreendia."</p>
+              <div>
+                <p className="font-semibold text-gray-900">Ana Paula S.</p>
+                <p className="text-sm text-gray-500">Investidora Iniciante</p>
+              </div>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-all">
+              <div className="flex items-center gap-1 mb-4">
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+              </div>
+              <p className="text-gray-700 mb-6 leading-relaxed">"A análise em tempo real e as probabilidades baseadas em dados reais mudaram minha forma de operar no mercado."</p>
+              <div>
+                <p className="font-semibold text-gray-900">Carlos E.</p>
+                <p className="text-sm text-gray-500">Trader de Curto Prazo</p>
+              </div>
+            </div>
           </div>
-        </Container>
+        </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 px-6 bg-blue-600">
-        <Container>
-          <div className="text-center">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              Pronto para investir com inteligência?
-            </h2>
-            <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-              Junte-se a milhares de investidores que já usam IA para tomar decisões melhores. Comece gratuitamente hoje.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/register" className="w-full sm:w-auto bg-white text-blue-600 font-semibold px-10 py-4 rounded-full hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-2xl text-base">
-                Criar conta grátis
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-            <p className="text-blue-200 text-sm mt-6">Sem cartão de crédito • Seguro e confiável • Cancele quando quiser</p>
+      <section className="py-24 px-4 bg-blue-600">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+            Pronto para investir com inteligência?
+          </h2>
+          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+            Junte-se a milhares de investidores que já usam IA para tomar decisões melhores. Comece gratuitamente hoje.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/register" className="w-full sm:w-auto bg-white text-blue-600 font-semibold px-10 py-4 rounded-full hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-2xl text-base">
+              Criar conta grátis
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </div>
-        </Container>
+          <p className="text-blue-200 text-sm mt-6">Sem cartão de crédito • Seguro e confiável • Cancele quando quiser</p>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-12 px-6">
-        <Container>
+      <footer className="border-t border-gray-200 py-12 px-4">
+        <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
@@ -414,25 +437,28 @@ export default function LandingPage() {
               <div>
                 <h4 className="font-semibold text-gray-900 mb-3">Produto</h4>
                 <ul className="space-y-2">
-                  {["Dashboard", "Análise IA", "Carteira", "Alertas"].map((item, i) => (
-                    <li key={i}><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">{item}</a></li>
-                  ))}
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Dashboard</a></li>
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Análise IA</a></li>
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Carteira</a></li>
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Alertas</a></li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-semibold text-gray-900 mb-3">Recursos</h4>
                 <ul className="space-y-2">
-                  {["Aprender", "Ações", "ETFs", "Criptos"].map((item, i) => (
-                    <li key={i}><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">{item}</a></li>
-                  ))}
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Aprender</a></li>
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Ações</a></li>
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">ETFs</a></li>
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Criptos</a></li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-semibold text-gray-900 mb-3">Empresa</h4>
                 <ul className="space-y-2">
-                  {["Sobre", "Privacidade", "Termos", "Contato"].map((item, i) => (
-                    <li key={i}><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">{item}</a></li>
-                  ))}
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Sobre</a></li>
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Privacidade</a></li>
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Termos</a></li>
+                  <li><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Contato</a></li>
                 </ul>
               </div>
             </div>
@@ -445,7 +471,7 @@ export default function LandingPage() {
               <a href="#" className="text-blue-600 hover:underline">aviso de risco</a>.
             </p>
           </div>
-        </Container>
+        </div>
       </footer>
     </div>
   );
