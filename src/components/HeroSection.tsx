@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 import { ArrowRight, TrendingUp, ChevronDown, Sparkles, Menu, X } from 'lucide-react';
 
@@ -42,29 +42,40 @@ export default function HeroSection() {
     setScrolled(latest > 30);
   });
 
+  // Multiple parallax layers
+  const y1 = useTransform(scrollY, [0, 500], [0, -100]);
+  const y2 = useTransform(scrollY, [0, 500], [0, -50]);
+  const y3 = useTransform(scrollY, [0, 500], [0, 0]);
   const opacity = useTransform(scrollY, [0, 200], [1, 0]);
   const scale = useTransform(scrollY, [0, 200], [1, 0.95]);
-  const y = useTransform(scrollY, [0, 200], [0, -50]);
 
   return (
     <section ref={containerRef} className="min-h-screen relative flex flex-col bg-[#0a0a0a] overflow-hidden">
-      {/* Clean dark background - no orbs */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] to-[#111111]" />
+      {/* Layer 1 - Background gradient */}
+      <motion.div 
+        style={{ y: y1 }}
+        className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#0f0f0f] to-[#111111]" 
+      />
       
-      <motion.div style={{ opacity }} className="absolute inset-0">
+      {/* Layer 2 - Subtle noise/grain */}
+      <motion.div 
+        style={{ y: y2, opacity }}
+        className="absolute inset-0"
+      >
         <div className="absolute inset-0" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           opacity: 0.02
         }} />
       </motion.div>
 
-      <motion.div style={{ scale, y }}>
-        {/* Header - clean, minimal, Apple style */}
+      {/* Layer 3 - Content */}
+      <motion.div style={{ y: y3, scale, opacity }}>
+        {/* Header - Apple style */}
         <motion.header 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease }}
-          className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300 ${
+          className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-500 ${
             scrolled ? 'bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/[0.05]' : ''
           }`}
         >
@@ -114,10 +125,10 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Main Content - Apple style typography */}
+        {/* Main Content */}
         <div className="flex flex-col items-center justify-center px-6 pt-32 pb-20">
           <div className="text-center max-w-2xl">
-            {/* Badge - minimal */}
+            {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -130,13 +141,13 @@ export default function HeroSection() {
               </span>
             </motion.div>
 
-            {/* Headline - big, short, impactful */}
+            {/* Headline */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold text-white leading-[1.1] tracking-tight mb-6">
               <WordReveal text="Entenda o mercado." delay={0.3} />
               <WordReveal text="Invista com dados." delay={0.6} />
             </h1>
 
-            {/* Subtitle - clean */}
+            {/* Subtitle */}
             <motion.p 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -146,7 +157,7 @@ export default function HeroSection() {
               O assistente que traduz notícias do mercado para linguagem simples.
             </motion.p>
 
-            {/* Email input - minimal */}
+            {/* Email input */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -165,7 +176,7 @@ export default function HeroSection() {
               </button>
             </motion.div>
 
-            {/* Trust - minimal */}
+            {/* Trust */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -181,20 +192,20 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Scroll indicator - minimal */}
+        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}
           className="flex justify-center pb-8"
         >
-          <div className="w-6 h-10 rounded-full border border-white/[0.1] flex items-start justify-center p-2">
-            <motion.div 
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="w-1 h-2 bg-white/20 rounded-full"
-            />
-          </div>
+          <motion.div 
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="w-6 h-10 rounded-full border border-white/[0.1] flex items-start justify-center p-2"
+          >
+            <div className="w-1 h-2 bg-white/20 rounded-full" />
+          </motion.div>
         </motion.div>
       </motion.div>
     </section>
