@@ -7,6 +7,8 @@ import PhilosophySection from '@/components/PhilosophySection';
 import ServicesSection from '@/components/ServicesSection';
 import CTASection from '@/components/CTASection';
 import ScrollProgress from '@/components/ScrollProgress';
+import HorizontalScrollSection from '@/components/HorizontalScrollSection';
+import FeaturesHoverSection from '@/components/FeaturesHoverSection';
 
 export default function Home() {
   return (
@@ -15,7 +17,9 @@ export default function Home() {
       <HeroSection />
       <AboutSection />
       <FeaturedVideoSection />
+      <HorizontalScrollSection />
       <PhilosophySection />
+      <FeaturesHoverSection />
       <ServicesSection />
       <CTASection />
     </div>
