@@ -2,40 +2,40 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import { ArrowUpRight, Brain, BarChart3, Shield, Zap, Globe, Users, FileText, Star } from 'lucide-react';
+import { ArrowUpRight, Brain, BarChart3, Shield, Zap, Star } from 'lucide-react';
 
 const services = [
   {
-    videoUrl: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4',
+    videoUrl: 'https://cdn.pixabay.com/video/2020/08/21/46330-448549101_large.mp4',
     tag: 'Inteligência',
     title: 'Análise com IA',
     description: 'Processamos milhares de notícias e dados de mercado em tempo real. Nossa IA traduz informações complexas em insights acionáveis.',
     icon: Brain,
-    gradient: 'from-blue-500 to-cyan-500',
+    gradient: 'from-teal-600 to-cyan-600',
   },
   {
-    videoUrl: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_151826_c7218672-6e92-402c-9e45-f1e0f454bdc4.mp4',
+    videoUrl: 'https://cdn.pixabay.com/video/2021/12/15/97877-651562019_large.mp4',
     tag: 'Dados',
     title: 'Probabilidades Reais',
     description: 'Não damos opiniões - apresentamos probabilidades baseadas em dados. Acompanhe 500+ ativos com análise em tempo real.',
     icon: BarChart3,
-    gradient: 'from-purple-500 to-pink-500',
+    gradient: 'from-violet-600 to-purple-600',
   },
   {
-    videoUrl: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8.mp4',
+    videoUrl: 'https://cdn.pixabay.com/video/2023/01/26/145825-795795335_large.mp4',
     tag: 'Segurança',
     title: 'Dados Confiáveis',
     description: 'Fontes verificadas com citações claras. Conformidade total com regulamentações brasileiras.',
     icon: Shield,
-    gradient: 'from-green-500 to-emerald-500',
+    gradient: 'from-emerald-600 to-green-600',
   },
   {
-    videoUrl: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260402_054547_9875cfc5-155a-4229-8ec8-b7ba7125cbf8.mp4',
+    videoUrl: 'https://cdn.pixabay.com/video/2020/05/25/40130-424930032_large.mp4',
     tag: 'Velocidade',
     title: 'Tempo Real',
     description: 'Mercado abre? Já estamos analisando. Dados frescos direto da fonte, 24/7.',
     icon: Zap,
-    gradient: 'from-orange-500 to-red-500',
+    gradient: 'from-amber-600 to-orange-600',
   },
 ];
 
@@ -75,17 +75,17 @@ export default function ServicesSection() {
 
   return (
     <section id="depoimentos" ref={containerRef} className="bg-gray-50 py-24 md:py-32 px-6 overflow-hidden relative">
-      {/* Animated background */}
+      {/* Animated background - Wexion style */}
       <motion.div 
         style={{ y: backgroundY }}
         className="absolute inset-0 pointer-events-none"
       >
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-40" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-100 rounded-full blur-3xl opacity-40" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-100/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-100/30 rounded-full blur-3xl" />
       </motion.div>
 
       <div className="max-w-6xl mx-auto relative">
-        {/* Header */}
+        {/* Section header with stagger */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -95,14 +95,14 @@ export default function ServicesSection() {
         >
           <div>
             <motion.p 
-              className="text-blue-600 text-sm font-semibold tracking-wider uppercase mb-4"
+              className="text-teal-700 text-sm font-semibold tracking-wider uppercase mb-4"
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
               Serviços
             </motion.p>
             <h2 className="text-4xl md:text-5xl text-gray-900 font-bold tracking-tight">
-              O que <span className="text-blue-600">oferecemos</span>
+              O que <span className="text-teal-700">oferecemos</span>
             </h2>
           </div>
           <p className="text-gray-500 text-sm mt-4 md:mt-0 max-w-xs">
@@ -110,7 +110,7 @@ export default function ServicesSection() {
           </p>
         </motion.div>
 
-        {/* Services Grid with Stagger */}
+        {/* Services Grid with glassmorphism and hover effects */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-20">
           {services.map((service, index) => (
             <motion.div
@@ -126,7 +126,7 @@ export default function ServicesSection() {
                 damping: 20
               }}
               whileHover={{ y: -8, scale: 1.02 }}
-              className="group relative rounded-3xl overflow-hidden bg-white shadow-lg shadow-gray-100/50 cursor-pointer"
+              className="group relative rounded-3xl overflow-hidden bg-white/80 backdrop-blur-sm shadow-lg shadow-gray-100/50 cursor-pointer border border-gray-100"
             >
               {/* Video container with overlay */}
               <div className="relative aspect-[16/10] overflow-hidden">
@@ -144,28 +144,29 @@ export default function ServicesSection() {
                 </motion.video>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
                 
+                {/* Tag with glassmorphism */}
                 <motion.div 
                   className="absolute top-4 left-4"
                   whileHover={{ scale: 1.1 }}
                 >
-                  <span className={`px-4 py-1.5 rounded-full bg-gradient-to-r ${service.gradient} text-white text-xs font-medium shadow-lg`}>
+                  <span className={`px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md ${service.gradient} text-white text-xs font-medium shadow-lg border border-white/20`}>
                     {service.tag}
                   </span>
                 </motion.div>
 
-                {/* Skeleton shimmer effect on hover */}
+                {/* Shimmer effect on hover */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
                   initial={{ x: "-100%" }}
                   whileHover={{ x: "100%" }}
                   transition={{ duration: 0.8, repeat: Infinity }}
                 />
               </div>
 
-              <div className="p-6 md:p-8">
+              <div className="p-6 md:p-8 bg-white/90 backdrop-blur-sm">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-teal-700 transition-colors">
                       {service.title}
                     </h3>
                     <p className="text-gray-500 text-sm leading-relaxed">{service.description}</p>
@@ -175,7 +176,7 @@ export default function ServicesSection() {
                     whileHover={{ 
                       scale: 1.15, 
                       rotate: 10,
-                      boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
+                      boxShadow: "0 15px 40px rgba(0,0,0,0.2)"
                     }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -185,7 +186,7 @@ export default function ServicesSection() {
                 
                 <motion.a
                   href="#"
-                  className="flex items-center gap-2 text-blue-600 text-sm font-medium group-hover:gap-3 transition-all"
+                  className="flex items-center gap-2 text-teal-700 text-sm font-medium group-hover:gap-3 transition-all"
                   whileHover={{ x: 5 }}
                 >
                   Learn more
@@ -196,7 +197,7 @@ export default function ServicesSection() {
           ))}
         </div>
 
-        {/* Testimonials with Card reveal effect */}
+        {/* Testimonials with glassmorphism cards */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -229,7 +230,7 @@ export default function ServicesSection() {
                   boxShadow: "0 25px 50px rgba(0,0,0,0.15)",
                   rotate: 0
                 }}
-                className="bg-white p-6 rounded-2xl border border-gray-100 cursor-pointer group"
+                className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-gray-100 cursor-pointer group"
               >
                 {/* Rating stars with stagger */}
                 <div className="flex items-center gap-1 mb-4">
@@ -245,20 +246,20 @@ export default function ServicesSection() {
                         stiffness: 200
                       }}
                     >
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                     </motion.div>
                   ))}
                 </div>
                 
                 <div className="flex items-center gap-4 mb-4">
                   <motion.div
-                    className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shadow-md"
+                    className="w-12 h-12 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold shadow-md"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                   >
                     {testimonial.avatar}
                   </motion.div>
                   <div>
-                    <p className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{testimonial.name}</p>
+                    <p className="font-semibold text-gray-900 group-hover:text-teal-700 transition-colors">{testimonial.name}</p>
                     <p className="text-gray-500 text-sm">{testimonial.role}</p>
                   </div>
                 </div>
@@ -268,7 +269,7 @@ export default function ServicesSection() {
           </div>
         </motion.div>
 
-        {/* CTA Button */}
+        {/* CTA with premium animation - Wexion style */}
         <motion.div
           className="mt-16 text-center"
           initial={{ opacity: 0, y: 30 }}
@@ -278,17 +279,17 @@ export default function ServicesSection() {
         >
           <p className="text-gray-500 text-sm mb-6">Pronto para investir com inteligência?</p>
           <motion.button
-            className="px-12 py-5 rounded-full bg-blue-600 text-white font-semibold text-base shadow-xl shadow-blue-600/20"
+            className="px-12 py-5 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-semibold text-base shadow-2xl shadow-teal-600/20"
             whileHover={{ 
               scale: 1.05, 
-              boxShadow: "0 20px 60px rgba(37,99,235,0.4)"
+              boxShadow: "0 20px 60px rgba(13,148,136,0.4)"
             }}
             whileTap={{ scale: 0.98 }}
             animate={{ 
               boxShadow: [
-                "0 10px 30px rgba(37,99,235,0.2)",
-                "0 20px 40px rgba(37,99,235,0.3)",
-                "0 10px 30px rgba(37,99,235,0.2)"
+                "0 10px 30px rgba(13,148,136,0.2)",
+                "0 20px 40px rgba(13,148,136,0.3)",
+                "0 10px 30px rgba(13,148,136,0.2)"
               ]
             }}
             transition={{ duration: 2, repeat: Infinity }}
