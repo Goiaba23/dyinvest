@@ -6,6 +6,7 @@ import AIFeaturesSection from '@/components/AIFeaturesSection';
 import PricingSection from '@/components/PricingSection';
 import FooterSection from '@/components/FooterSection';
 import ScrollProgress from '@/components/ScrollProgress';
+import Trends2026Section from '@/components/Trends2026Section';
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <HeroSection />
       <FeaturesSection />
       <AIFeaturesSection />
+      <Trends2026Section />
       <PricingSection />
       <FooterSection />
     </div>
