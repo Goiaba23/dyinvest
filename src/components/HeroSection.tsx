@@ -4,31 +4,33 @@ import { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 import { ArrowRight, TrendingUp, ChevronDown, Sparkles } from 'lucide-react';
 
-// Natural reveal - smooth, not bouncy
-const revealVariants = {
-  hidden: { opacity: 0, y: 30 },
+// Apple-style reveal - smooth blur-to-focus + parallax depth
+const sectionReveal = {
+  hidden: { opacity: 0, filter: "blur(10px)", y: 40 },
   visible: { 
     opacity: 1, 
+    filter: "blur(0px)", 
     y: 0,
     transition: { 
-      duration: 0.8,
-      ease: [0.4, 0, 0.2, 1] // Natural cubic-bezier
+      duration: 1,
+      ease: [0.16, 1, 0.3, 1] // Apple's easing
     }
   }
 };
 
-// Word stagger - 0.08s between each word for smooth flow
-const wordReveal = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1, 
-    y: 0,
-    transition: { 
-      duration: 0.5,
-      delay: 0.1 + i * 0.08,
-      ease: [0.4, 0, 0.2, 1] as const
-    }
-  })
+// Text gradient that responds to scroll (like iPhone page)
+const gradientText = {
+  hidden: { backgroundPosition: "0% 50%" },
+  visible: { 
+    backgroundPosition: "100% 50%",
+    transition: { duration: 1.5, ease: "linear" }
+  }
+};
+
+// Parallax depth - different speeds for layers
+const useParallax = (speed: number) => {
+  const { scrollYProgress } = useScroll();
+  return useTransform(scrollYProgress, [0, 1], [0, speed * 100]);
 };
 
 export default function HeroSection() {
@@ -42,139 +44,166 @@ export default function HeroSection() {
     setScrolled(latest > 30);
   });
 
-  const y = useTransform(scrollY, [0, 400], [0, 50]);
+  // Multi-layer parallax - like Apple product pages
+  const layer1 = useParallax(-0.3); // Background moves up slower
+  const layer2 = useParallax(-0.15); // Mid moves up
+  const layer3 = useParallax(0);    // Content stays
+  
+  // Gradient text that animates on scroll
+  const gradient = useTransform(scrollY, [0, 200], [0, 100]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
-  // Headline words - natural order
-  const headlineWords = ["Entenda", "o", "mercado.", "Invista", "com", "dados."];
+  // Text words with stagger - Apple style
+  const words = ["Entenda", "o", "mercado.", "Invista", "com", "dados."];
 
   return (
-    <section ref={containerRef} className="min-h-screen relative flex flex-col bg-white">
-      {/* Subtle background - almost invisible */}
-      <motion.div style={{ y }} className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-gray-50/50" />
+    <section ref={containerRef} className="min-h-screen relative flex flex-col bg-[#000] overflow-hidden">
+      {/* Deep dark background with gradient layers - like premium tech sites */}
+      <motion.div style={{ y: layer1 }} className="absolute inset-0">
+        {/* Dark gradient mesh - subtle */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#151515] to-[#0a0a0a]" />
+        
+        {/* Subtle gradient orbs - very dark, premium feel */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-teal-500/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-emerald-500/5 rounded-full blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-[150px]" />
       </motion.div>
 
-      {/* Clean header */}
-      <motion.header 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className={`relative z-50 px-6 py-5 transition-all ${scrolled ? 'bg-white/90 backdrop-blur-sm' : ''}`}
-      >
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-gray-900 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-white" />
+      {/* Mid layer with noise texture */}
+      <motion.div style={{ y: layer2 }} className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          opacity: 0.03
+        }} />
+      </motion.div>
+
+      {/* Content layer */}
+      <motion.div style={{ y: layer3 }} className="relative z-10">
+        {/* Header - glass effect */}
+        <motion.header 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className={`px-6 py-5 transition-all ${scrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/5' : ''}`}
+        >
+          <div className="max-w-5xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 bg-gradient-to-br from-teal-400 to-emerald-500 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-white font-medium">DYInvest</span>
             </div>
-            <span className="text-gray-900 font-medium">DYInvest</span>
+            
+            <div className="flex items-center gap-6">
+              <a href="#" className="text-sm text-white/50 hover:text-white transition-colors">Recursos</a>
+              <a href="#" className="text-sm text-white/50 hover:text-white transition-colors">Como funciona</a>
+              <button className="text-sm text-white/50">Entrar</button>
+              <button className="bg-white text-black text-sm px-5 py-2 rounded-full font-medium">
+                Começar
+              </button>
+            </div>
           </div>
-          
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-sm text-gray-500 hidden md:block">Recursos</a>
-            <a href="#" className="text-sm text-gray-500 hidden md:block">Como funciona</a>
-            <button className="text-sm text-gray-500">Entrar</button>
-            <button className="bg-gray-900 text-white text-sm px-5 py-2 rounded-full">
-              Começar
-            </button>
+        </motion.header>
+
+        {/* Main content */}
+        <div className="flex flex-col items-center justify-center px-6 py-28">
+          <div className="text-center max-w-xl">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="mb-8"
+            >
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full">
+                <Sparkles className="w-3 h-3 text-teal-400" />
+                <span className="text-white/70 text-xs">IA para Investimentos</span>
+              </span>
+            </motion.div>
+
+            {/* Headline with gradient text - Apple style */}
+            <h1 className="text-5xl md:text-6xl font-semibold text-white leading-[1.15] mb-6">
+              {words.map((word, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0, 
+                    filter: "blur(0px)",
+                    transition: { 
+                      duration: 0.8, 
+                      delay: 0.3 + i * 0.1,
+                      ease: [0.16, 1, 0.3, 1]
+                    }
+                  }}
+                  className={`inline-block mr-[0.25em] ${i >= 3 ? 'bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent' : ''}`}
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </h1>
+
+            {/* Subtitle */}
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="text-white/50 mb-8 text-lg"
+            >
+              O assistente que traduz notícias do mercado para linguagem simples.
+            </motion.p>
+
+            {/* Email input */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1 }}
+              className="flex flex-col sm:flex-row gap-3 justify-center"
+            >
+              <input
+                type="email"
+                placeholder="Seu email..."
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="px-5 py-3 rounded-full bg-white/5 border border-white/10 text-white placeholder:text-white/30 w-full sm:w-64 focus:outline-none focus:border-white/20 transition-colors backdrop-blur-sm"
+              />
+              <button className="bg-white text-black px-6 py-3 rounded-full text-sm font-medium">
+                Começar →
+              </button>
+            </motion.div>
+
+            {/* Trust */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 1.2 }}
+              className="flex items-center justify-center gap-4 mt-8 text-xs text-white/30"
+            >
+              <span>CVM</span>
+              <span>•</span>
+              <span>Seguro</span>
+              <span>•</span>
+              <span>Grátis</span>
+            </motion.div>
           </div>
         </div>
-      </motion.header>
 
-      {/* Main content */}
-      <div className="relative z-40 flex-1 flex flex-col items-center justify-center px-6 py-20">
-        <div className="text-center max-w-xl">
-          {/* Badge - simple fade */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-8"
-          >
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full text-xs text-gray-500">
-              <Sparkles className="w-3 h-3" />
-              IA para Investimentos
-            </span>
-          </motion.div>
-
-          {/* Headline - word by word reveal - natural */}
-          <h1 className="text-4xl md:text-5xl font-medium text-gray-900 leading-tight mb-6">
-            {headlineWords.map((word, i) => (
-              <motion.span
-                key={i}
-                custom={i}
-                initial="hidden"
-                animate="visible"
-                variants={wordReveal}
-                className={`inline-block mr-[0.25em] ${i >= 3 ? 'text-gray-900' : ''}`}
-                style={{ 
-                  color: i >= 3 ? '#0d9488' : undefined 
-                }}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </h1>
-
-          {/* Subtitle - simple fade */}
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="text-gray-500 mb-8"
-          >
-            O assistente que traduz notícias do mercado para linguagem simples.
-          </motion.p>
-
-          {/* Email - simple */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
-            className="flex flex-col sm:flex-row gap-3 justify-center"
-          >
-            <input
-              type="email"
-              placeholder="Seu email..."
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="px-5 py-3 rounded-full border border-gray-200 text-sm w-full sm:w-64 focus:outline-none focus:border-gray-300"
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="flex justify-center pb-8"
+        >
+          <div className="w-6 h-10 rounded-full border border-white/10 flex items-start justify-center p-2">
+            <motion.div 
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="w-1 h-2 bg-white/30 rounded-full"
             />
-            <button className="bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-medium">
-              Começar →
-            </button>
-          </motion.div>
-
-          {/* Trust */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.1 }}
-            className="flex items-center justify-center gap-4 mt-6 text-xs text-gray-400"
-          >
-            <span>CVM</span>
-            <span>•</span>
-            <span>Seguro</span>
-            <span>•</span>
-            <span>Grátis</span>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Scroll */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.3 }}
-        className="flex justify-center pb-6"
-      >
-        <div className="w-5 h-5 rounded-full border border-gray-200 flex items-center justify-center">
-          <motion.div 
-            animate={{ y: [0, 3, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <ChevronDown className="w-3 h-3 text-gray-300" />
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </motion.div>
     </section>
   );
