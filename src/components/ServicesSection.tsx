@@ -1,17 +1,37 @@
 "use client";
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
+
+const ease = [0.16, 1, 0.3, 1] as const;
+
+function WordReveal({ text, delay = 0 }: { text: string; delay?: number }) {
+  const words = text.split(' ');
+  return (
+    <>
+      {words.map((word, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ 
+            duration: 0.5, 
+            delay: delay + i * 0.06,
+            ease 
+          }}
+          className="inline-block mr-[0.25em]"
+        >
+          {word}
+        </motion.span>
+      ))}
+    </>
+  );
+}
 
 export default function ServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [0, 1, 1, 0]);
 
   const services = [
     { title: "Análise de Ativos", desc: "Avaliação completa de ações, fundos e outros ativos", price: "R$ 97/mês" },
@@ -25,65 +45,52 @@ export default function ServicesSection() {
     { quote: "Os sinais são impressionantes.", author: "Ana L., Trader" }
   ];
 
-  const words = ["Nossos", "planos"];
-
   return (
-    <section ref={containerRef} className="py-32 bg-white">
-      <motion.div style={{ opacity }} className="max-w-5xl mx-auto px-6">
+    <section className="py-28 bg-[#0a0a0a]">
+      <div className="max-w-5xl mx-auto px-6">
         {/* Section label */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="text-sm font-medium text-[#0d9488] mb-4"
+          transition={{ duration: 0.6, ease }}
+          className="text-[11px] font-medium text-[#0d9488] mb-4 tracking-widest uppercase"
         >
-          PLANOS
+          Planos
         </motion.div>
 
         {/* Headline */}
-        <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 leading-[1.15] mb-12">
-          {words.map((word, i) => (
-            <motion.span
+        <h2 className="text-3xl md:text-4xl font-semibold text-white leading-[1.15] mb-12 tracking-tight">
+          <WordReveal text="Nossos planos" delay={0.1} />
+        </h2>
+
+        {/* Services grid - clean cards, Apple style */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
+          {services.map((service, i) => (
+            <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.08, ease: [0.4, 0, 0.2, 1] }}
-              className="inline-block mr-[0.25em]"
-            >
-              {word}
-            </motion.span>
-          ))}
-        </h2>
-
-        {/* Services grid - Apple style cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-          {services.map((service, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
               transition={{ 
-                duration: 0.6, 
-                delay: 0.2 + i * 0.08, 
-                ease: [0.4, 0, 0.2, 1] 
+                duration: 0.5, 
+                delay: 0.3 + i * 0.08, 
+                ease 
               }}
-              className="p-6 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 transition-colors group cursor-pointer"
+              className="p-5 rounded-lg bg-[#111] border border-white/[0.05] hover:border-white/[0.1] transition-colors group cursor-pointer"
             >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">{service.title}</h3>
-                <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-[#0d9488] transition-colors" />
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="text-white text-[15px] font-medium">{service.title}</h3>
+                <ArrowUpRight className="w-4 h-4 text-white/30 group-hover:text-[#0d9488] transition-colors" />
               </div>
-              <p className="text-sm text-gray-500 mb-4">{service.desc}</p>
-              <p className="text-lg font-medium text-[#0d9488]">{service.price}</p>
+              <p className="text-white/35 text-[13px] mb-3">{service.desc}</p>
+              <p className="text-[#0d9488] text-[14px] font-medium">{service.price}</p>
             </motion.div>
           ))}
         </div>
 
         {/* Testimonials - minimal */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {testimonials.map((testimonial, i) => (
             <motion.div
               key={i}
@@ -91,18 +98,18 @@ export default function ServicesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ 
-                duration: 0.6, 
-                delay: 0.5 + i * 0.08, 
-                ease: [0.4, 0, 0.2, 1] 
+                duration: 0.5, 
+                delay: 0.6 + i * 0.08, 
+                ease 
               }}
-              className="p-6 rounded-xl bg-gray-50"
+              className="p-5 rounded-lg bg-[#111]"
             >
-              <p className="text-gray-700 mb-4">"{testimonial.quote}"</p>
-              <p className="text-sm text-gray-500">{testimonial.author}</p>
+              <p className="text-white/60 text-[14px] mb-3 leading-relaxed">"{testimonial.quote}"</p>
+              <p className="text-white/30 text-[12px]">{testimonial.author}</p>
             </motion.div>
           ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
