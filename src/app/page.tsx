@@ -1,27 +1,21 @@
 "use client";
 
 import HeroSection from '@/components/HeroSection';
-import AboutSection from '@/components/AboutSection';
-import FeaturedVideoSection from '@/components/FeaturedVideoSection';
-import PhilosophySection from '@/components/PhilosophySection';
-import ServicesSection from '@/components/ServicesSection';
-import CTASection from '@/components/CTASection';
+import FeaturesSection from '@/components/FeaturesSection';
+import AIFeaturesSection from '@/components/AIFeaturesSection';
+import PricingSection from '@/components/PricingSection';
+import FooterSection from '@/components/FooterSection';
 import ScrollProgress from '@/components/ScrollProgress';
-import HorizontalScrollSection from '@/components/HorizontalScrollSection';
-import FeaturesHoverSection from '@/components/FeaturesHoverSection';
 
 export default function Home() {
   return (
-    <div className="bg-[#0a0a0a] min-h-screen">
+    <div className="bg-[#050505] min-h-screen">
       <ScrollProgress />
       <HeroSection />
-      <AboutSection />
-      <FeaturedVideoSection />
-      <HorizontalScrollSection />
-      <PhilosophySection />
-      <FeaturesHoverSection />
-      <ServicesSection />
-      <CTASection />
+      <FeaturesSection />
+      <AIFeaturesSection />
+      <PricingSection />
+      <FooterSection />
     </div>
   );
 }
