@@ -8,7 +8,7 @@ import ServicesSection from '@/components/ServicesSection';
 
 export default function Home() {
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-[#FAFAFA] min-h-screen">
       <HeroSection />
       <AboutSection />
       <FeaturedVideoSection />
